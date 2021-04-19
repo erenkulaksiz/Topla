@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { Text, View, Button } from 'react-native';
 
 class Subjects extends React.Component {
     render() {
@@ -9,7 +9,7 @@ class Subjects extends React.Component {
                 <Text>Select Subjects Below!</Text>
 
                 {
-                    this.props.subjects.all_subjects.map((subject, index) => (
+                    this.props.reducer.all_subjects.map((subject, index) => (
                         <Button
                             key={subject}
                             title={`Add ${subject}`}
@@ -35,8 +35,8 @@ class Subjects extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const { subjects } = state
-    return { subjects }
+    const { reducer } = state
+    return { reducer }
 };
 
 export default connect(mapStateToProps)(Subjects);

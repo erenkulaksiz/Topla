@@ -19,7 +19,7 @@ const INITIAL_STATE = {
     ],
 };
 
-const subjectsReducer = (state = INITIAL_STATE, action) => {
+const mainReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case 'SELECT_SUBJECT':
 
@@ -44,5 +44,5 @@ const subjectsReducer = (state = INITIAL_STATE, action) => {
 };
 
 export default combineReducers({
-    subjects: subjectsReducer
+    reducer: mainReducer
 });
