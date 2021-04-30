@@ -9,6 +9,8 @@ import HomeScreen from './screens/HomeScreen'
 import PremiumScreen from './screens/PremiumScreen';
 import OptionsScreen from './screens/OptionsScreen';
 
+import Locales from '../locales';
+
 const Tab = createBottomTabNavigator();
 
 class Home extends React.Component {
