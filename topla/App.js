@@ -5,9 +5,9 @@ import { createStore } from 'redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Main from './modules/Main';
-import Header from './modules/header';
-import QuestionSettings from './modules/screens/questionsettings';
+import Main from './src/modules/Main';
+import Header from './src/modules/header';
+import QuestionSettings from './src/modules/screens/questionsettings';
 
 import reducer from './reducers';
 

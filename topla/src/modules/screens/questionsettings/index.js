@@ -8,7 +8,7 @@ class QuestionSettings extends React.Component {
     render() {
         return (
             <View style={style.container}>
-                <Text>SELAMM</Text>
+                <Text>{this.props.route.params.difficulty}</Text>
             </View>
         );
     }

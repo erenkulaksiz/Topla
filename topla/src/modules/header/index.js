@@ -8,7 +8,7 @@ class Header extends React.Component {
             <View style={style.container}>
                 <Image
                     style={style.logo}
-                    source={require('../../src/logo_full.png')}
+                    source={require('../../logo_full.png')}
                 />
             </View>
         );

@@ -9,6 +9,10 @@ import QuestionSlot from "../../questionslot";
 
 class HomeScreen extends React.Component {
 
+    _questionPlay(diff) {
+        this.props.navigation.navigate('QuestionSettings', { difficulty: diff })
+    }
+
     render() {
         return (
             <View style={style.container}>
@@ -18,7 +22,7 @@ class HomeScreen extends React.Component {
                 </View>
                 <ScrollView style={style.questionsScroll}>
                     <QuestionSlot
-                        onPlay={() => { this.props.navigation.navigate('QuestionSettings', { name: 'Jane' }) }}
+                        onPlay={() => { this._questionPlay("veryeasy") }}
                         content={"+ Toplama - Çıkarma"}
                     />
                     <QuestionSlot

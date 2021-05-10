@@ -21,7 +21,7 @@ class QuestionSlot extends React.Component {
                 <View style={style.element}>
                     <Image
                         style={style.elementLogo}
-                        source={require('../../src/tc.png')}
+                        source={require('../../tc.png')}
                     />
                     <Text style={style.elementHardness}>Zorluk Seviyesi: Kolay</Text>
                     <View style={style.elementBar} />
