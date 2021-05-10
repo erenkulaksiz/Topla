@@ -5,6 +5,8 @@ import style from './style';
 
 import QuestionSlot from "../../questionslot";
 
+// TODO: Eski header'ı sil
+
 class HomeScreen extends React.Component {
 
     render() {
@@ -16,7 +18,7 @@ class HomeScreen extends React.Component {
                 </View>
                 <ScrollView style={style.questionsScroll}>
                     <QuestionSlot
-                        onPlay={() => { alert("hey") }}
+                        onPlay={() => { this.props.navigation.navigate('QuestionSettings', { name: 'Jane' }) }}
                         content={"+ Toplama - Çıkarma"}
                     />
                     <QuestionSlot

@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -6,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Main from './modules/Main';
 import Header from './modules/header';
+import QuestionSettings from './modules/screens/questionsettings';
 
 import reducer from './reducers';
 
@@ -22,6 +24,11 @@ class App extends React.Component {
             <Stack.Screen
               name="Home"
               component={Main}
+              options={{ headerTitle: props => <Header {...props} /> }}
+            />
+            <Stack.Screen
+              name="QuestionSettings"
+              component={QuestionSettings}
               options={{ headerTitle: props => <Header {...props} /> }}
             />
           </Stack.Navigator>
