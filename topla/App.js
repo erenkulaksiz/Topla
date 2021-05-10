@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Main from './modules/Main';
-import Header from './modules/mini/Header';
+import Header from './modules/header';
 
 import reducer from './reducers';
 

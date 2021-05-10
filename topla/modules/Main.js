@@ -5,11 +5,9 @@ import { faHome, faCrown, faCog } from '@fortawesome/free-solid-svg-icons'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import HomeScreen from './screens/HomeScreen'
-import PremiumScreen from './screens/PremiumScreen';
-import OptionsScreen from './screens/OptionsScreen';
-
-import Locales from '../locales';
+import HomeScreen from './screens/home'
+import PremiumScreen from './screens/premium';
+import OptionsScreen from './screens/options';
 
 const Tab = createBottomTabNavigator();
 
