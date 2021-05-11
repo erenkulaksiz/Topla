@@ -14,6 +14,7 @@ class QuestionSlot extends React.Component {
         const {
             onPlay,
             content,
+            hardness,
         } = this.props
 
         return (
@@ -23,7 +24,7 @@ class QuestionSlot extends React.Component {
                         style={style.elementLogo}
                         source={require('../../tc.png')}
                     />
-                    <Text style={style.elementHardness}>Zorluk Seviyesi: Kolay</Text>
+                    <Text style={style.elementHardness}>Zorluk Seviyesi: {hardness}</Text>
                     <View style={style.elementBar} />
                     <Text style={style.elementContent}>İçerik: {content}</Text>
                     <Text style={style.elementBasamak}>Basamak Sayısı: 1</Text>
@@ -39,6 +40,7 @@ class QuestionSlot extends React.Component {
 QuestionSlot.propTypes = {
     onPlay: PropTypes.func,
     content: PropTypes.string,
+    hardness: PropTypes.string,
 }
 
 const mapStateToProps = (state) => {

@@ -3,16 +3,19 @@ import { connect } from 'react-redux';
 import { Text, View } from 'react-native';
 import style from './style';
 
+import Header from "../../header";
+
 class OptionsScreen extends React.Component {
 
     render() {
         return (
             <View style={style.container}>
+                <Header />
                 <View style={style.headerContainer}>
                     <Text style={style.headerText}>Ayarlar</Text>
                     <View style={style.headerBar}></View>
                 </View>
-                <Text>ayarrr</Text>
+                <View style={style.content}><Text>asdasd</Text></View>
             </View>
         );
     }

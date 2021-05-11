@@ -4,39 +4,37 @@ import { Text, View, ScrollView } from "react-native";
 import style from './style';
 
 import QuestionSlot from "../../questionslot";
+import Header from "../../header";
 
-// TODO: Eski header'ı sil
+import questionTypes from "./questionTypes";
 
 class HomeScreen extends React.Component {
 
-    _questionPlay(diff) {
-        this.props.navigation.navigate('QuestionSettings', { difficulty: diff })
+    _questionPlay(question) {
+        this.props.navigation.navigate('QuestionSettings', { question: question })
     }
 
     render() {
+
+        const questionList = questionTypes.map((question, index) => {
+            return (<QuestionSlot
+                key={index}
+                onPlay={() => { this._questionPlay(question) }}
+                content={question.content}
+                hardness={question.name}
+            />)
+        })
+
         return (
             <View style={style.container}>
+                <Header />
                 <View style={style.headerContainer}>
                     <Text style={style.headerText}>Ana Sayfa</Text>
                     <View style={style.headerBar}></View>
                 </View>
                 <ScrollView style={style.questionsScroll}>
-                    <QuestionSlot
-                        onPlay={() => { this._questionPlay("veryeasy") }}
-                        content={"+ Toplama - Çıkarma"}
-                    />
-                    <QuestionSlot
-                        onPlay={() => { alert("hey") }}
-                        content={"+ Toplama - Çıkarma"}
-                    />
-                    <QuestionSlot
-                        onPlay={() => { alert("hey") }}
-                        content={"+ Toplama - Çıkarma"}
-                    />
-                    <QuestionSlot
-                        onPlay={() => { alert("hey") }}
-                        content={"+ Toplama - Çıkarma"}
-                    />
+
+                    {questionList}
 
                 </ScrollView>
             </View>

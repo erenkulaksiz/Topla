@@ -20,16 +20,18 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
+          <Stack.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+              headerShown: false,
+            }}>
             <Stack.Screen
               name="Home"
               component={Main}
-              options={{ headerTitle: props => <Header {...props} /> }}
             />
             <Stack.Screen
               name="QuestionSettings"
               component={QuestionSettings}
-              options={{ headerTitle: props => <Header {...props} /> }}
             />
           </Stack.Navigator>
         </NavigationContainer>

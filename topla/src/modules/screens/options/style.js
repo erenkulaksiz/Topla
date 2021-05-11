@@ -22,4 +22,20 @@ export default StyleSheet.create({
         height: 2,
         backgroundColor: "#0F7CBB",
     },
+    content: {
+        margin: 16,
+        flex: 1,
+        backgroundColor: "#FFF",
+        borderRadius: 12,
+
+        // Shadow
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 6,
+    }
 });
