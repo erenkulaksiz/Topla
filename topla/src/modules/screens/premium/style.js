@@ -22,4 +22,7 @@ export default StyleSheet.create({
         height: 2,
         backgroundColor: "#0F7CBB",
     },
+    content: {
+        padding: 16,
+    }
 });

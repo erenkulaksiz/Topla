@@ -20,8 +20,7 @@ class HomeScreen extends React.Component {
             return (<QuestionSlot
                 key={index}
                 onPlay={() => { this._questionPlay(question) }}
-                content={question.content}
-                hardness={question.name}
+                question={question}
             />)
         })
 
@@ -33,9 +32,7 @@ class HomeScreen extends React.Component {
                     <View style={style.headerBar}></View>
                 </View>
                 <ScrollView style={style.questionsScroll}>
-
                     {questionList}
-
                 </ScrollView>
             </View>
         );

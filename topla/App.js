@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import Main from './src/modules/Main';
 import Header from './src/modules/header';
@@ -24,6 +24,8 @@ class App extends React.Component {
             initialRouteName="Home"
             screenOptions={{
               headerShown: false,
+              gestureEnabled: true,
+              ...TransitionPresets.SlideFromRightIOS,
             }}>
             <Stack.Screen
               name="Home"

@@ -30,7 +30,7 @@ export default StyleSheet.create({
         alignItems: "flex-start",
     },
     back: {
-        marginLeft: 24,
+        marginLeft: 12,
         padding: 12,
         backgroundColor: "#EEEE",
         borderRadius: 24,

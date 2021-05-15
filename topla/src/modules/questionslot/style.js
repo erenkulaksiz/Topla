@@ -3,7 +3,7 @@ import { StyleSheet, Platform } from 'react-native';
 export default StyleSheet.create({
     container: {
         padding: 4,
-        marginBottom: 12,
+        marginBottom: 16,
         alignItems: "flex-start",
     },
     element: {
@@ -15,7 +15,7 @@ export default StyleSheet.create({
         marginBottom: 12,
 
         // Shadow
-        shadowColor: "#000",
+        shadowColor: "#919191",
         shadowOffset: {
             width: 0,
             height: 1,

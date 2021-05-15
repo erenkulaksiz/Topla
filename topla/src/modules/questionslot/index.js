@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import style from './style';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
@@ -13,8 +13,7 @@ class QuestionSlot extends React.Component {
 
         const {
             onPlay,
-            content,
-            hardness,
+            question,
         } = this.props
 
         return (
@@ -24,10 +23,10 @@ class QuestionSlot extends React.Component {
                         style={style.elementLogo}
                         source={require('../../tc.png')}
                     />
-                    <Text style={style.elementHardness}>Zorluk Seviyesi: {hardness}</Text>
+                    <Text style={style.elementHardness}>Zorluk Seviyesi: {question.name}</Text>
                     <View style={style.elementBar} />
-                    <Text style={style.elementContent}>İçerik: {content}</Text>
-                    <Text style={style.elementBasamak}>Basamak Sayısı: 1</Text>
+                    <Text style={style.elementContent}>İçerik: {question.content}</Text>
+                    <Text style={style.elementBasamak}>Basamak Sayısı: {question.digit}</Text>
                 </View>
                 <TouchableOpacity style={style.play} onPress={() => { onPlay() }}>
                     <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />
@@ -39,8 +38,7 @@ class QuestionSlot extends React.Component {
 
 QuestionSlot.propTypes = {
     onPlay: PropTypes.func,
-    content: PropTypes.string,
-    hardness: PropTypes.string,
+    question: PropTypes.object,
 }
 
 const mapStateToProps = (state) => {

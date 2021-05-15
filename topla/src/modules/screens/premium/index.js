@@ -15,7 +15,9 @@ class PremiumScreen extends React.Component {
                     <Text style={style.headerText}>Premium</Text>
                     <View style={style.headerBar}></View>
                 </View>
-                <Text>premi</Text>
+                <View style={style.content}>
+                    <Text>asdsa</Text>
+                </View>
             </View>
         );
     }
