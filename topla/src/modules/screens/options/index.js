@@ -38,6 +38,9 @@ class OptionsScreen extends React.Component {
                             <Text style={style.buttonText}>Destek</Text>
                         </TouchableOpacity>
                     </View>
+                    <View>
+
+                    </View>
                 </View>
             </View>
         );
