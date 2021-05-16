@@ -24,7 +24,6 @@ class QuestionSettings extends React.Component {
                 </View>
                 <View style={style.headerBar}></View>
                 <View style={style.content}>
-                    <Text>{this.props.route.params.question.name}</Text>
                     <Button title='arttır' onPress={() => { this.props.dispatch({ type: 'ARTTIR' }) }} />
                     <Button title='azalt kardes' onPress={() => { this.props.dispatch({ type: 'AZALT' }) }} />
                     <Text>{this.props.reducer.value}</Text>

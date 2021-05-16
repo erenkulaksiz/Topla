@@ -10,6 +10,8 @@ import questionTypes from "./questionTypes";
 
 class HomeScreen extends React.Component {
 
+    // TODO: Bildirimler ayarları için modal kullan
+
     _questionPlay(question) {
         this.props.navigation.navigate('QuestionSettings', { question: question })
     }

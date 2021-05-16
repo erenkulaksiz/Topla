@@ -67,5 +67,9 @@ export default StyleSheet.create({
     buttonText: {
         marginLeft: 8,
         fontSize: 16
+    },
+    altContent: {
+        flex: 1,
+
     }
 });

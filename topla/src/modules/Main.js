@@ -6,7 +6,6 @@ import { faHome, faCrown, faCog } from '@fortawesome/free-solid-svg-icons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './screens/home'
-import PremiumScreen from './screens/premium';
 import OptionsScreen from './screens/options';
 
 const Tab = createBottomTabNavigator();
@@ -24,13 +23,13 @@ class Home extends React.Component {
                             <FontAwesomeIcon icon={faHome} size={size} color={color} />
                         ),
                     }} />
-                <Tab.Screen name="Premium" component={PremiumScreen}
+                {/*<Tab.Screen name="Premium" component={PremiumScreen}
                     options={{
                         tabBarLabel: 'Premium',
                         tabBarIcon: ({ color, size }) => (
                             <FontAwesomeIcon icon={faCrown} size={size} color={color} />
                         ),
-                    }} />
+                    }} />*/}
                 <Tab.Screen name="Options" component={OptionsScreen}
                     options={{
                         tabBarLabel: 'Ayarlar',

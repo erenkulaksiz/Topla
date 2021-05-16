@@ -10,13 +10,13 @@ class PremiumScreen extends React.Component {
     render() {
         return (
             <View style={style.container}>
-                <Header />
+                <Header backShown={true} onBack={() => { this.props.navigation.goBack() }} />
                 <View style={style.headerContainer}>
-                    <Text style={style.headerText}>Premium</Text>
+                    <Text style={style.headerText}>Reklamları Kaldır</Text>
                     <View style={style.headerBar}></View>
                 </View>
                 <View style={style.content}>
-                    <Text>asdsa</Text>
+                    <Text>Destek</Text>
                 </View>
             </View>
         );

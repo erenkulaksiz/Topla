@@ -6,8 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import Main from './src/modules/Main';
-import Header from './src/modules/header';
 import QuestionSettings from './src/modules/screens/questionsettings';
+import PremiumScreen from './src/modules/screens/premium';
 
 import reducer from './reducers';
 
@@ -34,6 +34,10 @@ class App extends React.Component {
             <Stack.Screen
               name="QuestionSettings"
               component={QuestionSettings}
+            />
+            <Stack.Screen
+              name="PremiumScreen"
+              component={PremiumScreen}
             />
           </Stack.Navigator>
         </NavigationContainer>
