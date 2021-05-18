@@ -9,8 +9,6 @@ class QuestionSettings extends React.Component {
 
     render() {
 
-        console.log("reducer.value", this.props.reducer)
-
         return (
             <View style={style.container}>
                 <Header backShown={true} onBack={() => { this.props.navigation.goBack() }} />

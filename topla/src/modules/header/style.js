@@ -10,8 +10,10 @@ export default StyleSheet.create({
         backgroundColor: "#FFF",
     },
     logo: {
-        width: 80,
-        height: 40,
+        flex: 1,
+    },
+    logoWrapper: {
+        padding: 10,
     },
     left: {
         flex: 33,

@@ -27,10 +27,13 @@ class Header extends React.Component {
                     }
                 </View>
                 <View style={style.middle}>
-                    <Image
-                        style={style.logo}
-                        source={require('../../logo_full.png')}
-                    />
+                    <View style={style.logoWrapper}>
+                        <Image
+                            style={style.logo}
+                            source={require('../../logo_full.png')}
+                            resizeMode={'contain'}
+                        />
+                    </View>
                 </View>
                 <View style={style.right}>
 

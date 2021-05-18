@@ -4,10 +4,15 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import SplashScreen from 'react-native-splash-screen'
+import { getUniqueId, getDeviceId, getBundleId, getBuildNumber, getModel, getLastUpdateTime } from 'react-native-device-info';
+import NetInfo from "@react-native-community/netinfo";
 
+// Components 
 import Main from './src/modules/Main';
 import QuestionSettings from './src/modules/screens/questionsettings';
 import PremiumScreen from './src/modules/screens/premium';
+import ContactScreen from './src/modules/screens/contact';
 
 import reducer from './reducers';
 
@@ -16,6 +21,33 @@ const store = createStore(reducer);
 const Stack = createStackNavigator();
 
 class App extends React.Component {
+
+  _setDeviceInfo = async () => {
+    let deviceInfo = {
+      uid: 'topla_' + getUniqueId(),
+      id: getDeviceId(),
+      buildNumber: getBuildNumber(),
+      model: getModel(),
+      bundleId: getBundleId(),
+    }
+
+    NetInfo.addEventListener(state => {
+      store.dispatch({ type: 'SET_DEVICE_CONNECTION', payload: { connectionType: state.type, isConnected: state.isConnected } });
+    });
+
+    await getLastUpdateTime().then((lastUpdateTime) => {
+      deviceInfo.lastUpdated = lastUpdateTime;
+      store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
+    });
+
+    SplashScreen.hide();
+  }
+
+  componentDidMount() {
+    console.log("@App Launched");
+    this._setDeviceInfo();
+  }
+
   render() {
     return (
       <Provider store={store}>
@@ -38,6 +70,10 @@ class App extends React.Component {
             <Stack.Screen
               name="PremiumScreen"
               component={PremiumScreen}
+            />
+            <Stack.Screen
+              name="ContactScreen"
+              component={ContactScreen}
             />
           </Stack.Navigator>
         </NavigationContainer>

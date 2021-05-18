@@ -4,7 +4,6 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faSync, faBell, faEnvelope, faCrown } from '@fortawesome/free-solid-svg-icons'
-import { getUniqueId, getDeviceId, getIpAddress } from 'react-native-device-info';
 
 import Header from "../../header";
 
@@ -12,14 +11,14 @@ class OptionsScreen extends React.Component {
 
     constructor(props) {
         super(props)
-        this.deviceData = {
-            uid: 'topla_' + getUniqueId(),
-            id: getDeviceId(),
-        }
     }
 
     _navigateToPremium = () => {
         this.props.navigation.navigate('PremiumScreen');
+    }
+
+    _navigateToContact = () => {
+        this.props.navigation.navigate('ContactScreen');
     }
 
     render() {
@@ -38,19 +37,19 @@ class OptionsScreen extends React.Component {
                             </View>
                             <Text style={style.buttonText}>Aboneliği Geri Yükle</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }}>
+                        {/*<TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }}>
                             <View style={style.buttonIcon}>
                                 <FontAwesomeIcon icon={faBell} size={16} color={"#000"} />
                             </View>
                             <Text style={style.buttonText}>Bildirimler</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={style.button}>
+                        </TouchableOpacity>*/}
+                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => this._navigateToContact()}>
                             <View style={style.buttonIcon}>
                                 <FontAwesomeIcon icon={faEnvelope} size={16} color={"#000"} />
                             </View>
                             <Text style={style.buttonText}>İletişim</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => this._navigateToPremium()}>
+                        <TouchableOpacity style={{ ...style.button }} onPress={() => this._navigateToPremium()}>
                             <View style={style.buttonIcon}>
                                 <FontAwesomeIcon icon={faCrown} size={16} color={"#000"} />
                             </View>
@@ -58,10 +57,8 @@ class OptionsScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <View style={style.altContent}>
-                        <Text>{this.deviceData.uid}</Text>
-                        <Text>{this.deviceData.id}</Text>
+                        <Text>asdas</Text>
                     </View>
-
                 </View>
             </View>
         );

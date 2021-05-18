@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-native-fontawesome": "^0.2.6",
+    "@react-native-community/netinfo": "^6.0.0",
     "@react-navigation/bottom-tabs": "^5.11.10",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
@@ -24,6 +25,7 @@
     "react-native-modal": "^11.10.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.1.1",
+    "react-native-splash-screen": "^3.2.0",
     "react-native-svg": "^12.1.1",
     "react-redux": "^7.2.3",
     "redux": "^4.0.5"
