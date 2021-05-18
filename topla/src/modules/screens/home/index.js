@@ -10,7 +10,6 @@ import questionTypes from "./questionTypes";
 
 class HomeScreen extends React.Component {
 
-    // TODO: Bildirimler ayarları için modal kullan
     // TODO: Premium ekranında önce internet kontrolü yap
 
     _questionPlay(question) {

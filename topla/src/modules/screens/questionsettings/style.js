@@ -35,5 +35,35 @@ export default StyleSheet.create({
     },
     content: {
         padding: 16,
-    }
+        flex: 1,
+    },
+    bottomButtonWrapper: {
+        position: "absolute",
+        width: "100%",
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        bottom: 16,
+    },
+    bottomButton: {
+        position: "absolute",
+        width: "90%",
+        height: 46,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0F7CBB",
+        borderRadius: 32,
+        flexDirection: "row"
+    },
+    questionSettingsWrapper: {
+        width: "100%",
+        padding: 24,
+        borderRadius: 8,
+        backgroundColor: "#e3e3e3"
+    },
+    elementLogo: {
+        width: 50,
+        height: 16,
+        opacity: 0.33,
+    },
 });

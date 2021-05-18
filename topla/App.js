@@ -13,6 +13,7 @@ import Main from './src/modules/Main';
 import QuestionSettings from './src/modules/screens/questionsettings';
 import PremiumScreen from './src/modules/screens/premium';
 import ContactScreen from './src/modules/screens/contact';
+import QuestionScreen from './src/modules/screens/question';
 
 import reducer from './reducers';
 
@@ -74,6 +75,10 @@ class App extends React.Component {
             <Stack.Screen
               name="ContactScreen"
               component={ContactScreen}
+            />
+            <Stack.Screen
+              name="QuestionScreen"
+              component={QuestionScreen}
             />
           </Stack.Navigator>
         </NavigationContainer>
