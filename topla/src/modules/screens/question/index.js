@@ -1,23 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Alert } from 'react-native';
+import { Text, View, Alert, Button, TouchableOpacity } from 'react-native';
 import style from './style';
-import { StackActions } from '@react-navigation/native';
 import Header from "../../header";
+import Modal from 'react-native-modal';
 
 class QuestionScreen extends React.Component {
 
-    _goBack = () => {
-        alert("ads");
-        this.props.navigation.goBack();
+    constructor(props) {
+        super(props)
+    }
+
+    _modal = (control) => {
+        this.props.dispatch({ type: "SET_PAUSE_MODAL", payload: control });
+    }
+
+    _pause = () => {
+        this._modal(true);
+
+        //this.props.navigation.goBack();
     }
 
     componentDidMount() {
         this.props.navigation.addListener('beforeRemove', (e) => {
-            // Prevent default behavior of leaving the screen
             e.preventDefault();
-
-            // Prompt the user before leaving the screen
             Alert.alert(
                 'Çözümler iptal olacak',
                 'Çıkış yapmak istediğinize emin misiniz?',
@@ -34,16 +40,36 @@ class QuestionScreen extends React.Component {
     }
 
     render() {
+
         return (
             <View style={style.container}>
-                <Header backShown={true} onBack={() => this._goBack()} />
+                <Header pauseShown onPause={() => this._pause()} />
                 <View style={style.headerContainer}>
                     <Text style={style.headerText}>Soru</Text>
                     <View style={style.headerBar}></View>
                 </View>
                 <View style={style.content}>
-                    <Text>asd</Text>
+                    <Text>dfgdf</Text>
                 </View>
+                <Modal
+                    isVisible={this.props.reducer.pauseModalShown}
+                    onSwipeComplete={() => { this._modal(false) }}
+                    swipeDirection={['down']}
+                    style={style.modalWrapper}
+                    onBackdropPress={() => { this._modal(false) }}>
+                    <View style={style.modal}>
+
+                        <Text style={style.modalTitle}>Durduruldu</Text>
+                        <View style={style.modalSeperator}></View>
+
+                        <TouchableOpacity style={style.button} onPress={() => { this._modal(false) }}>
+                            <Text style={style.buttonText}>Devam Et</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => { this._modal(false) }}>
+                            <Text style={style.buttonText}>Çıkış</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </View>
         );
     }

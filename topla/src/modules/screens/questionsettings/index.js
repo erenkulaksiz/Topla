@@ -17,7 +17,7 @@ class QuestionSettings extends React.Component {
 
         return (
             <View style={style.container}>
-                <Header backShown={true} onBack={() => this.props.navigation.goBack()} />
+                <Header backShown onBack={() => this.props.navigation.goBack()} />
                 <View style={style.headerContainer}>
                     <View>
                         <Text style={style.headerText}>Soru Ayarları</Text>

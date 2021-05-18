@@ -38,5 +38,16 @@ export default StyleSheet.create({
         padding: 12,
         backgroundColor: "#EEEE",
         borderRadius: 24,
-    }
+    },
+    pause: {
+        marginRight: 12,
+        padding: 12,
+        backgroundColor: "#EEEE",
+        borderRadius: 24,
+    },
+    pauseWrapper: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "flex-end",
+    },
 });

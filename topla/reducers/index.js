@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     deviceInfo: {},
     connection: {},
     questionStarted: false,
+    pauseModalShown: false,
 };
 
 const mainReducer = (state = INITIAL_STATE, action) => {
@@ -28,6 +29,10 @@ const mainReducer = (state = INITIAL_STATE, action) => {
             deviceConnection.connection = action.payload;
             console.log("connection ", action.payload);
             return deviceConnection;
+        case 'SET_PAUSE_MODAL':
+            let modalShown = { ...state };
+            modalShown.pauseModalShown = action.payload;
+            return modalShown;
         default:
             return state
     }

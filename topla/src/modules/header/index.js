@@ -3,7 +3,7 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { connect } from 'react-redux';
 import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faPause } from '@fortawesome/free-solid-svg-icons'
 import PropTypes from 'prop-types';
 
 class Header extends React.Component {
@@ -13,7 +13,9 @@ class Header extends React.Component {
 
         const {
             backShown,
+            pauseShown,
             onBack,
+            onPause,
         } = this.props
 
         return (
@@ -23,8 +25,7 @@ class Header extends React.Component {
                         <TouchableOpacity style={style.back} onPress={() => { onBack() }}>
                             <FontAwesomeIcon icon={faArrowLeft} size={18} color={'black'} />
                         </TouchableOpacity>
-                    </View>
-                    }
+                    </View>}
                 </View>
                 <View style={style.middle}>
                     <View style={style.logoWrapper}>
@@ -36,7 +37,11 @@ class Header extends React.Component {
                     </View>
                 </View>
                 <View style={style.right}>
-
+                    {pauseShown && <View style={style.pauseWrapper}>
+                        <TouchableOpacity style={style.pause} onPress={() => { onPause() }}>
+                            <FontAwesomeIcon icon={faPause} size={14} color={'black'} />
+                        </TouchableOpacity>
+                    </View>}
                 </View>
             </View>
         );
@@ -45,7 +50,9 @@ class Header extends React.Component {
 
 Header.propTypes = {
     backShown: PropTypes.bool,
+    pauseShown: PropTypes.bool,
     onBack: PropTypes.func,
+    onPause: PropTypes.func,
 }
 
 const mapStateToProps = (state) => {

@@ -24,5 +24,41 @@ export default StyleSheet.create({
     },
     content: {
         padding: 16,
+    },
+    modalWrapper: {
+        justifyContent: "flex-end",
+    },
+    modal: {
+        padding: 12,
+        borderRadius: 6,
+        backgroundColor: "#FFF",
+    },
+    modalTitle: {
+        fontSize: 24,
+        borderBottomWidth: 2,
+        borderColor: "#000",
+    },
+    button: {
+        width: "100%",
+        padding: 12,
+        backgroundColor: "#0F7CBB",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 32,
+    },
+    buttonText: {
+        fontSize: 16,
+        color: "#fff"
+    },
+    modalSeperator: {
+        width: "100%",
+        height: 2,
+        backgroundColor: "#0F7CBB",
+        marginBottom: 8,
+        marginTop: 8,
+    },
+    modalTitle: {
+        fontSize: 20,
+        color: "#0F7CBB",
     }
 });
