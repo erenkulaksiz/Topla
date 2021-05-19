@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faHome, faCrown, faCog } from '@fortawesome/free-solid-svg-icons'
 
+import I18n from "../utils/i18n.js";
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './screens/home'
@@ -18,7 +20,7 @@ class Home extends React.Component {
             <Tab.Navigator>
                 <Tab.Screen name="Home" component={HomeScreen}
                     options={{
-                        tabBarLabel: 'Ana Sayfa',
+                        tabBarLabel: I18n.t("home"),
                         tabBarIcon: ({ color, size }) => (
                             <FontAwesomeIcon icon={faHome} size={size} color={color} />
                         ),
@@ -32,7 +34,7 @@ class Home extends React.Component {
                     }} />*/}
                 <Tab.Screen name="Options" component={OptionsScreen}
                     options={{
-                        tabBarLabel: 'Ayarlar',
+                        tabBarLabel: I18n.t("settings"),
                         tabBarIcon: ({ color, size }) => (
                             <FontAwesomeIcon icon={faCog} size={size} color={color} />
                         ),

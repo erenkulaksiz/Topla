@@ -17,8 +17,15 @@ class QuestionScreen extends React.Component {
 
     _pause = () => {
         this._modal(true);
+    }
 
-        //this.props.navigation.goBack();
+    _continue = () => {
+        this._modal(false);
+    }
+
+    _goBack = () => {
+        this._modal(false);
+        this.props.navigation.goBack();
     }
 
     componentDidMount() {
@@ -62,10 +69,11 @@ class QuestionScreen extends React.Component {
                         <Text style={style.modalTitle}>Durduruldu</Text>
                         <View style={style.modalSeperator}></View>
 
-                        <TouchableOpacity style={style.button} onPress={() => { this._modal(false) }}>
+                        <TouchableOpacity style={style.button} onPress={() => this._continue()}>
                             <Text style={style.buttonText}>Devam Et</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => { this._modal(false) }}>
+
+                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => this._goBack()}>
                             <Text style={style.buttonText}>Çıkış</Text>
                         </TouchableOpacity>
                     </View>

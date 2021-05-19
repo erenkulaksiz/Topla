@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import SplashScreen from 'react-native-splash-screen'
 import { getUniqueId, getDeviceId, getBundleId, getBuildNumber, getModel, getLastUpdateTime } from 'react-native-device-info';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from "@react-native-community/netinfo"; // #TODO: -> switch to react-native-offline 
 
 // Components 
 import Main from './src/modules/Main';
@@ -79,6 +79,9 @@ class App extends React.Component {
             <Stack.Screen
               name="QuestionScreen"
               component={QuestionScreen}
+              options={{
+                gestureEnabled: false, // Soru sayfasında geri dönmek yok
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
