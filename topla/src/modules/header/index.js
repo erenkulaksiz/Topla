@@ -7,8 +7,6 @@ import { faArrowLeft, faPause } from '@fortawesome/free-solid-svg-icons'
 import PropTypes from 'prop-types';
 
 class Header extends React.Component {
-
-
     render() {
 
         const {
@@ -33,6 +31,7 @@ class Header extends React.Component {
                             style={style.logo}
                             source={require('../../logo_full.png')}
                             resizeMode={'contain'}
+                            fadeDuration={0}
                         />
                     </View>
                 </View>

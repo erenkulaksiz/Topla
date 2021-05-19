@@ -29,10 +29,23 @@ class QuestionSettings extends React.Component {
                 <View style={style.headerBar}></View>
                 <ScrollView style={style.content}>
                     <View style={style.questionSettingsWrapper}>
-                        <Image
-                            style={style.elementLogo}
-                            source={require('../../../tc.png')}
-                        />
+                        <View style={style.elementLogoWrapper}>
+                            <Image
+                                style={style.elementLogo}
+                                source={require('../../../tc.png')}
+                                resizeMode={'contain'}
+                            />
+                        </View>
+                        <View style={style.settingsWrapper}>
+                            <View style={style.setting}>
+                                <Text style={style.settingTitle}>Seçenek Sayısı: </Text>
+                                <View style={style.setting_incrementWrapper}>
+                                    <View style={style.setting_increment}>
+
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
                     </View>
                 </ScrollView>
                 <View style={style.bottomButtonWrapper}>

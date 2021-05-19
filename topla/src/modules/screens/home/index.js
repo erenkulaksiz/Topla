@@ -8,6 +8,8 @@ import Header from "../../header";
 
 import questionTypes from "./questionTypes";
 
+import I18n from "../../../utils/i18n.js";
+
 class HomeScreen extends React.Component {
 
     // TODO: Premium ekranında önce internet kontrolü yap
@@ -30,7 +32,7 @@ class HomeScreen extends React.Component {
             <View style={style.container}>
                 <Header />
                 <View style={style.headerContainer}>
-                    <Text style={style.headerText}>Ana Sayfa</Text>
+                    <Text style={style.headerText}>{I18n.t("home")}</Text>
                     <View style={style.headerBar}></View>
                 </View>
                 <ScrollView style={style.questionsScroll}>

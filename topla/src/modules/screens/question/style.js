@@ -7,9 +7,21 @@ export default StyleSheet.create({
     },
     headerContainer: {
         width: "100%",
-        marginTop: 12,
+        marginTop: 24,
         paddingLeft: 16,
         paddingRight: 16,
+        flexDirection: "row",
+    },
+    headerLeft: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    headerRight: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        alignItems: "center",
     },
     headerText: {
         fontSize: 32,
@@ -17,14 +29,44 @@ export default StyleSheet.create({
         marginBottom: 8,
         fontWeight: "bold",
     },
-    headerBar: {
-        width: "100%",
-        height: 2,
-        backgroundColor: "#0F7CBB",
-    },
     content: {
         padding: 16,
     },
+    timerText: {
+        marginLeft: 4,
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    timerFinishText: {
+        marginLeft: 8,
+    },
+    questionCountTitle: {
+        fontSize: 24,
+    },
+    questionCount: {
+        fontSize: 24,
+        marginLeft: 4,
+    },
+
+    // Bars
+
+    barsWrapper: {
+        width: "100%",
+        marginTop: 8,
+        flexDirection: "row",
+        paddingLeft: 16,
+        paddingRight: 16,
+    },
+
+    bars: {
+        flex: 1,
+        height: 4,
+        backgroundColor: "#DBDBDB",
+        margin: 2,
+        borderRadius: 16,
+    },
+
+    // Modal
     modalWrapper: {
         justifyContent: "flex-end",
     },

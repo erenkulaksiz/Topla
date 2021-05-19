@@ -1,14 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Alert, Button, TouchableOpacity } from 'react-native';
+import { Text, View, Alert, TouchableOpacity } from 'react-native';
 import style from './style';
 import Header from "../../header";
 import Modal from 'react-native-modal';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faClock } from '@fortawesome/free-solid-svg-icons'
 
 class QuestionScreen extends React.Component {
 
     constructor(props) {
         super(props)
+        this.barsCount = 5;
+        this.bars = [];
     }
 
     _modal = (control) => {
@@ -48,22 +52,44 @@ class QuestionScreen extends React.Component {
 
     render() {
 
+        for (let a = 1; a < this.barsCount; a++) {
+            this.bars.push(<View style={style.bars} key={"bar_" + a}></View>);
+        }
+
         return (
             <View style={style.container}>
                 <Header pauseShown onPause={() => this._pause()} />
                 <View style={style.headerContainer}>
-                    <Text style={style.headerText}>Soru</Text>
-                    <View style={style.headerBar}></View>
+                    <View style={style.headerLeft}>
+                        <FontAwesomeIcon icon={faClock} size={16} color={"#000"} />
+                        <Text style={style.timerText}>8sn</Text>
+                        <Text style={style.timerFinishText}>/ 10sn</Text>
+                    </View>
+                    <View style={style.headerRight}>
+                        <Text style={style.questionCountTitle}>Soru:</Text>
+                        <Text style={style.questionCount}>1</Text>
+                        <Text> /5</Text>
+                    </View>
                 </View>
+
+                <View style={style.barsWrapper}>
+                    {/* Bars */}
+                    {this.bars}
+                </View>
+
                 <View style={style.content}>
                     <Text>dfgdf</Text>
                 </View>
+
+
+                {/* ################################################ */}
                 <Modal
                     isVisible={this.props.reducer.pauseModalShown}
-                    onSwipeComplete={() => { this._modal(false) }}
+                    onSwipeComplete={() => this._continue()}
                     swipeDirection={['down']}
                     style={style.modalWrapper}
-                    onBackdropPress={() => { this._modal(false) }}>
+                    onBackdropPress={() => this._continue()}>
+
                     <View style={style.modal}>
 
                         <Text style={style.modalTitle}>Durduruldu</Text>

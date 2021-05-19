@@ -33,7 +33,7 @@ export default StyleSheet.create({
         borderRadius: 64,
         elevation: 5,
         position: "absolute",
-        bottom: 0,
+        bottom: -8,
         right: 18,
     },
     elementLogo: {

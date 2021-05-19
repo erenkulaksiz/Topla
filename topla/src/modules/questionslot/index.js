@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
+import I18n from "../../utils/i18n.js";
 
 class QuestionSlot extends React.Component {
 
@@ -23,10 +24,10 @@ class QuestionSlot extends React.Component {
                         style={style.elementLogo}
                         source={require('../../tc.png')}
                     />
-                    <Text style={style.elementHardness}>Zorluk Seviyesi: {question.name}</Text>
+                    <Text style={style.elementHardness}>{I18n.t("question_hardnessLevel")} <Text style={{ color: question.titleColor, fontWeight: "bold" }}>{question.name}</Text></Text>
                     <View style={style.elementBar} />
-                    <Text style={style.elementContent}>İçerik: {question.content}</Text>
-                    <Text style={style.elementBasamak}>Basamak Sayısı: {question.digit}</Text>
+                    <Text style={style.elementContent}>{I18n.t("question_content")} {question.content}</Text>
+                    <Text style={style.elementBasamak}>{I18n.t("question_digit")} {question.digit}</Text>
                 </View>
                 <TouchableOpacity style={style.play} onPress={() => { onPlay() }}>
                     <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />

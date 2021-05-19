@@ -59,11 +59,37 @@ export default StyleSheet.create({
         width: "100%",
         padding: 24,
         borderRadius: 8,
-        backgroundColor: "#e3e3e3"
+        backgroundColor: "#dedede"
+    },
+    elementLogoWrapper: {
+        height: 13,
+        width: 30,
     },
     elementLogo: {
-        width: 50,
-        height: 16,
+        width: "100%",
+        height: "100%",
         opacity: 0.33,
     },
+    settingsWrapper: {
+        flex: 1,
+        marginTop: 8,
+    },
+    setting: {
+        width: "100%",
+        height: 35,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    settingTitle: {
+        fontSize: 18,
+    },
+    setting_incrementWrapper: {
+        flex: 1,
+        backgroundColor: "gray",
+    },
+    setting_increment: {
+        height: "100%",
+        width: "70%",
+        backgroundColor: "red",
+    }
 });

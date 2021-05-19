@@ -13,12 +13,28 @@ class OptionsScreen extends React.Component {
         super(props)
     }
 
+    _checkConnection = () => {
+        return this.props.reducer.connection.isConnected
+    }
+
     _navigateToPremium = () => {
-        this.props.navigation.navigate('PremiumScreen');
+        if (this._checkConnection()) {
+            this.props.navigation.navigate('PremiumScreen');
+        } else {
+            alert("İnternet bağlantınızı kontrol ediniz");
+        }
     }
 
     _navigateToContact = () => {
         this.props.navigation.navigate('ContactScreen');
+    }
+
+    _refreshPremium = () => {
+        if (this._checkConnection()) {
+            this.props.navigation.navigate('PremiumScreen');
+        } else {
+            alert("İnternet bağlantınızı kontrol ediniz");
+        }
     }
 
     render() {
@@ -31,7 +47,7 @@ class OptionsScreen extends React.Component {
                 </View>
                 <View style={style.content}>
                     <View style={style.buttonsWrapper}>
-                        <TouchableOpacity style={style.button}>
+                        <TouchableOpacity style={style.button} onPress={() => this._refreshPremium()}>
                             <View style={style.buttonIcon}>
                                 <FontAwesomeIcon icon={faSync} size={16} color={"#000"} />
                             </View>
