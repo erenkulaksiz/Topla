@@ -1,3 +1,5 @@
+// TODO: Buraya dilleri ekle
+
 const questionTypes = [
     {
         id: 1,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, Alert, TouchableOpacity, Button } from 'react-native';
 import style from './style';
 import Header from "../../header";
 import Modal from 'react-native-modal';
@@ -11,8 +11,6 @@ class QuestionScreen extends React.Component {
 
     constructor(props) {
         super(props)
-        this.barsCount = 5;
-        this.bars = [];
     }
 
     _modal = (control) => {
@@ -32,29 +30,74 @@ class QuestionScreen extends React.Component {
         this.props.navigation.goBack();
     }
 
+    _renderBars = () => {
+        const myBars = [];
+        for (let a = 1; a <= this.props.reducer.questionSettings.questionCount; a++) {
+            if (a == this.props.reducer.activeQuestionSolving) {
+                myBars.push(<View style={{ ...style.bars, backgroundColor: "black" }} key={a}></View>);
+            } else {
+                myBars.push(<View style={style.bars} key={a}></View>);
+            }
+        }
+        return myBars
+    }
+
+    _finishQuestionSolving = () => {
+        console.log("@finish question solving");
+        this.props.navigation.navigate('ResultScreen')
+
+    }
+
+    _preventGoingBack = e => {
+        e.preventDefault();
+        Alert.alert(
+            'Çözümler iptal olacak',
+            'Çıkış yapmak istediğinize emin misiniz?',
+            [
+                { text: "Iptal", style: 'cancel', onPress: () => { } },
+                {
+                    text: 'Geri',
+                    style: 'destructive',
+                    onPress: () => this.props.navigation.dispatch(e.data.action),
+                },
+            ]
+        )
+    }
+
+    _gotoNextQuestion = () => {
+        // TODO: first check if question is true here.
+
+        if (this.props.reducer.activeQuestionSolving < this.props.reducer.questionSettings.questionCount) {
+            this.props.dispatch({ type: "GOTO_NEXT_QUESTION" });
+        } else {
+            this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+            this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+
+            // buradan sonuçlar ekranına git
+
+            this.props.navigation.removeListener('beforeRemove')
+
+            this.props.navigation.popToTop();
+
+            this._finishQuestionSolving();
+        }
+
+    }
+
     componentDidMount() {
-        this.props.navigation.addListener('beforeRemove', (e) => {
-            e.preventDefault();
-            Alert.alert(
-                'Çözümler iptal olacak',
-                'Çıkış yapmak istediğinize emin misiniz?',
-                [
-                    { text: "Iptal", style: 'cancel', onPress: () => { } },
-                    {
-                        text: 'Geri',
-                        style: 'destructive',
-                        onPress: () => this.props.navigation.dispatch(e.data.action),
-                    },
-                ]
-            )
-        })
+        this.props.navigation.addListener('beforeRemove', (e) => this._preventGoingBack(e))
+
+        if (this.props.reducer.activeQuestionSolving == 0) {
+            this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 1 });
+        }
+
+        if (!this.props.reducer.currentlySolvingQuestion) {
+            // Soru çözümünü başlat
+            this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
+        }
     }
 
     render() {
-
-        for (let a = 1; a < this.barsCount; a++) {
-            this.bars.push(<View style={style.bars} key={"bar_" + a}></View>);
-        }
 
         return (
             <View style={style.container}>
@@ -67,18 +110,18 @@ class QuestionScreen extends React.Component {
                     </View>
                     <View style={style.headerRight}>
                         <Text style={style.questionCountTitle}>Soru:</Text>
-                        <Text style={style.questionCount}>1</Text>
+                        <Text style={style.questionCount}>{this.props.reducer.activeQuestionSolving}</Text>
                         <Text> /5</Text>
                     </View>
                 </View>
 
                 <View style={style.barsWrapper}>
                     {/* Bars */}
-                    {this.bars}
+                    {this._renderBars()}
                 </View>
 
                 <View style={style.content}>
-                    <Text>dfgdf</Text>
+                    <Button onPress={() => this._gotoNextQuestion()} title="next"></Button>
                 </View>
 
 

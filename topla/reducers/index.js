@@ -7,6 +7,11 @@ const INITIAL_STATE = {
     connection: {},
     questionStarted: false,
     pauseModalShown: false,
+    activeQuestionSolving: 0, // -> Şuanda çözülen soru
+    currentlySolvingQuestion: false, // -> şuanda soru çözülüyor mu 
+    questionSettings: {
+        questionCount: 5,
+    },
 };
 
 const mainReducer = (state = INITIAL_STATE, action) => {
@@ -33,6 +38,21 @@ const mainReducer = (state = INITIAL_STATE, action) => {
             let modalShown = { ...state };
             modalShown.pauseModalShown = action.payload;
             return modalShown;
+        case 'SET_ACTIVE_QUESTION_SOLVING':
+            let activeQuestionSolving = { ...state };
+            activeQuestionSolving.activeQuestionSolving = action.payload;
+            console.log("set active question to " + action.payload);
+            return activeQuestionSolving;
+        case 'GOTO_NEXT_QUESTION':
+            let nextQuestion = { ...state };
+            nextQuestion.activeQuestionSolving += 1;
+            console.log("went to next question: " + nextQuestion.activeQuestionSolving);
+            return nextQuestion;
+        case 'SET_QUESTION_SOLVING':
+            let questionSolving = { ...state };
+            questionSolving.currentlySolvingQuestion = action.payload;
+            console.log("question solving set: " + action.payload);
+            return questionSolving;
         default:
             return state
     }

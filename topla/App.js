@@ -14,6 +14,7 @@ import QuestionSettings from './src/modules/screens/questionsettings';
 import PremiumScreen from './src/modules/screens/premium';
 import ContactScreen from './src/modules/screens/contact';
 import QuestionScreen from './src/modules/screens/question';
+import ResultScreen from './src/modules/screens/result';
 
 import reducer from './reducers';
 
@@ -80,7 +81,14 @@ class App extends React.Component {
               name="QuestionScreen"
               component={QuestionScreen}
               options={{
-                gestureEnabled: false, // Soru sayfasında geri dönmek yok
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="ResultScreen"
+              component={ResultScreen}
+              options={{
+                gestureEnabled: false,
               }}
             />
           </Stack.Navigator>

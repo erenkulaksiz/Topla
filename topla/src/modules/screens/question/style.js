@@ -62,7 +62,7 @@ export default StyleSheet.create({
         flex: 1,
         height: 4,
         backgroundColor: "#DBDBDB",
-        margin: 2,
+        margin: 1,
         borderRadius: 16,
     },
 

@@ -12,8 +12,6 @@ import I18n from "../../../utils/i18n.js";
 
 class HomeScreen extends React.Component {
 
-    // TODO: Premium ekranında önce internet kontrolü yap
-
     _questionPlay(question) {
         this.props.navigation.navigate('QuestionSettings', { question: question })
     }
