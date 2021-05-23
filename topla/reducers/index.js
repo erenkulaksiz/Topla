@@ -17,6 +17,8 @@ const INITIAL_STATE = {
     currentQuestion: {
         currentStep: 0, // -> şuanda çözülen soru
         isStarted: false, // -> soru çözümü başladı mı
+        questions: [], // -> şimdi mesela 5 tane soru varsa 5 tane soruyu buraya pushlayacak (doğru seçeneklerle beraber)
+        // sonra o sorunun doğru yanlış olup olmadığını da aynı şekilde pushlayacak
     }
 };
 

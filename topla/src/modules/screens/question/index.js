@@ -30,9 +30,14 @@ class QuestionScreen extends React.Component {
         this.props.navigation.goBack();
     }
 
+    _loadQuestions = questionCount => {
+        // TODO: Question settings'deki ayarlara göre currentQuestion.questions'a rasgele seçenekler ile pushlayacak
+
+    }
+
     _renderBars = () => {
         const myBars = [];
-        for (let a = 1; a <= this.props.questionSettings.questionCount; a++) {
+        for (let a = 0; a < this.props.questionSettings.questionCount; a++) {
             if (a == this.props.currentQuestion.currentStep) {
                 myBars.push(<View style={{ ...style.bars, backgroundColor: "black" }} key={a}></View>);
             } else {
@@ -67,10 +72,7 @@ class QuestionScreen extends React.Component {
     _gotoNextQuestion = () => {
         // TODO: first check if question is true here.
 
-        //const currentStep = this.props.reducer.currentQuestion.currentStep;
-
-
-        if (this.props.currentQuestion.currentStep < this.props.questionSettings.questionCount) {
+        if ((this.props.currentQuestion.currentStep + 1) < this.props.questionSettings.questionCount) {
             this.props.dispatch({ type: "GOTO_NEXT_QUESTION" });
         } else {
             this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
@@ -79,29 +81,19 @@ class QuestionScreen extends React.Component {
             // buradan sonuçlar ekranına git
 
             this.props.navigation.removeListener('beforeRemove')
-
             this.props.navigation.popToTop();
-
             this._finishQuestionSolving();
         }
 
     }
 
     componentDidMount() {
-
         this.props.navigation.addListener('beforeRemove', (e) => this._preventGoingBack(e))
-
-
-        if (this.props.currentQuestion.currentStep == 0) {
-            this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 1 });
-        }
 
         if (!this.props.currentQuestion.isStarted) {
             // Soru çözümünü başlat
             this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
-
-        console.log("ADASDDSASDASD", this.props.currentQuestion)
     }
 
     render() {
@@ -117,7 +109,7 @@ class QuestionScreen extends React.Component {
                     </View>
                     <View style={style.headerRight}>
                         <Text style={style.questionCountTitle}>Soru:</Text>
-                        <Text style={style.questionCount}>{this.props.currentQuestion.currentStep}</Text>
+                        <Text style={style.questionCount}>{(this.props.currentQuestion.currentStep + 1)}</Text>
                         <Text> /5</Text>
                     </View>
                 </View>
@@ -132,7 +124,7 @@ class QuestionScreen extends React.Component {
                 </View>
 
 
-                {/* ################################################ */}
+                {/* #################### MODAL #################### */}
                 <Modal
                     isVisible={this.props.reducer.pauseModalShown}
                     onSwipeComplete={() => this._continue()}
