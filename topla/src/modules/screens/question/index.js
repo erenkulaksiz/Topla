@@ -7,6 +7,9 @@ import Modal from 'react-native-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
+// Components
+import QuestionSolve from '../../questionsolve';
+
 class QuestionScreen extends React.Component {
 
     constructor(props) {
@@ -30,21 +33,69 @@ class QuestionScreen extends React.Component {
         this.props.navigation.goBack();
     }
 
-    _loadQuestions = questionCount => {
+    _generateRandomInt = (min, max) => {
+        const random = Math.floor(Math.random() * (max - min + 1)) + min;
+        return random
+    }
+
+    _loadQuestions = () => {
         // TODO: Question settings'deki ayarlara göre currentQuestion.questions'a rasgele seçenekler ile pushlayacak
 
+        console.log("@Load Questions")
+
+        this.props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
+
+        const questions = [];
+
+        for (let a = 1; a <= this.props.questionSettings.questionCount; a++) {
+            let toplama1 = this._generateRandomInt(1, 10);
+            let toplama2 = this._generateRandomInt(1, 10);
+            let toplama3 = toplama1 + toplama2;
+
+            questions.push({
+                question: `${toplama1} + ${toplama2} = ?`,
+                questionArguments: [toplama1, toplama2],
+                questionAnswer: toplama3, // TODO: seçenek sayısına göre
+                questionAnswerSlot: this._generateRandomInt(1, this.props.questionSettings.optionCount), // hangi slota koyulacak
+                questionOptions: [],
+            });
+
+        }
+
+        questions.map((question, index) => {
+            for (let a = 1; a <= this.props.questionSettings.optionCount; a++) {
+
+                const sum = question.questionArguments.reduce(function (a, b) {
+                    return a + b;
+                }, 0);
+
+                if (a == question.questionAnswerSlot) {
+                    question.questionOptions.push(sum)
+                } else {
+                    let generateRandomSecenek = this._generateRandomInt(1, 10);
+
+                    if (generateRandomSecenek != sum) { // eğer doğru olan seçenekse doğru cevap koymadığından emin ol
+                        question.questionOptions.push(generateRandomSecenek); // doğru seçenek değilse rasgele sayı koy
+                    } // TODO: valla beynim bu kadar yetti. şu anlık çalışıyor ama seçenekler aynı gelebiliyor
+                }
+            }
+        });
+
+        this.props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
+        this.props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
+        console.log("questions ", questions);
     }
 
     _renderBars = () => {
-        const myBars = [];
+        const bars = [];
         for (let a = 0; a < this.props.questionSettings.questionCount; a++) {
             if (a == this.props.currentQuestion.currentStep) {
-                myBars.push(<View style={{ ...style.bars, backgroundColor: "black" }} key={a}></View>);
+                bars.push(<View style={{ ...style.bars, backgroundColor: "black" }} key={a}></View>);
             } else {
-                myBars.push(<View style={style.bars} key={a}></View>);
+                bars.push(<View style={style.bars} key={a}></View>);
             }
         }
-        return myBars
+        return bars
     }
 
     _finishQuestionSolving = () => {
@@ -69,8 +120,12 @@ class QuestionScreen extends React.Component {
         )
     }
 
-    _gotoNextQuestion = () => {
+    _gotoNextQuestion = answer => {
         // TODO: first check if question is true here.
+
+        console.log("answer: " + answer);
+
+        /////////// burada kontrol edilecek!!
 
         if ((this.props.currentQuestion.currentStep + 1) < this.props.questionSettings.questionCount) {
             this.props.dispatch({ type: "GOTO_NEXT_QUESTION" });
@@ -94,6 +149,8 @@ class QuestionScreen extends React.Component {
             // Soru çözümünü başlat
             this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
+
+        this._loadQuestions();
     }
 
     render() {
@@ -120,9 +177,13 @@ class QuestionScreen extends React.Component {
                 </View>
 
                 <View style={style.content}>
-                    <Button onPress={() => this._gotoNextQuestion()} title="next"></Button>
+                    {this.props.reducer.currentQuestion.isQuestionsLoaded &&
+                        <QuestionSolve
+                            currentQuestion={this.props.currentQuestion}
+                            onAnswerPress={answer => { this._gotoNextQuestion(answer) }}
+                        />
+                    }
                 </View>
-
 
                 {/* #################### MODAL #################### */}
                 <Modal
