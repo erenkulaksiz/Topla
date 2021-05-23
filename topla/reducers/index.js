@@ -2,28 +2,26 @@
 import { combineReducers } from 'redux';
 
 const INITIAL_STATE = {
-    value: 0,
     deviceInfo: {},
     connection: {},
-    questionStarted: false,
     pauseModalShown: false,
-    activeQuestionSolving: 0, // -> Şuanda çözülen soru
-    currentlySolvingQuestion: false, // -> şuanda soru çözülüyor mu 
+
+    /*
+    activeQuestionSolving: 0, // -> Şuanda çözülen soru -> activeQuestionSolving - currentQuestion.currentStep
+    currentlySolvingQuestion: false, // -> şuanda soru çözülüyor mu  -> currentlySolvingQuestion - currentQuestion.isStarted
+    */
+
     questionSettings: {
-        questionCount: 5,
+        questionCount: 5, // -> Şuanda çözülen sorunun max soru sayısı.
     },
+    currentQuestion: {
+        currentStep: 0, // -> şuanda çözülen soru
+        isStarted: false, // -> soru çözümü başladı mı
+    }
 };
 
 const mainReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case 'ARTTIR':
-            let newStateArttir = { ...state };
-            newStateArttir.value += 1;
-            return newStateArttir;
-        case 'AZALT':
-            let newStateAzalt = { ...state };
-            newStateAzalt.value -= 1;
-            return newStateAzalt;
         case 'SET_DEVICE_INFO':
             let deviceInfo = { ...state };
             deviceInfo.deviceInfo = action.payload;
@@ -40,17 +38,17 @@ const mainReducer = (state = INITIAL_STATE, action) => {
             return modalShown;
         case 'SET_ACTIVE_QUESTION_SOLVING':
             let activeQuestionSolving = { ...state };
-            activeQuestionSolving.activeQuestionSolving = action.payload;
+            activeQuestionSolving.currentQuestion.currentStep = action.payload;
             console.log("set active question to " + action.payload);
             return activeQuestionSolving;
         case 'GOTO_NEXT_QUESTION':
             let nextQuestion = { ...state };
-            nextQuestion.activeQuestionSolving += 1;
-            console.log("went to next question: " + nextQuestion.activeQuestionSolving);
+            nextQuestion.currentQuestion.currentStep += 1;
+            console.log("went to next question: " + nextQuestion.currentQuestion.currentStep);
             return nextQuestion;
         case 'SET_QUESTION_SOLVING':
             let questionSolving = { ...state };
-            questionSolving.currentlySolvingQuestion = action.payload;
+            questionSolving.currentQuestion.isStarted = action.payload;
             console.log("question solving set: " + action.payload);
             return questionSolving;
         default:

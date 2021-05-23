@@ -32,8 +32,8 @@ class QuestionScreen extends React.Component {
 
     _renderBars = () => {
         const myBars = [];
-        for (let a = 1; a <= this.props.reducer.questionSettings.questionCount; a++) {
-            if (a == this.props.reducer.activeQuestionSolving) {
+        for (let a = 1; a <= this.props.questionSettings.questionCount; a++) {
+            if (a == this.props.currentQuestion.currentStep) {
                 myBars.push(<View style={{ ...style.bars, backgroundColor: "black" }} key={a}></View>);
             } else {
                 myBars.push(<View style={style.bars} key={a}></View>);
@@ -67,7 +67,10 @@ class QuestionScreen extends React.Component {
     _gotoNextQuestion = () => {
         // TODO: first check if question is true here.
 
-        if (this.props.reducer.activeQuestionSolving < this.props.reducer.questionSettings.questionCount) {
+        //const currentStep = this.props.reducer.currentQuestion.currentStep;
+
+
+        if (this.props.currentQuestion.currentStep < this.props.questionSettings.questionCount) {
             this.props.dispatch({ type: "GOTO_NEXT_QUESTION" });
         } else {
             this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
@@ -85,16 +88,20 @@ class QuestionScreen extends React.Component {
     }
 
     componentDidMount() {
+
         this.props.navigation.addListener('beforeRemove', (e) => this._preventGoingBack(e))
 
-        if (this.props.reducer.activeQuestionSolving == 0) {
+
+        if (this.props.currentQuestion.currentStep == 0) {
             this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 1 });
         }
 
-        if (!this.props.reducer.currentlySolvingQuestion) {
+        if (!this.props.currentQuestion.isStarted) {
             // Soru çözümünü başlat
             this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
+
+        console.log("ADASDDSASDASD", this.props.currentQuestion)
     }
 
     render() {
@@ -110,7 +117,7 @@ class QuestionScreen extends React.Component {
                     </View>
                     <View style={style.headerRight}>
                         <Text style={style.questionCountTitle}>Soru:</Text>
-                        <Text style={style.questionCount}>{this.props.reducer.activeQuestionSolving}</Text>
+                        <Text style={style.questionCount}>{this.props.currentQuestion.currentStep}</Text>
                         <Text> /5</Text>
                     </View>
                 </View>
@@ -152,9 +159,12 @@ class QuestionScreen extends React.Component {
     }
 }
 
+
 const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
+    const { reducer } = state;
+    const { questionSettings } = reducer;
+    const { currentQuestion } = reducer;
+    return { reducer, currentQuestion, questionSettings }
 };
 
 export default connect(mapStateToProps)(QuestionScreen);
