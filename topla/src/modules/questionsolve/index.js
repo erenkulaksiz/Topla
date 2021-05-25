@@ -30,8 +30,8 @@ class QuestionSolve extends React.Component {
                     </Text>
                     <View style={style.buttonsWrapper}>
                         {currentQuestion.questions[currentQuestion.currentStep].questionOptions.map((element, index) => {
-                            return <View style={{ padding: 4 }}>
-                                <Button title={"" + element} onPress={() => onAnswerPress(element)} key={index} />
+                            return <View style={{ padding: 4 }} key={element}>
+                                <Button title={"" + element} onPress={() => onAnswerPress(index)} />
                             </View>
                         })}
                     </View>

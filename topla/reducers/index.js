@@ -13,13 +13,14 @@ const INITIAL_STATE = {
 
     questionSettings: {
         questionCount: 5, // -> Şuanda çözülen sorunun max soru sayısı.
-        optionCount: 3, // -> Seçenek sayısı
+        optionCount: 4, // -> Seçenek sayısı
     },
     currentQuestion: {
         currentStep: 0, // -> şuanda çözülen soru
         isStarted: false, // -> soru çözümü başladı mı
         isQuestionsLoaded: false, // -> tüm sorular yüklendi mi
         questions: [], // -> şimdi mesela 5 tane soru varsa 5 tane soruyu buraya pushlayacak (doğru seçeneklerle beraber)
+        questionResults: [], // örn: 1. soru doğru, 2. soru yanlış, ne zaman doğru ne zaman yanlış vs.
         // sonra o sorunun doğru yanlış olup olmadığını da aynı şekilde pushlayacak
     }
 };

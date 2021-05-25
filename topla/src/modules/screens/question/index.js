@@ -48,37 +48,33 @@ class QuestionScreen extends React.Component {
         const questions = [];
 
         for (let a = 1; a <= this.props.questionSettings.questionCount; a++) {
-            let toplama1 = this._generateRandomInt(1, 10);
-            let toplama2 = this._generateRandomInt(1, 10);
-            let toplama3 = toplama1 + toplama2;
+            let number1 = this._generateRandomInt(1, 10);
+            let number2 = this._generateRandomInt(1, 10);
+            let numberTemp = number1 + number2;
 
             questions.push({
-                question: `${toplama1} + ${toplama2} = ?`,
-                questionArguments: [toplama1, toplama2],
-                questionAnswer: toplama3, // TODO: seçenek sayısına göre
-                questionAnswerSlot: this._generateRandomInt(1, this.props.questionSettings.optionCount), // hangi slota koyulacak
+                question: `${number1} + ${number2} = ?`,
+                questionArguments: [number1, number2],
+                questionAnswer: numberTemp, // TODO: seçenek sayısına göre
                 questionOptions: [],
             });
-
         }
 
         questions.map((question, index) => {
             for (let a = 1; a <= this.props.questionSettings.optionCount; a++) {
-
-                const sum = question.questionArguments.reduce(function (a, b) {
-                    return a + b;
-                }, 0);
-
-                if (a == question.questionAnswerSlot) {
-                    question.questionOptions.push(sum)
+                if (a == 1) {
+                    question.questionOptions.push(question.questionAnswer);
                 } else {
-                    let generateRandomSecenek = this._generateRandomInt(1, 10);
-
-                    if (generateRandomSecenek != sum) { // eğer doğru olan seçenekse doğru cevap koymadığından emin ol
-                        question.questionOptions.push(generateRandomSecenek); // doğru seçenek değilse rasgele sayı koy
-                    } // TODO: valla beynim bu kadar yetti. şu anlık çalışıyor ama seçenekler aynı gelebiliyor
+                    let randomNumber = this._generateRandomInt(1, 10);
+                    if (question.questionOptions.indexOf(randomNumber) < 0) {
+                        question.questionOptions.push(randomNumber);
+                    } else {
+                        a--;
+                    }
                 }
             }
+            // Cevaplar üretilince arrayı shuffle'la
+            question.questionOptions.sort(() => Math.random() - 0.5);
         });
 
         this.props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
@@ -125,6 +121,14 @@ class QuestionScreen extends React.Component {
 
         console.log("answer: " + answer);
 
+        if (this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionOptions[answer] == this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionAnswer) {
+            alert("doğru");
+        } else {
+            alert("yanlış");
+        }
+
+        // alert(this.props.currentQuestion.questions[this.props.currentQuestion.currentStep]);
+
         /////////// burada kontrol edilecek!!
 
         if ((this.props.currentQuestion.currentStep + 1) < this.props.questionSettings.questionCount) {
@@ -167,7 +171,7 @@ class QuestionScreen extends React.Component {
                     <View style={style.headerRight}>
                         <Text style={style.questionCountTitle}>Soru:</Text>
                         <Text style={style.questionCount}>{(this.props.currentQuestion.currentStep + 1)}</Text>
-                        <Text> /5</Text>
+                        <Text> /{this.props.questionSettings.questionCount}</Text>
                     </View>
                 </View>
 
