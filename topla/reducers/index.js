@@ -5,12 +5,6 @@ const INITIAL_STATE = {
     deviceInfo: {},
     connection: {},
     pauseModalShown: false,
-
-    /*
-    activeQuestionSolving: 0, // -> Şuanda çözülen soru -> activeQuestionSolving - currentQuestion.currentStep
-    currentlySolvingQuestion: false, // -> şuanda soru çözülüyor mu  -> currentlySolvingQuestion - currentQuestion.isStarted
-    */
-
     questionSettings: {
         questionCount: 5, // -> Şuanda çözülen sorunun max soru sayısı.
         optionCount: 4, // -> Seçenek sayısı
@@ -21,50 +15,91 @@ const INITIAL_STATE = {
         isQuestionsLoaded: false, // -> tüm sorular yüklendi mi
         questions: [], // -> şimdi mesela 5 tane soru varsa 5 tane soruyu buraya pushlayacak (doğru seçeneklerle beraber)
         questionResults: [], // örn: 1. soru doğru, 2. soru yanlış, ne zaman doğru ne zaman yanlış vs.
-        // sonra o sorunun doğru yanlış olup olmadığını da aynı şekilde pushlayacak
     }
 };
 
 const mainReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case 'SET_DEVICE_INFO':
-            let aState = { ...state };
-            aState.deviceInfo = action.payload;
             console.log("set device info ", action.payload);
-            return aState;
+            return {
+                ...state,
+                deviceInfo: action.payload
+            }
         case 'SET_DEVICE_CONNECTION':
-            let bState = { ...state };
-            bState.connection = action.payload;
             console.log("connection ", action.payload);
-            return bState;
+            return {
+                ...state,
+                connection: action.payload
+            }
         case 'SET_PAUSE_MODAL':
-            let cState = { ...state };
-            cState.pauseModalShown = action.payload;
-            return cState;
+            return {
+                ...state,
+                pauseModalShown: action.payload
+            }
         case 'SET_ACTIVE_QUESTION_SOLVING':
-            let dState = { ...state };
-            dState.currentQuestion.currentStep = action.payload;
             console.log("set active question to " + action.payload);
-            return dState;
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    currentStep: action.payload
+                }
+            }
         case 'GOTO_NEXT_QUESTION':
-            let eState = { ...state };
-            eState.currentQuestion.currentStep += 1;
-            console.log("went to next question: " + state.currentQuestion.currentStep);
-            return eState;
+            console.log("went to next question: " + (state.currentQuestion.currentStep + 1));
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    currentStep: state.currentQuestion.currentStep + 1
+                }
+            }
         case 'SET_QUESTION_SOLVING':
-            let fState = { ...state };
-            fState.currentQuestion.isStarted = action.payload;
             console.log("question solving set: " + action.payload);
-            return fState;
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    isStarted: action.payload
+                }
+            }
         case 'SET_ALL_QUESTIONS':
-            let gState = { ...state };
-            gState.currentQuestion.questions = action.payload;
-            return gState;
+            console.log("SET ALL QUESTIONS");
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    questions: action.payload
+                }
+            }
         case 'SET_QUESTIONS_LOADED':
-            let hState = { ...state };
-            hState.currentQuestion.isQuestionsLoaded = action.payload;
             console.log("questions loaded: " + action.payload)
-            return hState;
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    isQuestionsLoaded: action.payload
+                }
+            }
+        case 'PUSH_TO_QUESTION_RESULT':
+            console.log("question result: ", action.payload)
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    questionResults: [...state.currentQuestion.questionResults, action.payload]
+                }
+            }
+        case 'RESET_QUESTION_RESULTS':
+            console.log("question results reset")
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    questionResults: []
+                }
+            }
         default:
             return state
     }

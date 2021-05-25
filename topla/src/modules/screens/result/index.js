@@ -10,6 +10,8 @@ class ResultScreen extends React.Component {
     _navigateToHome = () => {
         this.props.navigation.navigate('Home');
         console.log("@results back to home");
+
+        this.props.dispatch({ type: "RESET_QUESTION_RESULTS" });
     }
 
     componentDidMount() {

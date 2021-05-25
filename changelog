@@ -1,5 +1,14 @@
 
+
+- 25/05/2021 - Commit 27
+
+> Reducer daha temiz hale getirildi
+> Soru çözülürken geri gelinirse ve onay verilirse soru çözümü sıfırlanıyor
+> Artık sorunun doğru yada yanlış yapıldığı reducer'a geliyor
+> Soruların sonuçları ana sayfaya dönünce resetleniyor
+
 - 25/05/2021 - Commit 26
 
-> Rasgele soru üretiminde bazı seçeneklerin aynı gelmesi düzeltildi.
-> Rasgele soru üretiminde seçeneklerde sorunun cevabıyla aynı seçeneklerin gelmesi düzeltildi.
+> Rasgele soru üretiminde bazı seçeneklerin aynı gelmesi düzeltildi
+> Rasgele soru üretiminde seçeneklerde sorunun cevabıyla aynı seçeneklerin gelmesi düzeltildi
+

@@ -18,8 +18,6 @@ class QuestionSolve extends React.Component {
         //console.log("asddssd ", this.props.reducer);
         /*this.props.reducer.currentQuestion.questions[this.props.currentQuestion.currentStep].question*/
 
-        console.log("currentQuestion.questions", currentQuestion.questions)
-        console.log("currentQuestion", currentQuestion.questions[currentQuestion.currentStep]);
         console.log("step: ", currentQuestion.currentStep)
 
         return (

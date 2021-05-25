@@ -110,26 +110,33 @@ class QuestionScreen extends React.Component {
                 {
                     text: 'Geri',
                     style: 'destructive',
-                    onPress: () => this.props.navigation.dispatch(e.data.action),
+                    onPress: () => {
+                        this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+                        this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+                        this.props.navigation.dispatch(e.data.action)
+                    },
                 },
             ]
         )
     }
 
-    _gotoNextQuestion = answer => {
-        // TODO: first check if question is true here.
-
-        console.log("answer: " + answer);
+    _gotoNextQuestion = async (answer) => {
 
         if (this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionOptions[answer] == this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionAnswer) {
-            alert("doğru");
+            await this.props.dispatch({
+                type: "PUSH_TO_QUESTION_RESULT", payload: {
+                    questionStep: this.props.currentQuestion.currentStep,
+                    questionAnswerCorrect: true,
+                }
+            });
         } else {
-            alert("yanlış");
+            await this.props.dispatch({
+                type: "PUSH_TO_QUESTION_RESULT", payload: {
+                    questionStep: this.props.currentQuestion.currentStep,
+                    questionAnswerCorrect: false,
+                }
+            });
         }
-
-        // alert(this.props.currentQuestion.questions[this.props.currentQuestion.currentStep]);
-
-        /////////// burada kontrol edilecek!!
 
         if ((this.props.currentQuestion.currentStep + 1) < this.props.questionSettings.questionCount) {
             this.props.dispatch({ type: "GOTO_NEXT_QUESTION" });
@@ -137,7 +144,7 @@ class QuestionScreen extends React.Component {
             this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
             this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
 
-            // buradan sonuçlar ekranına git
+            console.log("SORU ÇÖZÜMÜ BİTTİ: ", this.props.currentQuestion.questionResults);
 
             this.props.navigation.removeListener('beforeRemove')
             this.props.navigation.popToTop();
