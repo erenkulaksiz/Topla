@@ -1,4 +1,12 @@
 
+- 25/05/2021 - Commit 28
+
+> Soru çözüm buttonları daha güzel hale getirildi
+> Soru ayarlarında artık seçenek sayısı ayarlanabiliyor // TODO: Soru MAX ve MİN'e göre kontrol et
+> Soru ayarlarında artık soru sayısı ayarlanabiliyor 
+> Soru sonuçları sayfasında artık sonuçlar gösteriliyor
+> Soru sonuçlarında yanlış yapılan soruların doğru cevapları ve verilen cevaplar gösteriliyor
+> Soru çözerken yukarıdaki barlar artık önceki sorunun doğru yada yanlış yapılıp yapılmadığını gösteriyor
 
 - 25/05/2021 - Commit 27
 
@@ -12,3 +20,4 @@
 > Rasgele soru üretiminde bazı seçeneklerin aynı gelmesi düzeltildi
 > Rasgele soru üretiminde seçeneklerde sorunun cevabıyla aynı seçeneklerin gelmesi düzeltildi
 
+> Changelog eklendi

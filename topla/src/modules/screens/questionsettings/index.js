@@ -13,6 +13,22 @@ class QuestionSettings extends React.Component {
         this.props.navigation.navigate('QuestionScreen', { question: question })
     }
 
+    _incrementOptions = () => {
+        this.props.dispatch({ type: "INCREMENT_QUESTION_OPTIONS" });
+    }
+
+    _decrementOptions = () => {
+        this.props.dispatch({ type: "DECREMENT_QUESTION_OPTIONS" });
+    }
+
+    _incrementQuestionCount = () => {
+        this.props.dispatch({ type: "INCREMENT_QUESTION_COUNT" });
+    }
+
+    _decrementQuestionCount = () => {
+        this.props.dispatch({ type: "DECREMENT_QUESTION_COUNT" });
+    }
+
     render() {
 
         return (
@@ -38,10 +54,34 @@ class QuestionSettings extends React.Component {
                         </View>
                         <View style={style.settingsWrapper}>
                             <View style={style.setting}>
+                                <Text style={style.settingTitle}>Soru Sayısı: </Text>
+                                <View style={style.setting_incrementWrapper}>
+                                    <View style={style.setting_increment}>
+                                        <TouchableOpacity style={style.decrement} onPress={() => this._decrementQuestionCount()}>
+                                            <Text style={{ fontSize: 18 }}>-</Text>
+                                        </TouchableOpacity>
+                                        <View style={style.incrementCenter}>
+                                            <Text style={{ fontSize: 16 }}>{this.props.reducer.questionSettings.questionCount}</Text>
+                                        </View>
+                                        <TouchableOpacity style={style.increment} onPress={() => this._incrementQuestionCount()}>
+                                            <Text style={{ fontSize: 18 }}>+</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={style.setting}>
                                 <Text style={style.settingTitle}>Seçenek Sayısı: </Text>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
-
+                                        <TouchableOpacity style={style.decrement} onPress={() => this._decrementOptions()}>
+                                            <Text style={{ fontSize: 18 }}>-</Text>
+                                        </TouchableOpacity>
+                                        <View style={style.incrementCenter}>
+                                            <Text style={{ fontSize: 16 }}>{this.props.reducer.questionSettings.optionCount}</Text>
+                                        </View>
+                                        <TouchableOpacity style={style.increment} onPress={() => this._incrementOptions()}>
+                                            <Text style={{ fontSize: 18 }}>+</Text>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>

@@ -6,8 +6,6 @@ import PropTypes from 'prop-types';
 
 class QuestionSolve extends React.Component {
 
-    // Önce kaçıncı soruda olduğunu bul. Sonra o sorudaki seçenekler ile sonucu yükle
-
     render() {
 
         const {
@@ -15,8 +13,11 @@ class QuestionSolve extends React.Component {
             onAnswerPress,
         } = this.props
 
-        //console.log("asddssd ", this.props.reducer);
-        /*this.props.reducer.currentQuestion.questions[this.props.currentQuestion.currentStep].question*/
+        const _renderButton = (element, index) => {
+            return (<TouchableOpacity style={style.button} onPress={() => onAnswerPress(element, index)} key={index}>
+                <Text style={{ fontSize: 18 }}>{"" + element}</Text>
+            </TouchableOpacity>)
+        }
 
         console.log("step: ", currentQuestion.currentStep)
 
@@ -26,13 +27,12 @@ class QuestionSolve extends React.Component {
                     <Text style={style.questionTitle}>
                         {currentQuestion.questions[currentQuestion.currentStep].question}
                     </Text>
-                    <View style={style.buttonsWrapper}>
-                        {currentQuestion.questions[currentQuestion.currentStep].questionOptions.map((element, index) => {
-                            return <View style={{ padding: 4 }} key={element}>
-                                <Button title={"" + element} onPress={() => onAnswerPress(index)} />
-                            </View>
-                        })}
-                    </View>
+                </View>
+
+                <View style={style.buttonsWrapper}>
+                    {currentQuestion.questions[currentQuestion.currentStep].questionOptions.map((element, index) => {
+                        return _renderButton(element, index);
+                    })}
                 </View>
             </View>
         );

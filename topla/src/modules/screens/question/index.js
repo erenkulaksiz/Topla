@@ -53,7 +53,7 @@ class QuestionScreen extends React.Component {
             let numberTemp = number1 + number2;
 
             questions.push({
-                question: `${number1} + ${number2} = ?`,
+                question: `${number1} + ${number2}`,
                 questionArguments: [number1, number2],
                 questionAnswer: numberTemp, // TODO: seçenek sayısına göre
                 questionOptions: [],
@@ -86,9 +86,13 @@ class QuestionScreen extends React.Component {
         const bars = [];
         for (let a = 0; a < this.props.questionSettings.questionCount; a++) {
             if (a == this.props.currentQuestion.currentStep) {
-                bars.push(<View style={{ ...style.bars, backgroundColor: "black" }} key={a}></View>);
+                bars.push(<View style={{ ...style.bars, backgroundColor: "#A1A1A1" }} key={a}></View>);
             } else {
-                bars.push(<View style={style.bars} key={a}></View>);
+                if (this.props.currentQuestion.currentStep < a) {
+                    bars.push(<View style={style.bars} key={a}></View>);
+                } else {
+                    bars.push(<View style={{ ...style.bars, backgroundColor: this.props.currentQuestion.questionResults[a].questionAnswerCorrect ? "#63D816" : "#E80707" }} key={a}></View>);
+                }
             }
         }
         return bars
@@ -113,6 +117,7 @@ class QuestionScreen extends React.Component {
                     onPress: () => {
                         this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
                         this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+                        this.props.dispatch({ type: "RESET_QUESTION_RESULTS" });
                         this.props.navigation.dispatch(e.data.action)
                     },
                 },
@@ -120,13 +125,16 @@ class QuestionScreen extends React.Component {
         )
     }
 
-    _gotoNextQuestion = async (answer) => {
+    _gotoNextQuestion = async (element, index) => {
 
-        if (this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionOptions[answer] == this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionAnswer) {
+        // TODO: iki ayrı if else içinde iki ayrı dispatch değil bir tane merkezi dispatch'a bağla
+
+        if (this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionOptions[index] == this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionAnswer) {
             await this.props.dispatch({
                 type: "PUSH_TO_QUESTION_RESULT", payload: {
                     questionStep: this.props.currentQuestion.currentStep,
                     questionAnswerCorrect: true,
+                    questionAnswer: element,
                 }
             });
         } else {
@@ -134,6 +142,7 @@ class QuestionScreen extends React.Component {
                 type: "PUSH_TO_QUESTION_RESULT", payload: {
                     questionStep: this.props.currentQuestion.currentStep,
                     questionAnswerCorrect: false,
+                    questionAnswer: element,
                 }
             });
         }
@@ -191,7 +200,7 @@ class QuestionScreen extends React.Component {
                     {this.props.reducer.currentQuestion.isQuestionsLoaded &&
                         <QuestionSolve
                             currentQuestion={this.props.currentQuestion}
-                            onAnswerPress={answer => { this._gotoNextQuestion(answer) }}
+                            onAnswerPress={(element, index) => this._gotoNextQuestion(element, index)}
                         />
                     }
                 </View>

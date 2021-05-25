@@ -76,6 +76,7 @@ export default StyleSheet.create({
     },
     setting: {
         width: "100%",
+        marginTop: 10,
         height: 35,
         flexDirection: "row",
         alignItems: "center",
@@ -85,11 +86,36 @@ export default StyleSheet.create({
     },
     setting_incrementWrapper: {
         flex: 1,
-        backgroundColor: "gray",
     },
     setting_increment: {
+        flexDirection: "row",
         height: "100%",
         width: "70%",
-        backgroundColor: "red",
+    },
+    increment: {
+        flex: 33,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRightWidth: 2,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        borderTopRightRadius: 8,
+        borderBottomRightRadius: 8,
+    },
+    incrementCenter: {
+        flex: 33,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 2,
+    },
+    decrement: {
+        flex: 33,
+        justifyContent: "center",
+        alignItems: "center",
+        borderLeftWidth: 2,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        borderTopLeftRadius: 8,
+        borderBottomLeftRadius: 8,
     }
 });

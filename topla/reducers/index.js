@@ -100,6 +100,38 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                     questionResults: []
                 }
             }
+        case 'INCREMENT_QUESTION_OPTIONS':
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    optionCount: state.questionSettings.optionCount + 1,
+                }
+            }
+        case 'DECREMENT_QUESTION_OPTIONS':
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    optionCount: state.questionSettings.optionCount - 1,
+                }
+            }
+        case 'INCREMENT_QUESTION_COUNT':
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    questionCount: state.questionSettings.questionCount + 1,
+                }
+            }
+        case 'DECREMENT_QUESTION_COUNT':
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    questionCount: state.questionSettings.questionCount - 1,
+                }
+            }
         default:
             return state
     }
