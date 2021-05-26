@@ -6,7 +6,6 @@ export default StyleSheet.create({
         flexDirection: "column",
     },
     headerContainer: {
-        width: "100%",
         marginTop: 12,
         paddingLeft: 16,
         paddingRight: 16,
@@ -19,7 +18,6 @@ export default StyleSheet.create({
         fontWeight: "bold",
     },
     headerBar: {
-        width: "100%",
         marginLeft: 16,
         marginRight: 16,
         height: 2,
@@ -34,8 +32,8 @@ export default StyleSheet.create({
         fontSize: 12,
     },
     content: {
-        padding: 16,
         flex: 1,
+        padding: 16,
     },
     bottomButtonWrapper: {
         position: "absolute",
@@ -56,10 +54,9 @@ export default StyleSheet.create({
         flexDirection: "row"
     },
     questionSettingsWrapper: {
-        width: "100%",
         padding: 24,
         borderRadius: 8,
-        backgroundColor: "#dedede"
+        backgroundColor: "white",
     },
     elementLogoWrapper: {
         height: 13,
@@ -75,11 +72,15 @@ export default StyleSheet.create({
         marginTop: 8,
     },
     setting: {
-        width: "100%",
         marginTop: 10,
         height: 35,
         flexDirection: "row",
         alignItems: "center",
+    },
+    bar: {
+        height: 2,
+        backgroundColor: "#000",
+        marginTop: 12,
     },
     settingTitle: {
         fontSize: 18,

@@ -19,8 +19,6 @@ class QuestionSolve extends React.Component {
             </TouchableOpacity>)
         }
 
-        console.log("step: ", currentQuestion.currentStep)
-
         return (
             <View style={style.container}>
                 <View style={style.questionTitleWrapper}>

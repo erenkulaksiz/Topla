@@ -1,4 +1,9 @@
 
+- 27/05/2021 - Commit 29
+
+> Sorulara 4 seçenek seçme getirildi
+> 1'den fazla işlem seçildiyse sorulara işlemler rastgele geliyor (toplama, çıkarma, çarpma, bölme)
+
 - 25/05/2021 - Commit 28
 
 > Soru çözüm buttonları daha güzel hale getirildi

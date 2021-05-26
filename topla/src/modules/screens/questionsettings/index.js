@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Button, TouchableOpacity, ScrollView, Image } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
@@ -69,6 +70,7 @@ class QuestionSettings extends React.Component {
                                     </View>
                                 </View>
                             </View>
+                            <View style={style.bar}></View>
                             <View style={style.setting}>
                                 <Text style={style.settingTitle}>Seçenek Sayısı: </Text>
                                 <View style={style.setting_incrementWrapper}>
@@ -84,6 +86,39 @@ class QuestionSettings extends React.Component {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
+                            </View>
+                            <View style={style.bar}></View>
+                            <View style={style.setting}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={this.props.reducer.questionSettings.operations.addition}
+                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, addition: newValue } })}
+                                />
+                                <Text style={style.label}>Toplama</Text>
+                            </View>
+                            <View style={style.setting}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={this.props.reducer.questionSettings.operations.subtraction}
+                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, subtraction: newValue } })}
+                                />
+                                <Text style={style.label}>Çıkarma</Text>
+                            </View>
+                            <View style={style.setting}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={this.props.reducer.questionSettings.operations.multiplication}
+                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, multiplication: newValue } })}
+                                />
+                                <Text style={style.label}>Çarpma</Text>
+                            </View>
+                            <View style={style.setting}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={this.props.reducer.questionSettings.operations.division}
+                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, division: newValue } })}
+                                />
+                                <Text style={style.label}>Bölme</Text>
                             </View>
                         </View>
                     </View>

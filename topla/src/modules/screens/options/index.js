@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity } from 'react-native';
 import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faSync, faBell, faEnvelope, faCrown } from '@fortawesome/free-solid-svg-icons'
+import { faSync, faBell, faEnvelope, faCrown, faAdjust } from '@fortawesome/free-solid-svg-icons'
 
 import Header from "../../header";
 
@@ -30,11 +30,12 @@ class OptionsScreen extends React.Component {
     }
 
     _refreshPremium = () => {
-        if (this._checkConnection()) {
-            this.props.navigation.navigate('PremiumScreen');
-        } else {
-            alert("İnternet bağlantınızı kontrol ediniz");
-        }
+        alert("Refreshed.");
+    }
+
+    _darkMode = () => {
+        this.props.dispatch({ type: "DARK_MODE" });
+        alert("Koyu mod: " + this.props.reducer.settings.darkMode);
     }
 
     render() {
@@ -71,9 +72,15 @@ class OptionsScreen extends React.Component {
                             </View>
                             <Text style={style.buttonText}>Reklamları Kaldır</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => this._darkMode()}>
+                            <View style={style.buttonIcon}>
+                                <FontAwesomeIcon icon={faAdjust} size={16} color={"#000"} />
+                            </View>
+                            <Text style={style.buttonText}>Koyu Mod</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={style.altContent}>
-                        <Text>asdas</Text>
+
                     </View>
                 </View>
             </View>

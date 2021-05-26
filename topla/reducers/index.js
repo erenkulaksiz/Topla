@@ -5,9 +5,21 @@ const INITIAL_STATE = {
     deviceInfo: {},
     connection: {},
     pauseModalShown: false,
+    settings: {
+        darkMode: false,
+    },
     questionSettings: {
         questionCount: 5, // -> Şuanda çözülen sorunun max soru sayısı.
         optionCount: 4, // -> Seçenek sayısı
+        perQuestionTime: 5000, // 5000 = 5 sn
+        operations: {
+            addition: true,
+            subtraction: true,
+            multiplication: false,
+            division: false,
+        },
+        minRange: 1,
+        maxRange: 100,
     },
     currentQuestion: {
         currentStep: 0, // -> şuanda çözülen soru
@@ -15,6 +27,10 @@ const INITIAL_STATE = {
         isQuestionsLoaded: false, // -> tüm sorular yüklendi mi
         questions: [], // -> şimdi mesela 5 tane soru varsa 5 tane soruyu buraya pushlayacak (doğru seçeneklerle beraber)
         questionResults: [], // örn: 1. soru doğru, 2. soru yanlış, ne zaman doğru ne zaman yanlış vs.
+    },
+    questionTimer: {
+        time: 0,
+        started: false,
     }
 };
 
@@ -130,6 +146,24 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 questionSettings: {
                     ...state.questionSettings,
                     questionCount: state.questionSettings.questionCount - 1,
+                }
+            }
+        case 'DARK_MODE':
+            console.log("SET DARK MODE: ", !state.settings.darkMode);
+            return {
+                ...state,
+                settings: {
+                    ...state.settings,
+                    darkMode: !state.settings.darkMode
+                }
+            }
+        case 'SET_QUESTION_SETTINGS_OPERATIONS':
+            console.log("NEW VALUE FOR SETTINGS: ", action.payload);
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    operations: action.payload,
                 }
             }
         default:

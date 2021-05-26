@@ -18,7 +18,6 @@ class ResultScreen extends React.Component {
     componentDidMount() {
         //this._resetNav();
 
-        console.log("AAAAA", this.props.reducer.currentQuestion.questionResults);
     }
 
     render() {
@@ -32,7 +31,10 @@ class ResultScreen extends React.Component {
                 <ScrollView style={style.content}>
                     {this.props.reducer.currentQuestion.questionResults.map((element, index) => {
                         return (
-                            <View style={{ margin: 4, padding: 12, elevation: 2, backgroundColor: "white", marginBottom: 8, borderRadius: 8, }}>
+                            <View
+                                style={{ margin: 4, padding: 12, elevation: 2, backgroundColor: "white", marginBottom: 8, borderRadius: 8, }}
+                                key={index}
+                            >
                                 <Text>{(element.questionStep) + 1}. Soru - <Text style={{ color: element.questionAnswerCorrect ? "green" : "red" }}>{"" + (element.questionAnswerCorrect ? "Doğru" : "Yanlış")}</Text></Text>
                                 <Text>{this.props.reducer.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
                                 {!element.questionAnswerCorrect && <Text style={{ color: "green" }}>Cevap: {this.props.reducer.currentQuestion.questions[element.questionStep].questionAnswer}</Text>}
