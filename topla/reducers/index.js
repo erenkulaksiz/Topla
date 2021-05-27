@@ -1,6 +1,13 @@
 
 import { combineReducers } from 'redux';
 
+const config = {
+    maxSoru: 15,
+    minSoru: 2,
+    maxSecenek: 7,
+    minSecenek: 2,
+}
+
 const INITIAL_STATE = {
     deviceInfo: {},
     connection: {},
@@ -19,7 +26,7 @@ const INITIAL_STATE = {
             division: false,
         },
         minRange: 1,
-        maxRange: 100,
+        maxRange: 20,
     },
     currentQuestion: {
         currentStep: 0, // -> şuanda çözülen soru
@@ -117,35 +124,71 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 }
             }
         case 'INCREMENT_QUESTION_OPTIONS':
+
+            let incremental_questionOptions = 0;
+
+            if (state.questionSettings.optionCount >= config.maxSecenek) {
+                incremental_questionOptions = 0;
+            } else {
+                incremental_questionOptions = 1;
+            }
+
             return {
                 ...state,
                 questionSettings: {
                     ...state.questionSettings,
-                    optionCount: state.questionSettings.optionCount + 1,
+                    optionCount: state.questionSettings.optionCount + incremental_questionOptions,
                 }
             }
         case 'DECREMENT_QUESTION_OPTIONS':
+
+            let decremental_questionOptions = 0;
+
+            if (state.questionSettings.optionCount <= config.minSecenek) {
+                decremental_questionOptions = 0;
+            } else {
+                decremental_questionOptions = 1;
+            }
+
             return {
                 ...state,
                 questionSettings: {
                     ...state.questionSettings,
-                    optionCount: state.questionSettings.optionCount - 1,
+                    optionCount: state.questionSettings.optionCount - decremental_questionOptions,
                 }
             }
         case 'INCREMENT_QUESTION_COUNT':
+
+            let incremental_questionCount = 0;
+
+            if (state.questionSettings.questionCount >= config.maxSoru) {
+                incremental_questionCount = 0;
+            } else {
+                incremental_questionCount = 1;
+            }
+
             return {
                 ...state,
                 questionSettings: {
                     ...state.questionSettings,
-                    questionCount: state.questionSettings.questionCount + 1,
+                    questionCount: state.questionSettings.questionCount + incremental_questionCount,
                 }
             }
         case 'DECREMENT_QUESTION_COUNT':
+
+            let decremental_questionCount = 0;
+
+            if (state.questionSettings.questionCount <= config.minSoru) {
+                decremental_questionCount = 0;
+            } else {
+                decremental_questionCount = 1;
+            }
+
             return {
                 ...state,
                 questionSettings: {
                     ...state.questionSettings,
-                    questionCount: state.questionSettings.questionCount - 1,
+                    questionCount: state.questionSettings.questionCount - decremental_questionCount,
                 }
             }
         case 'DARK_MODE':

@@ -1,4 +1,10 @@
 
+- 27/05/2021 - Commit 30
+
+> Operationlar artık seçilip seçilmediği anlaşılabiliyor
+> Çıkarma işlemince sonucun negatif gelmesi düzeltildi
+> Soru sayısı ve seçenek sayısı ayarlanırken artık max ve min kontrolü yapılıyor
+
 - 27/05/2021 - Commit 29
 
 > Sorulara 4 seçenek seçme getirildi
@@ -7,7 +13,7 @@
 - 25/05/2021 - Commit 28
 
 > Soru çözüm buttonları daha güzel hale getirildi
-> Soru ayarlarında artık seçenek sayısı ayarlanabiliyor // TODO: Soru MAX ve MİN'e göre kontrol et
+> Soru ayarlarında artık seçenek sayısı ayarlanabiliyor 
 > Soru ayarlarında artık soru sayısı ayarlanabiliyor 
 > Soru sonuçları sayfasında artık sonuçlar gösteriliyor
 > Soru sonuçlarında yanlış yapılan soruların doğru cevapları ve verilen cevaplar gösteriliyor

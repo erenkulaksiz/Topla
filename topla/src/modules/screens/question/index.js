@@ -52,40 +52,52 @@ class QuestionScreen extends React.Component {
 
         const questions = [];
 
+        const values = ["addition", "subtraction", "multiplication", "division"];
+
+        const operation = value => {
+            if (value == values[0]) return "+"
+            if (value == values[1]) return "-"
+            if (value == values[2]) return "x"
+            if (value == values[3]) return "/"
+        }
+
         for (let a = 1; a <= this.props.questionSettings.questionCount; a++) {
             let number1 = this._generateRandomInt(this.props.questionSettings.minRange, this.props.questionSettings.maxRange);
             let number2 = this._generateRandomInt(this.props.questionSettings.minRange, this.props.questionSettings.maxRange);
             let numberTemp = 0;
 
-            const values = ["addition", "subtraction", "multiplication", "division"];
-
-            const operation = value => {
-                if (value == values[0]) return "+"
-                if (value == values[1]) return "-"
-                if (value == values[2]) return "x"
-                if (value == values[3]) return "/"
-            }
-
             const keys = Object.keys(this.props.questionSettings.operations).filter(k => this.props.questionSettings.operations[k] === true);
             const questionOperationRandom = keys[_.sample(Object.keys(keys))]
             console.log("KEY: ", questionOperationRandom)
+
+            if (keys.length == 0) {
+                alert("OPERATİON SEÇMEN LAZIM");
+            }
 
             if (questionOperationRandom == values[0]) {
                 numberTemp = number1 + number2;
             } else if (questionOperationRandom == values[1]) {
                 numberTemp = number1 - number2;
                 if (numberTemp < 0) {
-                    alert(number1 + operation(questionOperationRandom) + number2 + "=" + numberTemp);
-                    a--; // TODO: asdads
+                    // Swap number1 with number2
+                    number1 = number1 ^ number2
+                    number2 = number1 ^ number2
+                    number1 = number1 ^ number2
+                    numberTemp = number1 - number2; // Yeniden hesapla
+                    //alert(number1 + operation(questionOperationRandom) + number2 + "=" + numberTemp);
                 }
+            } else if (questionOperationRandom == values[2]) {
+                numberTemp = number1 * number2;
+            } else if (questionOperationRandom == values[3]) {
+                numberTemp = number1 / number2;
             }
 
             questions.push({
                 question: `${number1} ${operation(questionOperationRandom)} ${number2}`,
                 questionArguments: [number1, number2],
-                questionAnswer: numberTemp, // TODO: seçenek sayısına göre
+                questionAnswer: numberTemp,
                 questionOptions: [],
-                questionOperation: questionOperationRandom, // işlem // TODO: 4 tane işlem varsa random 4 yap
+                questionOperation: questionOperationRandom,
             });
 
         }
@@ -97,6 +109,12 @@ class QuestionScreen extends React.Component {
                     question.questionOptions.push(question.questionAnswer);
                 } else {
                     let randomNumber = this._generateRandomInt(this.props.questionSettings.minRange, this.props.questionSettings.maxRange);
+
+                    /*
+                    if(question.questionOperation == values[2]){
+                        // Çarpmaysa rasgele seçenekleri ona göre üret
+                    }*/
+
                     if (question.questionOptions.indexOf(randomNumber) < 0) {
                         question.questionOptions.push(randomNumber);
                     } else {
@@ -105,7 +123,6 @@ class QuestionScreen extends React.Component {
                 }
             }
         });
-
 
         questions.map(question => {
             question.questionOptions.sort(() => Math.random() - 0.5);
@@ -209,7 +226,6 @@ class QuestionScreen extends React.Component {
         this.props.navigation.addListener('beforeRemove', (e) => this._preventGoingBack(e))
 
         if (!this.props.currentQuestion.isStarted) {
-            // Soru çözümünü başlat
             this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
 
