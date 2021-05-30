@@ -113,6 +113,8 @@ class QuestionScreen extends React.Component {
                     /*
                     if(question.questionOperation == values[2]){
                         // Çarpmaysa rasgele seçenekleri ona göre üret
+
+                        
                     }*/
 
                     if (question.questionOptions.indexOf(randomNumber) < 0) {

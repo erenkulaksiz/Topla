@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Button, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { Text, View, Button, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -9,6 +9,7 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import Header from "../../header";
 
 class QuestionSettings extends React.Component {
+
 
     _navigateToQuestion = question => {
         this.props.navigation.navigate('QuestionScreen', { question: question })
@@ -28,6 +29,18 @@ class QuestionSettings extends React.Component {
 
     _decrementQuestionCount = () => {
         this.props.dispatch({ type: "DECREMENT_QUESTION_COUNT" });
+    }
+
+    _setMaxRange = value => {
+        this.props.dispatch({ type: "SET_MAX_RANGE", payload: value });
+    }
+
+    _incrementMaxRange = value => {
+        this.props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: value });
+    }
+
+    _decrementMaxRange = value => {
+        this.props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: value });
     }
 
     render() {
@@ -55,6 +68,28 @@ class QuestionSettings extends React.Component {
                         </View>
                         <View style={style.settingsWrapper}>
                             <View style={style.setting}>
+                                <Text style={style.settingTitle}>Sayı Aralığı: </Text>
+                                <View style={style.setting_incrementWrapper}>
+                                    <View style={style.setting_increment}>
+                                        <TouchableOpacity style={style.decrement} onPress={() => this._decrementMaxRange(10)}>
+                                            <Text style={{ fontSize: 18 }}>-10</Text>
+                                        </TouchableOpacity>
+                                        <View style={style.incrementCenter_field}>
+                                            <TextInput
+                                                style={style.inputfield}
+                                                onChangeText={text => { this._setMaxRange(text) }}
+                                                value={"" + this.props.reducer.questionSettings.maxRange}
+                                                placeholder="0"
+                                                keyboardType="numeric"
+                                            />
+                                        </View>
+                                        <TouchableOpacity style={style.increment} onPress={() => this._incrementMaxRange(10)}>
+                                            <Text style={{ fontSize: 18 }}>+10</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={style.setting}>
                                 <Text style={style.settingTitle}>Soru Sayısı: </Text>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
@@ -70,7 +105,6 @@ class QuestionSettings extends React.Component {
                                     </View>
                                 </View>
                             </View>
-                            <View style={style.bar}></View>
                             <View style={style.setting}>
                                 <Text style={style.settingTitle}>Seçenek Sayısı: </Text>
                                 <View style={style.setting_incrementWrapper}>
@@ -87,7 +121,6 @@ class QuestionSettings extends React.Component {
                                     </View>
                                 </View>
                             </View>
-                            <View style={style.bar}></View>
                             <View style={style.setting}>
                                 <CheckBox
                                     disabled={false}

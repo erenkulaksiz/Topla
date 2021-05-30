@@ -109,6 +109,12 @@ export default StyleSheet.create({
         alignItems: "center",
         borderWidth: 2,
     },
+    incrementCenter_field: {
+        flex: 33,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 2,
+    },
     decrement: {
         flex: 33,
         justifyContent: "center",
@@ -118,5 +124,8 @@ export default StyleSheet.create({
         borderBottomWidth: 2,
         borderTopLeftRadius: 8,
         borderBottomLeftRadius: 8,
+    },
+    inputfield: {
+        padding: 0,
     }
 });

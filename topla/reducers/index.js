@@ -209,6 +209,33 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                     operations: action.payload,
                 }
             }
+        case 'SET_MAX_RANGE':
+            console.log("NEW VALUE FOR MAX RANGE: ", action.payload);
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    maxRange: action.payload,
+                }
+            }
+        case 'INCREMENT_MAX_RANGE':
+            console.log("NEW VALUE FOR MAX RANGE: ", state.questionSettings.maxRange + action.payload);
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    maxRange: state.questionSettings.maxRange + action.payload,
+                }
+            }
+        case 'DECREMENT_MAX_RANGE':
+            console.log("NEW VALUE FOR MAX RANGE: ", state.questionSettings.maxRange - action.payload);
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    maxRange: state.questionSettings.maxRange - action.payload,
+                }
+            }
         default:
             return state
     }
