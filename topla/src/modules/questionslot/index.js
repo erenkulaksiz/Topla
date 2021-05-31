@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import style from './style';
 import PropTypes from 'prop-types';
@@ -42,9 +41,4 @@ QuestionSlot.propTypes = {
     question: PropTypes.object,
 }
 
-const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
-};
-
-export default connect(mapStateToProps)(QuestionSlot);
+export default QuestionSlot;

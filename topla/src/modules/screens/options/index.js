@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faSync, faBell, faEnvelope, faCrown, faAdjust } from '@fortawesome/free-solid-svg-icons'
@@ -80,7 +81,9 @@ class OptionsScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <View style={style.altContent}>
-
+                        <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + this.props.reducer.deviceInfo.uid); alert("UID Kopyalandı") }}>
+                            <Text style={style.altText}>UID: {this.props.reducer.deviceInfo.uid}</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>

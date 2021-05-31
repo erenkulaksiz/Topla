@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Image, TouchableOpacity } from "react-native";
-import { connect } from 'react-redux';
 import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faPause } from '@fortawesome/free-solid-svg-icons'
@@ -54,9 +53,4 @@ Header.propTypes = {
     onPause: PropTypes.func,
 }
 
-const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
-};
-
-export default connect(mapStateToProps)(Header);
+export default Header;

@@ -1,7 +1,13 @@
 
+- 31/05/2021 - Commit 32
+
+> Performans iyileştirmeleri
+> Ayarlar kısmına abonelik sayfası ve uid eklendi.
+> Ayarlarda uid üstüne dokununca artık kopyalanıyor.
+
 - 30/05/2021 - Commit 31
 
-> Sorularda sorulan rasgele sayıların maksimum aralığı artık soru ayarlarında ayarlanabiliyor.
+> Sorularda sorulan rasgele sayıların maksimum aralığı artık soru ayarlarında ayarlanabiliyor
 > Soru ayarlarındaki siyah barlar kaldırıldı
 
 - 27/05/2021 - Commit 30

@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faHome, faCrown, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faHome, /*faCrown,*/ faCog } from '@fortawesome/free-solid-svg-icons'
 
 import I18n from "../utils/i18n.js";
 
@@ -44,10 +43,4 @@ class Home extends React.Component {
     }
 }
 
-
-const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
-};
-
-export default connect(mapStateToProps)(Home);
+export default Home;

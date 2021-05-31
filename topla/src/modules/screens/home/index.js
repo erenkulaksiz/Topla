@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Text, View, ScrollView } from "react-native";
 import style from './style';
 
@@ -18,14 +17,6 @@ class HomeScreen extends React.Component {
 
     render() {
 
-        const questionList = questionTypes.map((question, index) => {
-            return (<QuestionSlot
-                key={index}
-                onPlay={() => { this._questionPlay(question) }}
-                question={question}
-            />)
-        })
-
         return (
             <View style={style.container}>
                 <Header />
@@ -34,16 +25,17 @@ class HomeScreen extends React.Component {
                     <View style={style.headerBar}></View>
                 </View>
                 <ScrollView style={style.questionsScroll}>
-                    {questionList}
+                    {questionTypes.map((question, index) => {
+                        return (<QuestionSlot
+                            key={index}
+                            onPlay={() => { this._questionPlay(question) }}
+                            question={question}
+                        />)
+                    })}
                 </ScrollView>
             </View>
         );
     }
 }
 
-const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
-};
-
-export default connect(mapStateToProps)(HomeScreen);
+export default HomeScreen;

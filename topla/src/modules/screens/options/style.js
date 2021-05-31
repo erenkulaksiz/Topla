@@ -70,6 +70,9 @@ export default StyleSheet.create({
     },
     altContent: {
         flex: 1,
-
+        justifyContent: "flex-end",
+    },
+    altTextWrapper: {
+        padding: 12,
     }
 });
