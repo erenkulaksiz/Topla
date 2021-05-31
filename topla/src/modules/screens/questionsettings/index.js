@@ -8,163 +8,167 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
 import Header from "../../header";
 
-class QuestionSettings extends React.Component {
+import I18n from "../../../utils/i18n.js";
 
+const QuestionSettings = props => {
 
-    _navigateToQuestion = question => {
-        this.props.navigation.navigate('QuestionScreen', { question: question })
+    const _navigateToQuestion = question => {
+        props.navigation.navigate('QuestionScreen', { question: question })
     }
 
-    _incrementOptions = () => {
-        this.props.dispatch({ type: "INCREMENT_QUESTION_OPTIONS" });
+    const _incrementOptions = () => {
+        props.dispatch({ type: "INCREMENT_QUESTION_OPTIONS" });
     }
 
-    _decrementOptions = () => {
-        this.props.dispatch({ type: "DECREMENT_QUESTION_OPTIONS" });
+    const _decrementOptions = () => {
+        props.dispatch({ type: "DECREMENT_QUESTION_OPTIONS" });
     }
 
-    _incrementQuestionCount = () => {
-        this.props.dispatch({ type: "INCREMENT_QUESTION_COUNT" });
+    const _incrementQuestionCount = () => {
+        props.dispatch({ type: "INCREMENT_QUESTION_COUNT" });
     }
 
-    _decrementQuestionCount = () => {
-        this.props.dispatch({ type: "DECREMENT_QUESTION_COUNT" });
+    const _decrementQuestionCount = () => {
+        props.dispatch({ type: "DECREMENT_QUESTION_COUNT" });
     }
 
-    _setMaxRange = value => {
-        this.props.dispatch({ type: "SET_MAX_RANGE", payload: value });
+    const _setMaxRange = value => {
+        props.dispatch({ type: "SET_MAX_RANGE", payload: value });
     }
 
-    _incrementMaxRange = value => {
-        this.props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: value });
+    const _incrementMaxRange = value => {
+        props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: value });
     }
 
-    _decrementMaxRange = value => {
-        this.props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: value });
+    const _decrementMaxRange = value => {
+        props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: value });
     }
 
-    render() {
-
-        return (
-            <View style={style.container}>
-                <Header backShown onBack={() => this.props.navigation.goBack()} />
-                <View style={style.headerContainer}>
-                    <View>
-                        <Text style={style.headerText}>Soru Ayarları</Text>
-                    </View>
-                    <View style={style.headerTextWrapperRight}>
-                        <Text style={style.headerTextQuestionSettings}>Varsayılan Ayarlar - {this.props.route.params.question.name}</Text>
-                    </View>
+    return (
+        <View style={style.container}>
+            <Header backShown onBack={() => props.navigation.goBack()} />
+            <View style={style.headerContainer}>
+                <View>
+                    <Text style={style.headerText}>{I18n.t("question_settings")}</Text>
                 </View>
-                <View style={style.headerBar}></View>
-                <ScrollView style={style.content}>
-                    <View style={style.questionSettingsWrapper}>
-                        <View style={style.elementLogoWrapper}>
-                            <Image
-                                style={style.elementLogo}
-                                source={require('../../../tc.png')}
-                                resizeMode={'contain'}
-                            />
-                        </View>
-                        <View style={style.settingsWrapper}>
-                            <View style={style.setting}>
-                                <Text style={style.settingTitle}>Sayı Aralığı: </Text>
+                <View style={style.headerTextWrapperRight}>
+                    <Text style={style.headerTextQuestionSettings}>{I18n.t("question_defaults")} - {props.route.params.question.name}</Text>
+                </View>
+            </View>
+            <View style={style.headerBar}></View>
+            <ScrollView style={style.content}>
+                <View style={style.questionSettingsWrapper}>
+                    <View style={style.elementLogoWrapper}>
+                        <Image
+                            style={style.elementLogo}
+                            source={require('../../../tc.png')}
+                            resizeMode={'contain'}
+                        />
+                    </View>
+                    <View style={style.settingsWrapper}>
+                        <View style={style.setting}>
+                            <Text style={style.settingTitle}>{I18n.t("question_numberRange")}: </Text>
+                            <View style={style.settingWrapper}>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
-                                        <TouchableOpacity style={style.decrement} onPress={() => this._decrementMaxRange(10)}>
+                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementMaxRange(10)}>
                                             <Text style={{ fontSize: 18 }}>-10</Text>
                                         </TouchableOpacity>
                                         <View style={style.incrementCenter_field}>
                                             <TextInput
                                                 style={style.inputfield}
-                                                onChangeText={text => { this._setMaxRange(text) }}
-                                                value={"" + this.props.reducer.questionSettings.maxRange}
+                                                onChangeText={text => { _setMaxRange(text) }}
+                                                value={"" + props.reducer.questionSettings.maxRange}
                                                 placeholder="0"
                                                 keyboardType="numeric"
                                             />
                                         </View>
-                                        <TouchableOpacity style={style.increment} onPress={() => this._incrementMaxRange(10)}>
+                                        <TouchableOpacity style={style.increment} onPress={() => _incrementMaxRange(10)}>
                                             <Text style={{ fontSize: 18 }}>+10</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
-                            <View style={style.setting}>
-                                <Text style={style.settingTitle}>Soru Sayısı: </Text>
+                        </View>
+                        <View style={style.setting}>
+                            <Text style={style.settingTitle}>{I18n.t("question_count")}: </Text>
+                            <View style={style.settingWrapper}>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
-                                        <TouchableOpacity style={style.decrement} onPress={() => this._decrementQuestionCount()}>
+                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementQuestionCount()}>
                                             <Text style={{ fontSize: 18 }}>-</Text>
                                         </TouchableOpacity>
                                         <View style={style.incrementCenter}>
-                                            <Text style={{ fontSize: 16 }}>{this.props.reducer.questionSettings.questionCount}</Text>
+                                            <Text style={{ fontSize: 16 }}>{props.reducer.questionSettings.questionCount}</Text>
                                         </View>
-                                        <TouchableOpacity style={style.increment} onPress={() => this._incrementQuestionCount()}>
+                                        <TouchableOpacity style={style.increment} onPress={() => _incrementQuestionCount()}>
                                             <Text style={{ fontSize: 18 }}>+</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                            </View>
-                            <View style={style.setting}>
-                                <Text style={style.settingTitle}>Seçenek Sayısı: </Text>
-                                <View style={style.setting_incrementWrapper}>
-                                    <View style={style.setting_increment}>
-                                        <TouchableOpacity style={style.decrement} onPress={() => this._decrementOptions()}>
-                                            <Text style={{ fontSize: 18 }}>-</Text>
-                                        </TouchableOpacity>
-                                        <View style={style.incrementCenter}>
-                                            <Text style={{ fontSize: 16 }}>{this.props.reducer.questionSettings.optionCount}</Text>
-                                        </View>
-                                        <TouchableOpacity style={style.increment} onPress={() => this._incrementOptions()}>
-                                            <Text style={{ fontSize: 18 }}>+</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={style.setting}>
-                                <CheckBox
-                                    disabled={false}
-                                    value={this.props.reducer.questionSettings.operations.addition}
-                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, addition: newValue } })}
-                                />
-                                <Text style={style.label}>Toplama</Text>
-                            </View>
-                            <View style={style.setting}>
-                                <CheckBox
-                                    disabled={false}
-                                    value={this.props.reducer.questionSettings.operations.subtraction}
-                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, subtraction: newValue } })}
-                                />
-                                <Text style={style.label}>Çıkarma</Text>
-                            </View>
-                            <View style={style.setting}>
-                                <CheckBox
-                                    disabled={false}
-                                    value={this.props.reducer.questionSettings.operations.multiplication}
-                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, multiplication: newValue } })}
-                                />
-                                <Text style={style.label}>Çarpma</Text>
-                            </View>
-                            <View style={style.setting}>
-                                <CheckBox
-                                    disabled={false}
-                                    value={this.props.reducer.questionSettings.operations.division}
-                                    onValueChange={(newValue) => this.props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...this.props.reducer.questionSettings.operations, division: newValue } })}
-                                />
-                                <Text style={style.label}>Bölme</Text>
                             </View>
                         </View>
+                        <View style={style.setting}>
+                            <Text style={style.settingTitle}>{I18n.t("question_optionCount")}: </Text>
+                            <View style={style.settingWrapper}>
+                                <View style={style.setting_incrementWrapper}>
+                                    <View style={style.setting_increment}>
+                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementOptions()}>
+                                            <Text style={{ fontSize: 18 }}>-</Text>
+                                        </TouchableOpacity>
+                                        <View style={style.incrementCenter}>
+                                            <Text style={{ fontSize: 16 }}>{props.reducer.questionSettings.optionCount}</Text>
+                                        </View>
+                                        <TouchableOpacity style={style.increment} onPress={() => _incrementOptions()}>
+                                            <Text style={{ fontSize: 18 }}>+</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={style.setting}>
+                            <CheckBox
+                                disabled={false}
+                                value={props.reducer.questionSettings.operations.addition}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, addition: newValue } })}
+                            />
+                            <Text style={style.label}>{I18n.t("question_add")}</Text>
+                        </View>
+                        <View style={style.setting}>
+                            <CheckBox
+                                disabled={false}
+                                value={props.reducer.questionSettings.operations.subtraction}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, subtraction: newValue } })}
+                            />
+                            <Text style={style.label}>{I18n.t("question_sub")}</Text>
+                        </View>
+                        <View style={style.setting}>
+                            <CheckBox
+                                disabled={false}
+                                value={props.reducer.questionSettings.operations.multiplication}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, multiplication: newValue } })}
+                            />
+                            <Text style={style.label}>{I18n.t("question_mul")}</Text>
+                        </View>
+                        <View style={style.setting}>
+                            <CheckBox
+                                disabled={false}
+                                value={props.reducer.questionSettings.operations.division}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, division: newValue } })}
+                            />
+                            <Text style={style.label}>{I18n.t("question_div")}</Text>
+                        </View>
                     </View>
-                </ScrollView>
-                <View style={style.bottomButtonWrapper}>
-                    <TouchableOpacity style={style.bottomButton} onPress={() => this._navigateToQuestion(this.props.route.params.question)}>
-                        <FontAwesomeIcon icon={faPlay} size={12} color={"#fff"} />
-                        <Text style={{ fontSize: 15, color: "#fff", marginLeft: 8 }}>Çözmeye Başla</Text>
-                    </TouchableOpacity>
                 </View>
+            </ScrollView>
+            <View style={style.bottomButtonWrapper}>
+                <TouchableOpacity style={style.bottomButton} onPress={() => _navigateToQuestion(props.route.params.question)}>
+                    <FontAwesomeIcon icon={faPlay} size={12} color={"#fff"} />
+                    <Text style={{ fontSize: 15, color: "#fff", marginLeft: 8 }}>{I18n.t("question_start")}</Text>
+                </TouchableOpacity>
             </View>
-        );
-    }
+        </View >
+    );
 }
 
 const mapStateToProps = (state) => {

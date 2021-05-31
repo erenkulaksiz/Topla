@@ -5,22 +5,19 @@ import style from './style';
 
 import Header from "../../header";
 
-class PremiumScreen extends React.Component {
-
-    render() {
-        return (
-            <View style={style.container}>
-                <Header backShown onBack={() => { this.props.navigation.goBack() }} />
-                <View style={style.headerContainer}>
-                    <Text style={style.headerText}>Reklamları Kaldır</Text>
-                    <View style={style.headerBar}></View>
-                </View>
-                <View style={style.content}>
-                    <Text>Destek</Text>
-                </View>
+const PremiumScreen = props => {
+    return (
+        <View style={style.container}>
+            <Header backShown onBack={() => { props.navigation.goBack() }} />
+            <View style={style.headerContainer}>
+                <Text style={style.headerText}>Reklamları Kaldır</Text>
+                <View style={style.headerBar}></View>
             </View>
-        );
-    }
+            <View style={style.content}>
+                <Text>Destek</Text>
+            </View>
+        </View>
+    );
 }
 
 const mapStateToProps = (state) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Alert, TouchableOpacity, Button } from 'react-native';
 import style from './style';
@@ -6,49 +6,53 @@ import Header from "../../header";
 import Modal from 'react-native-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-
 import _ from "lodash";
+import I18n from "../../../utils/i18n.js";
 
 // Components
 import QuestionSolve from '../../questionsolve';
 
-class QuestionScreen extends React.Component {
+const QuestionScreen = props => {
+    const [timer, setTimer] = useState(0);
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            timer: 0,
+    useEffect(() => {
+        props.navigation.addListener('beforeRemove', (e) => _preventGoingBack(e))
+
+        if (!props.currentQuestion.isStarted) {
+            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
+
+        _loadQuestions();
+    }, []);
+
+    const _modal = control => {
+        props.dispatch({ type: "SET_PAUSE_MODAL", payload: control });
     }
 
-    _modal = (control) => {
-        this.props.dispatch({ type: "SET_PAUSE_MODAL", payload: control });
+    const _pause = () => {
+        _modal(true);
     }
 
-    _pause = () => {
-        this._modal(true);
+    const _continue = () => {
+        _modal(false);
     }
 
-    _continue = () => {
-        this._modal(false);
+    const _goBack = () => {
+        _modal(false);
+        props.navigation.goBack();
     }
 
-    _goBack = () => {
-        this._modal(false);
-        this.props.navigation.goBack();
-    }
-
-    _generateRandomInt = (min, max) => {
+    const _generateRandomInt = (min, max) => {
         const random = Math.floor(Math.random() * (max - min + 1)) + min;
         return random
     }
 
-    _loadQuestions = () => {
+    const _loadQuestions = () => {
         // TODO: Question settings'deki ayarlara göre currentQuestion.questions'a rasgele seçenekler ile pushlayacak
 
         console.log("@Load Questions")
 
-        this.props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
+        props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
 
         const questions = [];
 
@@ -61,12 +65,12 @@ class QuestionScreen extends React.Component {
             if (value == values[3]) return "/"
         }
 
-        for (let a = 1; a <= this.props.questionSettings.questionCount; a++) {
-            let number1 = this._generateRandomInt(this.props.questionSettings.minRange, this.props.questionSettings.maxRange);
-            let number2 = this._generateRandomInt(this.props.questionSettings.minRange, this.props.questionSettings.maxRange);
+        for (let a = 1; a <= props.questionSettings.questionCount; a++) {
+            let number1 = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
+            let number2 = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
             let numberTemp = 0;
 
-            const keys = Object.keys(this.props.questionSettings.operations).filter(k => this.props.questionSettings.operations[k] === true);
+            const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
             const questionOperationRandom = keys[_.sample(Object.keys(keys))]
             console.log("KEY: ", questionOperationRandom)
 
@@ -104,11 +108,11 @@ class QuestionScreen extends React.Component {
 
         // rasgele seçenek üretimi
         questions.map((question, index) => {
-            for (let a = 1; a <= this.props.questionSettings.optionCount; a++) {
+            for (let a = 1; a <= props.questionSettings.optionCount; a++) {
                 if (a == 1) {
                     question.questionOptions.push(question.questionAnswer);
                 } else {
-                    let randomNumber = this._generateRandomInt(this.props.questionSettings.minRange, this.props.questionSettings.maxRange);
+                    let randomNumber = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
 
                     /*
                     if(question.questionOperation == values[2]){
@@ -130,28 +134,28 @@ class QuestionScreen extends React.Component {
             question.questionOptions.sort(() => Math.random() - 0.5);
         })
 
-        this.props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
-        this.props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
+        props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
+        props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
         console.log("questions ", questions);
     }
 
-    _renderBars = () => {
+    const _renderBars = () => {
         const bars = [];
-        for (let a = 0; a < this.props.questionSettings.questionCount; a++) {
-            if (a == this.props.currentQuestion.currentStep) {
+        for (let a = 0; a < props.questionSettings.questionCount; a++) {
+            if (a == props.currentQuestion.currentStep) {
                 bars.push(<View style={{ ...style.bars, backgroundColor: "#A1A1A1" }} key={a}></View>);
             } else {
-                if (this.props.currentQuestion.currentStep < a) {
+                if (props.currentQuestion.currentStep < a) {
                     bars.push(<View style={style.bars} key={a}></View>);
                 } else {
-                    bars.push(<View style={{ ...style.bars, backgroundColor: this.props.currentQuestion.questionResults[a].questionAnswerCorrect ? "#63D816" : "#E80707" }} key={a}></View>);
+                    bars.push(<View style={{ ...style.bars, backgroundColor: props.currentQuestion.questionResults[a].questionAnswerCorrect ? "#63D816" : "#E80707" }} key={a}></View>);
                 }
             }
         }
         return bars
     }
 
-    _renderTimer = () => {
+    const _renderTimer = () => {
 
         let time = 0;
 
@@ -160,139 +164,125 @@ class QuestionScreen extends React.Component {
         )
     }
 
-    _finishQuestionSolving = () => {
+    const _finishQuestionSolving = () => {
         console.log("@finish question solving");
-        this.props.navigation.navigate('ResultScreen')
+        props.navigation.navigate('ResultScreen')
 
     }
 
-    _preventGoingBack = e => {
+    const _preventGoingBack = e => {
         e.preventDefault();
         Alert.alert(
-            'Çözümler iptal olacak',
-            'Çıkış yapmak istediğinize emin misiniz?',
+            I18n.t("question_solving_back_title"),
+            I18n.t("question_solving_back_desc"),
             [
-                { text: "Iptal", style: 'cancel', onPress: () => { } },
+                { text: I18n.t("question_solving_back_cancel"), style: 'cancel', onPress: () => { } },
                 {
-                    text: 'Geri',
+                    text: I18n.t("question_solving_back_back"),
                     style: 'destructive',
                     onPress: () => {
-                        this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-                        this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-                        this.props.dispatch({ type: "RESET_QUESTION_RESULTS" });
-                        this.props.navigation.dispatch(e.data.action)
+                        props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+                        props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+                        props.dispatch({ type: "RESET_QUESTION_RESULTS" });
+                        props.navigation.dispatch(e.data.action)
                     },
                 },
             ]
         )
     }
 
-    _gotoNextQuestion = async (element, index) => {
+    const _gotoNextQuestion = async (element, index) => {
 
         // TODO: iki ayrı if else içinde iki ayrı dispatch değil bir tane merkezi dispatch'a bağla
 
-        if (this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionOptions[index] == this.props.currentQuestion.questions[this.props.currentQuestion.currentStep].questionAnswer) {
-            await this.props.dispatch({
+        if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer) {
+            await props.dispatch({
                 type: "PUSH_TO_QUESTION_RESULT", payload: {
-                    questionStep: this.props.currentQuestion.currentStep,
+                    questionStep: props.currentQuestion.currentStep,
                     questionAnswerCorrect: true,
                     questionAnswer: element,
                 }
             });
         } else {
-            await this.props.dispatch({
+            await props.dispatch({
                 type: "PUSH_TO_QUESTION_RESULT", payload: {
-                    questionStep: this.props.currentQuestion.currentStep,
+                    questionStep: props.currentQuestion.currentStep,
                     questionAnswerCorrect: false,
                     questionAnswer: element,
                 }
             });
         }
 
-        if ((this.props.currentQuestion.currentStep + 1) < this.props.questionSettings.questionCount) {
-            this.props.dispatch({ type: "GOTO_NEXT_QUESTION" });
+        if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
+            props.dispatch({ type: "GOTO_NEXT_QUESTION" });
         } else {
-            this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-            this.props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+            props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
 
-            console.log("SORU ÇÖZÜMÜ BİTTİ: ", this.props.currentQuestion.questionResults);
+            console.log("SORU ÇÖZÜMÜ BİTTİ: ", props.currentQuestion.questionResults);
 
-            this.props.navigation.removeListener('beforeRemove')
-            this.props.navigation.popToTop();
-            this._finishQuestionSolving();
+            props.navigation.removeListener('beforeRemove')
+            props.navigation.popToTop();
+            _finishQuestionSolving();
         }
 
     }
 
-    componentDidMount() {
-        this.props.navigation.addListener('beforeRemove', (e) => this._preventGoingBack(e))
-
-        if (!this.props.currentQuestion.isStarted) {
-            this.props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
-        }
-
-        this._loadQuestions();
-    }
-
-    render() {
-
-        return (
-            <View style={style.container}>
-                <Header pauseShown onPause={() => this._pause()} />
-                <View style={style.headerContainer}>
-                    <View style={style.headerLeft}>
-                        <FontAwesomeIcon icon={faClock} size={16} color={"#000"} />
-                        {this._renderTimer()}
-                        <Text style={style.timerFinishText}>/ 10sn</Text>
-                    </View>
-                    <View style={style.headerRight}>
-                        <Text style={style.questionCountTitle}>Soru:</Text>
-                        <Text style={style.questionCount}>{(this.props.currentQuestion.currentStep + 1)}</Text>
-                        <Text> /{this.props.questionSettings.questionCount}</Text>
-                    </View>
+    return (
+        <View style={style.container}>
+            <Header pauseShown onPause={() => _pause()} />
+            <View style={style.headerContainer}>
+                <View style={style.headerLeft}>
+                    <FontAwesomeIcon icon={faClock} size={16} color={"#000"} />
+                    {_renderTimer()}
+                    <Text style={style.timerFinishText}>/ 10sn</Text>
                 </View>
-
-                <View style={style.barsWrapper}>
-                    {/* Bars */}
-                    {this._renderBars()}
+                <View style={style.headerRight}>
+                    <Text style={style.questionCountTitle}>{I18n.t("question")}:</Text>
+                    <Text style={style.questionCount}>{(props.currentQuestion.currentStep + 1)}</Text>
+                    <Text> /{props.questionSettings.questionCount}</Text>
                 </View>
-
-                <View style={style.content}>
-                    {this.props.reducer.currentQuestion.isQuestionsLoaded &&
-                        <QuestionSolve
-                            currentQuestion={this.props.currentQuestion}
-                            onAnswerPress={(element, index) => this._gotoNextQuestion(element, index)}
-                        />
-                    }
-                </View>
-
-                {/* #################### MODAL #################### */}
-                <Modal
-                    isVisible={this.props.reducer.pauseModalShown}
-                    onSwipeComplete={() => this._continue()}
-                    swipeDirection={['down']}
-                    style={style.modalWrapper}
-                    onBackdropPress={() => this._continue()}>
-
-                    <View style={style.modal}>
-
-                        <Text style={style.modalTitle}>Durduruldu</Text>
-                        <View style={style.modalSeperator}></View>
-
-                        <TouchableOpacity style={style.button} onPress={() => this._continue()}>
-                            <Text style={style.buttonText}>Devam Et</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => this._goBack()}>
-                            <Text style={style.buttonText}>Çıkış</Text>
-                        </TouchableOpacity>
-                    </View>
-                </Modal>
             </View>
-        );
-    }
-}
 
+            <View style={style.barsWrapper}>
+                {/* Bars */}
+                {_renderBars()}
+            </View>
+
+            <View style={style.content}>
+                {props.reducer.currentQuestion.isQuestionsLoaded &&
+                    <QuestionSolve
+                        currentQuestion={props.currentQuestion}
+                        onAnswerPress={(element, index) => _gotoNextQuestion(element, index)}
+                    />
+                }
+            </View>
+
+            {/* #################### MODAL #################### */}
+            <Modal
+                isVisible={props.reducer.pauseModalShown}
+                onSwipeComplete={() => _continue()}
+                swipeDirection={['down']}
+                style={style.modalWrapper}
+                onBackdropPress={() => _continue()}>
+
+                <View style={style.modal}>
+
+                    <Text style={style.modalTitle}>{I18n.t("modal_paused")}</Text>
+                    <View style={style.modalSeperator}></View>
+
+                    <TouchableOpacity style={style.button} onPress={() => _continue()}>
+                        <Text style={style.buttonText}>{I18n.t("modal_continue")}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => _goBack()}>
+                        <Text style={style.buttonText}>{I18n.t("modal_exit")}</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+        </View>
+    );
+}
 
 const mapStateToProps = (state) => {
     const { reducer } = state;

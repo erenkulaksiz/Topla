@@ -54,5 +54,10 @@ export default StyleSheet.create({
     },
     elementContent: {
         marginTop: 8,
+        fontSize: 18,
+    },
+    elementBasamak: {
+        marginTop: 8,
+        fontSize: 18,
     }
 });

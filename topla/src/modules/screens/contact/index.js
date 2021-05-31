@@ -5,22 +5,19 @@ import style from './style';
 
 import Header from "../../header";
 
-class ContactScreen extends React.Component {
-
-    render() {
-        return (
-            <View style={style.container}>
-                <Header backShown={true} onBack={() => { this.props.navigation.goBack() }} />
-                <View style={style.headerContainer}>
-                    <Text style={style.headerText}>İletişim</Text>
-                    <View style={style.headerBar}></View>
-                </View>
-                <View style={style.content}>
-                    <Text>Contact</Text>
-                </View>
+const ContactScreen = props => {
+    return (
+        <View style={style.container}>
+            <Header backShown={true} onBack={() => { props.navigation.goBack() }} />
+            <View style={style.headerContainer}>
+                <Text style={style.headerText}>İletişim</Text>
+                <View style={style.headerBar}></View>
             </View>
-        );
-    }
+            <View style={style.content}>
+                <Text>Contact</Text>
+            </View>
+        </View>
+    );
 }
 
 const mapStateToProps = (state) => {

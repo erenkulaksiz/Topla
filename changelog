@@ -1,4 +1,11 @@
 
+- 01/06/2021 - Commit 33
+
+> Bütün uygulama artık react hooks kullanır hale getirildi
+> Uygulama tamamen Türkçe ve İngilizceye çevrildi
+> Soru ekranında artık sorunun içeriği düzgün gösteriliyor // #TODO: Sorunun defaultlarını soru ayarlarına girmeden önce dispatch et.
+> Soru ayarlarında sayı arttırma/azaltma kısmındaki hata giderildi. Artık genişliği 160pixel olacak
+
 - 31/05/2021 - Commit 32
 
 > Performans iyileştirmeleri
@@ -18,7 +25,7 @@
 
 - 27/05/2021 - Commit 29
 
-> Sorulara 4 seçenek seçme getirildi
+> Sorulara 4 işlem seçme getirildi (toplama, çıkarma, çarpma, bölme)
 > 1'den fazla işlem seçildiyse sorulara işlemler rastgele geliyor (toplama, çıkarma, çarpma, bölme)
 
 - 25/05/2021 - Commit 28
