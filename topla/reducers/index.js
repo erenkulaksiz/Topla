@@ -27,6 +27,7 @@ const INITIAL_STATE = {
         },
         minRange: 1,
         maxRange: 20,
+        rangeIncremental: 10,
     },
     currentQuestion: {
         currentStep: 0, // -> şuanda çözülen soru
@@ -224,7 +225,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 questionSettings: {
                     ...state.questionSettings,
-                    maxRange: state.questionSettings.maxRange + action.payload,
+                    maxRange: parseInt(state.questionSettings.maxRange) + action.payload,
                 }
             }
         case 'DECREMENT_MAX_RANGE':
@@ -233,7 +234,16 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 questionSettings: {
                     ...state.questionSettings,
-                    maxRange: state.questionSettings.maxRange - action.payload,
+                    maxRange: parseInt(state.questionSettings.maxRange) - action.payload,
+                }
+            }
+        case 'SET_RANGE_INCREMENTAL':
+            console.log("NEW VALUE FOR INCREMENTAL: ", action.payload);
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    rangeIncremental: action.payload,
                 }
             }
         default:

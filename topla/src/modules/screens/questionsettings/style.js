@@ -91,7 +91,7 @@ export default StyleSheet.create({
     setting_increment: {
         flexDirection: "row",
         height: "100%",
-        width: 120, // TODO: NİZAMİ OLACAK
+        width: 130, // TODO: NİZAMİ OLACAK
     },
     settingWrapper: {
         width: "100%",
@@ -131,5 +131,6 @@ export default StyleSheet.create({
     },
     inputfield: {
         padding: 0,
-    }
+        color: "black",
+    },
 });

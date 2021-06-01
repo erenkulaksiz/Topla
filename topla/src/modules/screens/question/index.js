@@ -88,12 +88,60 @@ const QuestionScreen = props => {
                     number2 = number1 ^ number2
                     number1 = number1 ^ number2
                     numberTemp = number1 - number2; // Yeniden hesapla
-                    //alert(number1 + operation(questionOperationRandom) + number2 + "=" + numberTemp);
                 }
             } else if (questionOperationRandom == values[2]) {
                 numberTemp = number1 * number2;
             } else if (questionOperationRandom == values[3]) {
+                const isInt = value => {
+                    return (parseFloat(value) == parseInt(value)) && !isNaN(value);
+                }
+
+                const isPrime = value => {
+                    let result = 0;
+
+                    for (let i = 1; i < value; i++) {
+                        if (value % i == 0) {
+                            result++;
+                        }
+                    }
+
+                    if (result > 1) return false
+                    else return true
+                }
+
+                number1 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
+
+                const aaaa = []; // bölmenin olasılıkları
+
+                while (isPrime(number1)) {
+                    number1 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
+                }
+
+                while (!isInt(number1 / number2)) {
+                    number2 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
+                }
+
+                for (let i = 1; i <= number1; i++) {
+                    let sonuc = number1 / i;
+                    if (isInt(sonuc)) {
+                        aaaa.push(sonuc);
+                    }
+                }
+
+                console.log("AAAA ", aaaa);
+
+                let ERENKULAKSIZ = _.sample(aaaa);
+                while (ERENKULAKSIZ == number1) {
+                    ERENKULAKSIZ = _.sample(aaaa)
+                }
+
+                number2 = ERENKULAKSIZ;
+
+                console.log("SELECTED: ", number2)
+
                 numberTemp = number1 / number2;
+
+                console.log("İŞLEM: " + number1 + " / " + number2 + " = " + numberTemp);
             }
 
             questions.push({
@@ -103,11 +151,10 @@ const QuestionScreen = props => {
                 questionOptions: [],
                 questionOperation: questionOperationRandom,
             });
-
         }
 
         // rasgele seçenek üretimi
-        questions.map((question, index) => {
+        questions.map(question => {
             for (let a = 1; a <= props.questionSettings.optionCount; a++) {
                 if (a == 1) {
                     question.questionOptions.push(question.questionAnswer);
@@ -117,9 +164,8 @@ const QuestionScreen = props => {
                     /*
                     if(question.questionOperation == values[2]){
                         // Çarpmaysa rasgele seçenekleri ona göre üret
-
-                        
-                    }*/
+                    }
+                    */
 
                     if (question.questionOptions.indexOf(randomNumber) < 0) {
                         question.questionOptions.push(randomNumber);
@@ -160,7 +206,7 @@ const QuestionScreen = props => {
         let time = 0;
 
         return (
-            <Text>asdasd</Text>
+            <Text style={{ marginLeft: 8 }}>8sn</Text>
         )
     }
 

@@ -16,10 +16,8 @@ const QuestionSlot = props => {
                 />
                 <Text style={style.elementHardness}>{I18n.t("question_hardnessLevel")} <Text style={{ color: props.question.titleColor, fontWeight: "bold" }}>{props.question.name}</Text></Text>
                 <View style={style.elementBar} />
-                <Text style={style.elementContent}>{I18n.t("question_content")}</Text>
-                <Text style={{ flex: 1, fontSize: 12 }}>{props.question.content}</Text>
-                <Text style={style.elementBasamak}>{I18n.t("question_digit")}</Text>
-                <Text style={{ flex: 1 }}>{props.question.digit}</Text>
+                <Text style={style.elementContent}>{I18n.t("question_content")} <Text style={{ flex: 1, fontSize: 12 }}>{props.question.content}</Text></Text>
+                <Text style={style.elementBasamak}>{I18n.t("question_digit")} <Text style={{ flex: 1 }}>{props.question.digit}</Text></Text>
             </View>
             <TouchableOpacity style={style.play} onPress={() => { props.onPlay() }}>
                 <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />

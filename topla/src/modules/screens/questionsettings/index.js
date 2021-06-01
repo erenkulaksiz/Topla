@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Button, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
@@ -13,7 +13,14 @@ import I18n from "../../../utils/i18n.js";
 const QuestionSettings = props => {
 
     const _navigateToQuestion = question => {
-        props.navigation.navigate('QuestionScreen', { question: question })
+        const keys = Object.keys(props.reducer.questionSettings.operations).filter(k => props.reducer.questionSettings.operations[k] === true);
+
+        console.log("WHO GOT THE KEYS -> ", keys);
+        if (keys.length == 0) {
+            alert("Please select atleast one operation");
+        } else {
+            props.navigation.navigate('QuestionScreen', { question: question })
+        }
     }
 
     const _incrementOptions = () => {
@@ -33,15 +40,41 @@ const QuestionSettings = props => {
     }
 
     const _setMaxRange = value => {
+        if (parseInt(value)) {
+            // Eğer sayı geçerliyse
+            value = parseInt(value)
+        }
+        if (props.reducer.questionSettings.maxRange >= 90) {
+            setIncremental(100);
+        } else if (props.reducer.questionSettings.maxRange < 90) {
+            setIncremental(10);
+        }
         props.dispatch({ type: "SET_MAX_RANGE", payload: value });
     }
 
-    const _incrementMaxRange = value => {
-        props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: value });
+    const _incrementMaxRange = () => {
+
+        // TODO: Increment ve decrement bozuk.
+
+        if (props.reducer.questionSettings.maxRange >= 90) {
+            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 100 });
+        } else if (props.reducer.questionSettings.maxRange <= 100) {
+            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 10 });
+        }
+        console.log(props.reducer.questionSettings.maxRange + " <maxrange - incremental> " + props.reducer.questionSettings.rangeIncremental);
+        props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: props.reducer.questionSettings.rangeIncremental });
     }
 
-    const _decrementMaxRange = value => {
-        props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: value });
+    const _decrementMaxRange = () => {
+        if (!props.reducer.questionSettings.maxRange <= 0) {
+            if (props.reducer.questionSettings.maxRange >= 90) {
+                props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 100 });
+            } else if (props.reducer.questionSettings.maxRange <= 100) {
+                props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 10 });
+            }
+            console.log(props.reducer.questionSettings.maxRange + " <maxrange - incremental> " + props.reducer.questionSettings.rangeIncremental);
+            props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: props.reducer.questionSettings.rangeIncremental });
+        }
     }
 
     return (
@@ -71,20 +104,22 @@ const QuestionSettings = props => {
                             <View style={style.settingWrapper}>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
-                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementMaxRange(10)}>
-                                            <Text style={{ fontSize: 18 }}>-10</Text>
+                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementMaxRange()}>
+                                            <Text style={{ fontSize: 18 }}>-{props.reducer.questionSettings.rangeIncremental}</Text>
                                         </TouchableOpacity>
                                         <View style={style.incrementCenter_field}>
                                             <TextInput
                                                 style={style.inputfield}
-                                                onChangeText={text => { _setMaxRange(text) }}
-                                                value={"" + props.reducer.questionSettings.maxRange}
+                                                onChangeText={text => {
+                                                    _setMaxRange(text);
+                                                }}
+                                                value={props.reducer.questionSettings.maxRange.toString()}
                                                 placeholder="0"
                                                 keyboardType="numeric"
                                             />
                                         </View>
-                                        <TouchableOpacity style={style.increment} onPress={() => _incrementMaxRange(10)}>
-                                            <Text style={{ fontSize: 18 }}>+10</Text>
+                                        <TouchableOpacity style={style.increment} onPress={() => _incrementMaxRange()}>
+                                            <Text style={{ fontSize: 18 }}>+{props.reducer.questionSettings.rangeIncremental}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -126,7 +161,7 @@ const QuestionSettings = props => {
                                 </View>
                             </View>
                         </View>
-                        <View style={style.setting}>
+                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.reducer.questionSettings.operations.addition}
@@ -134,7 +169,7 @@ const QuestionSettings = props => {
                             />
                             <Text style={style.label}>{I18n.t("question_add")}</Text>
                         </View>
-                        <View style={style.setting}>
+                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.reducer.questionSettings.operations.subtraction}
@@ -142,7 +177,7 @@ const QuestionSettings = props => {
                             />
                             <Text style={style.label}>{I18n.t("question_sub")}</Text>
                         </View>
-                        <View style={style.setting}>
+                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.reducer.questionSettings.operations.multiplication}
@@ -150,7 +185,7 @@ const QuestionSettings = props => {
                             />
                             <Text style={style.label}>{I18n.t("question_mul")}</Text>
                         </View>
-                        <View style={style.setting}>
+                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.reducer.questionSettings.operations.division}

@@ -1,7 +1,20 @@
 
+- 02/06/2021 - Commit 34
+
+> README.md güncellendi
+> ./design/ui klasörüne UI tasarımı ile uygulama karşılaştıran ekran görüntüleri eklendi.
+> #TODO: Soru ayarlarında maksimum sayı aralığı en az 10 en fazla 100 olacak şekilde ayarlandı (1000 de olabilir) (eğer sayı 100'den büyükse +10 kısmı +100 olsun, eğer sayı 100 ise +10 -10 olsun)
+> Topla v1.0 hazırlıkları, #TODO: İletişim & Aboneliği Geri Yükle & Reklamları Kaldır butonları işlevsel olacak
+> Soru içeriği ve basamak yazıları tekrar eski haline getirildi
+> Ana ekranda tasarım değiştiği için ekran görüntülerini sıfırdan değiştirdim
+> Soru çözümünde bölümlü işlemlerde küsüratlı sayıların gelmesi çözüldü. Artık sayı aralığında rastgele soruluyor
+> Performans sorunlarını çözerken Redux ile bağlantısı kopan bir parça düzeltildi.
+> Soru ayarlarında sayı aralığı "10" iken +10 yapıldığında sayı aralığının "1010" olması düzeltildi.
+> Soru ayarlarında sayı aralığı +10 -10 iken, 100 üstü sayı girildiğinde otomatik +100 -100 olacak kod yazıldı ancak bozuk
+
 - 01/06/2021 - Commit 33
 
-> Bütün uygulama artık react hooks kullanır hale getirildi
+> Bütün uygulama artık React Hooks kullanır hale getirildi
 > Uygulama tamamen Türkçe ve İngilizceye çevrildi
 > Soru ekranında artık sorunun içeriği düzgün gösteriliyor // #TODO: Sorunun defaultlarını soru ayarlarına girmeden önce dispatch et.
 > Soru ayarlarında sayı arttırma/azaltma kısmındaki hata giderildi. Artık genişliği 160pixel olacak

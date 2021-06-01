@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, TouchableOpacity } from "react-native";
 import style from './style';
+import { connect } from 'react-redux';
 
 const QuestionSolve = props => {
 
@@ -14,12 +15,12 @@ const QuestionSolve = props => {
         <View style={style.container}>
             <View style={style.questionTitleWrapper}>
                 <Text style={style.questionTitle}>
-                    {props.currentQuestion.questions[props.currentQuestion.currentStep].question}
+                    {props.reducer.currentQuestion.questions[props.reducer.currentQuestion.currentStep].question}
                 </Text>
             </View>
 
             <View style={style.buttonsWrapper}>
-                {props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions.map((element, index) => {
+                {props.reducer.currentQuestion.questions[props.reducer.currentQuestion.currentStep].questionOptions.map((element, index) => {
                     return _renderButton(element, index);
                 })}
             </View>
@@ -27,4 +28,9 @@ const QuestionSolve = props => {
     );
 }
 
-export default QuestionSolve;
+const mapStateToProps = (state) => {
+    const { reducer } = state
+    return { reducer }
+};
+
+export default connect(mapStateToProps)(QuestionSolve);
