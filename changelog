@@ -1,29 +1,37 @@
 
+- 03/06/2021 - Commit 35
+
+> Soru ayarları artık soruların varsayılan hallerine göre ayarlanıyor
+> Çok Zor modu eklendi (4 basamaklı)
+> App.js React Hooks'a göre çevrildi
+> Oyun modlarında basamak sayıları, soru sayıları, seçenek sayıları eklendi
+> Bölme işlemlerinde sayıların kopyası gelmesi ve 1 gelmesi kaldırıldı
+
 - 02/06/2021 - Commit 34
 
 > README.md güncellendi
-> ./design/ui klasörüne UI tasarımı ile uygulama karşılaştıran ekran görüntüleri eklendi.
+> ./design/ui klasörüne UI tasarımı ile uygulama karşılaştıran ekran görüntüleri eklendi
 > #TODO: Soru ayarlarında maksimum sayı aralığı en az 10 en fazla 100 olacak şekilde ayarlandı (1000 de olabilir) (eğer sayı 100'den büyükse +10 kısmı +100 olsun, eğer sayı 100 ise +10 -10 olsun)
 > Topla v1.0 hazırlıkları, #TODO: İletişim & Aboneliği Geri Yükle & Reklamları Kaldır butonları işlevsel olacak
 > Soru içeriği ve basamak yazıları tekrar eski haline getirildi
-> Ana ekranda tasarım değiştiği için ekran görüntülerini sıfırdan değiştirdim
+> Ana ekranda tasarım değiştiği için ekran görüntülerini sıfırdan değiştirildi
 > Soru çözümünde bölümlü işlemlerde küsüratlı sayıların gelmesi çözüldü. Artık sayı aralığında rastgele soruluyor
-> Performans sorunlarını çözerken Redux ile bağlantısı kopan bir parça düzeltildi.
+> Performans sorunlarını çözerken Redux ile bağlantısı kopan bir parça düzeltildi
 > Soru ayarlarında sayı aralığı "10" iken +10 yapıldığında sayı aralığının "1010" olması düzeltildi.
 > Soru ayarlarında sayı aralığı +10 -10 iken, 100 üstü sayı girildiğinde otomatik +100 -100 olacak kod yazıldı ancak bozuk
 
 - 01/06/2021 - Commit 33
 
 > Bütün uygulama artık React Hooks kullanır hale getirildi
-> Uygulama tamamen Türkçe ve İngilizceye çevrildi
+> Uygulamaya dil eklendi: İngilizce // Baştan aşağı tüm yazılar çevrildi
 > Soru ekranında artık sorunun içeriği düzgün gösteriliyor // #TODO: Sorunun defaultlarını soru ayarlarına girmeden önce dispatch et.
-> Soru ayarlarında sayı arttırma/azaltma kısmındaki hata giderildi. Artık genişliği 160pixel olacak
+> Soru ayarlarında sayı arttırma/azaltma kısmındaki hata giderildi, artık genişliği 160pixel olacak
 
 - 31/05/2021 - Commit 32
 
 > Performans iyileştirmeleri
-> Ayarlar kısmına abonelik sayfası ve uid eklendi.
-> Ayarlarda uid üstüne dokununca artık kopyalanıyor.
+> Ayarlar kısmına abonelik sayfası ve uid eklendi
+> Ayarlarda uid üstüne dokununca artık kopyalanıyor
 
 - 30/05/2021 - Commit 31
 
@@ -32,9 +40,9 @@
 
 - 27/05/2021 - Commit 30
 
-> Operationlar artık seçilip seçilmediği anlaşılabiliyor
-> Çıkarma işlemince sonucun negatif gelmesi düzeltildi
-> Soru sayısı ve seçenek sayısı ayarlanırken artık max ve min kontrolü yapılıyor
+> İşlemlerin artık seçilip seçilmediği anlaşılabiliyor (hiç biri seçili değilse uyarı veriliyor, en az 1'inin seçilmesi için)
+> Çıkarma işleminde sonucun negatif gelmesi düzeltildi
+> Soru ayarlarında soru sayısı ve seçenek sayısı ayarlanırken artık max ve min kontrolü yapılıyor
 
 - 27/05/2021 - Commit 29
 
@@ -43,7 +51,7 @@
 
 - 25/05/2021 - Commit 28
 
-> Soru çözüm buttonları daha güzel hale getirildi
+> Soru çözüm butonları daha güzel hale getirildi
 > Soru ayarlarında artık seçenek sayısı ayarlanabiliyor 
 > Soru ayarlarında artık soru sayısı ayarlanabiliyor 
 > Soru sonuçları sayfasında artık sonuçlar gösteriliyor
@@ -59,7 +67,7 @@
 
 - 25/05/2021 - Commit 26
 
-> Rasgele soru üretiminde bazı seçeneklerin aynı gelmesi düzeltildi
-> Rasgele soru üretiminde seçeneklerde sorunun cevabıyla aynı seçeneklerin gelmesi düzeltildi
+> Rastgele soru üretiminde bazı seçeneklerin aynı gelmesi düzeltildi
+> Rastgele soru üretiminde seçeneklerde sorunun cevabıyla aynı seçeneklerin gelmesi düzeltildi
 
 > Changelog eklendi

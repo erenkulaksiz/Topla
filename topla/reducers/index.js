@@ -158,6 +158,14 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                     optionCount: state.questionSettings.optionCount - decremental_questionOptions,
                 }
             }
+        case 'SET_OPTION_COUNT':
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    optionCount: action.payload,
+                }
+            }
         case 'INCREMENT_QUESTION_COUNT':
 
             let incremental_questionCount = 0;
@@ -190,6 +198,14 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 questionSettings: {
                     ...state.questionSettings,
                     questionCount: state.questionSettings.questionCount - decremental_questionCount,
+                }
+            }
+        case 'SET_QUESTION_COUNT':
+            return {
+                ...state,
+                questionSettings: {
+                    ...state.questionSettings,
+                    questionCount: action.payload,
                 }
             }
         case 'DARK_MODE':

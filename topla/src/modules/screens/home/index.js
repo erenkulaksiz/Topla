@@ -5,7 +5,7 @@ import style from './style';
 import QuestionSlot from "../../questionslot";
 import Header from "../../header";
 
-import questionTypes from "./questionTypes";
+import questionTypes from "../../../utils/config/questionTypes.js";
 
 import I18n from "../../../utils/i18n.js";
 

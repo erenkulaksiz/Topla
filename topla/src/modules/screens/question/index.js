@@ -48,9 +48,9 @@ const QuestionScreen = props => {
     }
 
     const _loadQuestions = () => {
-        // TODO: Question settings'deki ayarlara göre currentQuestion.questions'a rasgele seçenekler ile pushlayacak
-
         console.log("@Load Questions")
+
+        const ILAYDA = performance.now();
 
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
 
@@ -69,6 +69,8 @@ const QuestionScreen = props => {
             let number1 = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
             let number2 = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
             let numberTemp = 0;
+
+            console.log("________________________");
 
             const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
             const questionOperationRandom = keys[_.sample(Object.keys(keys))]
@@ -99,11 +101,7 @@ const QuestionScreen = props => {
                 const isPrime = value => {
                     let result = 0;
 
-                    for (let i = 1; i < value; i++) {
-                        if (value % i == 0) {
-                            result++;
-                        }
-                    }
+                    for (let i = 1; i < value; i++) { if (value % i == 0) result++; }
 
                     if (result > 1) return false
                     else return true
@@ -121,7 +119,7 @@ const QuestionScreen = props => {
                     number2 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
                 }
 
-                for (let i = 1; i <= number1; i++) {
+                for (let i = 1; i < number1; i++) {
                     let sonuc = number1 / i;
                     if (isInt(sonuc)) {
                         aaaa.push(sonuc);
@@ -131,11 +129,15 @@ const QuestionScreen = props => {
                 console.log("AAAA ", aaaa);
 
                 let ERENKULAKSIZ = _.sample(aaaa);
+
                 while (ERENKULAKSIZ == number1) {
                     ERENKULAKSIZ = _.sample(aaaa)
                 }
 
                 number2 = ERENKULAKSIZ;
+
+                console.log("SAYI1: ", number1);
+                console.log("SAYI2: ", number2);
 
                 console.log("SELECTED: ", number2)
 
@@ -179,6 +181,10 @@ const QuestionScreen = props => {
         questions.map(question => {
             question.questionOptions.sort(() => Math.random() - 0.5);
         })
+
+        const ILAYDA_SONRA = performance.now();
+
+        console.log("İİİLLLLLAAAAYYYYDDDAAAAA " + (ILAYDA_SONRA - ILAYDA))
 
         props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });

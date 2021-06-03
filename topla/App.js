@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { NavigationContainer } from '@react-navigation/native';
@@ -22,9 +22,9 @@ const store = createStore(reducer);
 
 const Stack = createStackNavigator();
 
-class App extends React.Component {
+const App = props => {
 
-  _setDeviceInfo = async () => {
+  const _setDeviceInfo = async () => {
     let deviceInfo = {
       uid: 'topla_' + getUniqueId(),
       id: getDeviceId(),
@@ -45,57 +45,54 @@ class App extends React.Component {
     SplashScreen.hide();
   }
 
-  componentDidMount() {
-    console.log("@App Launched");
-    this._setDeviceInfo();
-  }
+  useEffect(() => {
+    _setDeviceInfo();
+  }, []);
 
-  render() {
-    return (
-      <Provider store={store}>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Home"
-            screenOptions={{
-              headerShown: false,
-              gestureEnabled: true,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}>
-            <Stack.Screen
-              name="Home"
-              component={Main}
-            />
-            <Stack.Screen
-              name="QuestionSettings"
-              component={QuestionSettings}
-            />
-            <Stack.Screen
-              name="PremiumScreen"
-              component={PremiumScreen}
-            />
-            <Stack.Screen
-              name="ContactScreen"
-              component={ContactScreen}
-            />
-            <Stack.Screen
-              name="QuestionScreen"
-              component={QuestionScreen}
-              options={{
-                gestureEnabled: false,
-              }}
-            />
-            <Stack.Screen
-              name="ResultScreen"
-              component={ResultScreen}
-              options={{
-                gestureEnabled: false,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
-    );
-  }
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerShown: false,
+            gestureEnabled: true,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}>
+          <Stack.Screen
+            name="Home"
+            component={Main}
+          />
+          <Stack.Screen
+            name="QuestionSettings"
+            component={QuestionSettings}
+          />
+          <Stack.Screen
+            name="PremiumScreen"
+            component={PremiumScreen}
+          />
+          <Stack.Screen
+            name="ContactScreen"
+            component={ContactScreen}
+          />
+          <Stack.Screen
+            name="QuestionScreen"
+            component={QuestionScreen}
+            options={{
+              gestureEnabled: false,
+            }}
+          />
+          <Stack.Screen
+            name="ResultScreen"
+            component={ResultScreen}
+            options={{
+              gestureEnabled: false,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
+  );
 }
 
 export default App;

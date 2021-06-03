@@ -12,6 +12,8 @@ export default {
     question_easy: "Easy",
     question_medium: "Medium",
     question_hard: "Hard",
+    question_veryhard: "Very Hard",
+    question_extreme: "Extreme",
     question_custom: "Custom",
     question_add: "Addition",
     question_sub: "Subtraction",

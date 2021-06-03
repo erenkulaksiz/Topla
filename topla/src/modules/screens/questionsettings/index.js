@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Button, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
@@ -11,6 +11,30 @@ import Header from "../../header";
 import I18n from "../../../utils/i18n.js";
 
 const QuestionSettings = props => {
+
+    useEffect(() => {
+        // @setQuestionParams
+        console.log("@params: ", props.route.params.question);
+        _setQuestionParams(props.route.params.question);
+    }, []);
+
+    const _setQuestionParams = question => {
+        // setMaxRange
+        props.dispatch({ type: "SET_MAX_RANGE", payload: question.maxRange });
+        // setOperations
+        props.dispatch({
+            type: "SET_QUESTION_SETTINGS_OPERATIONS",
+            payload: {
+                addition: (question.operations.includes("addition")),
+                subtraction: (question.operations.includes("subtraction")),
+                multiplication: (question.operations.includes("multiplication")),
+                division: (question.operations.includes("division")),
+            }
+        });
+        // setQuestionCount
+        props.dispatch({ type: "SET_QUESTION_COUNT", payload: question.questionCount });
+        props.dispatch({ type: "SET_OPTION_COUNT", payload: question.optionCount });
+    }
 
     const _navigateToQuestion = question => {
         const keys = Object.keys(props.reducer.questionSettings.operations).filter(k => props.reducer.questionSettings.operations[k] === true);
@@ -44,11 +68,12 @@ const QuestionSettings = props => {
             // Eğer sayı geçerliyse
             value = parseInt(value)
         }
+        /*
         if (props.reducer.questionSettings.maxRange >= 90) {
             setIncremental(100);
         } else if (props.reducer.questionSettings.maxRange < 90) {
             setIncremental(10);
-        }
+        }*/
         props.dispatch({ type: "SET_MAX_RANGE", payload: value });
     }
 

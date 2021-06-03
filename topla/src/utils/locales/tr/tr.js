@@ -12,6 +12,8 @@ export default {
     question_easy: "Kolay",
     question_medium: "Orta",
     question_hard: "Zor",
+    question_veryhard: "Çok Zor",
+    question_extreme: "Imkansız",
     question_custom: "Özelleştirilmiş",
     question_add: "Toplama",
     question_sub: "Çıkarma",
