@@ -1,4 +1,11 @@
 
+- 04/06/2021 - Commit 36 -> Commit 40
+
+> README.md güncellendi (Commit 36 -> Commit 40)
+> Node.js sunucusu için ilk hazırlıklar & veritabanı bağlantısı yapıldı 
+> Veritabanına veri yazılabiliyor & veri okunabiliyor
+> Topla uygulamasının tabanı için Api.js tabanı oluşturuldu & bağlantı yapılacak (TEST EDİLMEDİ)
+
 - 03/06/2021 - Commit 35
 
 > Soru ayarları artık soruların varsayılan hallerine göre ayarlanıyor
@@ -35,7 +42,7 @@
 
 - 30/05/2021 - Commit 31
 
-> Sorularda sorulan rasgele sayıların maksimum aralığı artık soru ayarlarında ayarlanabiliyor
+> Sorularda sorulan rastgele sayıların maksimum aralığı artık soru ayarlarında ayarlanabiliyor
 > Soru ayarlarındaki siyah barlar kaldırıldı
 
 - 27/05/2021 - Commit 30

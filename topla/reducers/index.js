@@ -9,7 +9,15 @@ const config = {
 }
 
 const INITIAL_STATE = {
-    deviceInfo: {},
+    deviceInfo: {
+        /*
+            uid: 'topla_' + getUniqueId(),
+            id: getDeviceId(),
+            buildNumber: getBuildNumber(),
+            model: getModel(),
+            bundleId: getBundleId(),
+        */
+    },
     connection: {},
     pauseModalShown: false,
     settings: {

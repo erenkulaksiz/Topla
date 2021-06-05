@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Alert, TouchableOpacity, Button } from 'react-native';
 import style from './style';
@@ -13,7 +13,6 @@ import I18n from "../../../utils/i18n.js";
 import QuestionSolve from '../../questionsolve';
 
 const QuestionScreen = props => {
-    const [timer, setTimer] = useState(0);
 
     useEffect(() => {
         props.navigation.addListener('beforeRemove', (e) => _preventGoingBack(e))
@@ -50,13 +49,18 @@ const QuestionScreen = props => {
     const _loadQuestions = () => {
         console.log("@Load Questions")
 
-        const ILAYDA = performance.now();
+        const performance_begin = performance.now();
 
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
 
         const questions = [];
 
-        const values = ["addition", "subtraction", "multiplication", "division"];
+        const values = [
+            "addition",
+            "subtraction",
+            "multiplication",
+            "division"
+        ];
 
         const operation = value => {
             if (value == values[0]) return "+"
@@ -72,13 +76,9 @@ const QuestionScreen = props => {
 
             console.log("________________________");
 
-            const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
-            const questionOperationRandom = keys[_.sample(Object.keys(keys))]
+            const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true); // true olan keyleri arraya al
+            const questionOperationRandom = keys[_.sample(Object.keys(keys))] // arraydan rastgele key getir
             console.log("KEY: ", questionOperationRandom)
-
-            if (keys.length == 0) {
-                alert("OPERATİON SEÇMEN LAZIM");
-            }
 
             if (questionOperationRandom == values[0]) {
                 numberTemp = number1 + number2;
@@ -109,7 +109,7 @@ const QuestionScreen = props => {
 
                 number1 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
 
-                const aaaa = []; // bölmenin olasılıkları
+                const bolenler = []; // bölmenin olasılıkları
 
                 while (isPrime(number1)) {
                     number1 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
@@ -122,24 +122,19 @@ const QuestionScreen = props => {
                 for (let i = 1; i < number1; i++) {
                     let sonuc = number1 / i;
                     if (isInt(sonuc)) {
-                        aaaa.push(sonuc);
+                        bolenler.push(sonuc);
                     }
                 }
 
-                console.log("AAAA ", aaaa);
+                console.log("bölenler ", bolenler);
 
-                let ERENKULAKSIZ = _.sample(aaaa);
+                let randomKey = _.sample(bolenler); // Arraydan rastgele bölen al
 
-                while (ERENKULAKSIZ == number1) {
-                    ERENKULAKSIZ = _.sample(aaaa)
+                while (randomKey == number1) {
+                    randomKey = _.sample(bolenler)
                 }
 
-                number2 = ERENKULAKSIZ;
-
-                console.log("SAYI1: ", number1);
-                console.log("SAYI2: ", number2);
-
-                console.log("SELECTED: ", number2)
+                number2 = randomKey;
 
                 numberTemp = number1 / number2;
 
@@ -182,12 +177,12 @@ const QuestionScreen = props => {
             question.questionOptions.sort(() => Math.random() - 0.5);
         })
 
-        const ILAYDA_SONRA = performance.now();
-
-        console.log("İİİLLLLLAAAAYYYYDDDAAAAA " + (ILAYDA_SONRA - ILAYDA))
-
         props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
+
+        const performance_after = performance.now();
+
+        console.log("generation performance: " + (performance_after - performance_begin) + "ms")
         console.log("questions ", questions);
     }
 
@@ -208,8 +203,6 @@ const QuestionScreen = props => {
     }
 
     const _renderTimer = () => {
-
-        let time = 0;
 
         return (
             <Text style={{ marginLeft: 8 }}>8sn</Text>
@@ -247,23 +240,13 @@ const QuestionScreen = props => {
 
         // TODO: iki ayrı if else içinde iki ayrı dispatch değil bir tane merkezi dispatch'a bağla
 
-        if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer) {
-            await props.dispatch({
-                type: "PUSH_TO_QUESTION_RESULT", payload: {
-                    questionStep: props.currentQuestion.currentStep,
-                    questionAnswerCorrect: true,
-                    questionAnswer: element,
-                }
-            });
-        } else {
-            await props.dispatch({
-                type: "PUSH_TO_QUESTION_RESULT", payload: {
-                    questionStep: props.currentQuestion.currentStep,
-                    questionAnswerCorrect: false,
-                    questionAnswer: element,
-                }
-            });
-        }
+        await props.dispatch({
+            type: "PUSH_TO_QUESTION_RESULT", payload: {
+                questionStep: props.currentQuestion.currentStep,
+                questionAnswerCorrect: (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer),
+                questionAnswer: element,
+            }
+        });
 
         if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
             props.dispatch({ type: "GOTO_NEXT_QUESTION" });
