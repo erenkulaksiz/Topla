@@ -1,5 +1,10 @@
 
-- 04/06/2021 - Commit 36 -> Commit 40
+- 06/06/2021 - Commit 37
+
+> Api bağlantısı yapıldı
+> Apiyle iletişim için Redux kullanılıyor
+
+- 06/06/2021 - Commit 36 -> Commit 40
 
 > README.md güncellendi (Commit 36 -> Commit 40)
 > Node.js sunucusu için ilk hazırlıklar & veritabanı bağlantısı yapıldı 

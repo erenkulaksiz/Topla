@@ -1,5 +1,11 @@
-
 import { combineReducers } from 'redux';
+import Config from 'react-native-config';
+import {
+    getBuildNumber,
+} from 'react-native-device-info';
+import { NativeModules, Platform } from 'react-native';
+import * as RNLocalize from 'react-native-localize';
+//import base64 from 'react-native-base64';
 
 const config = {
     maxSoru: 15,
@@ -8,10 +14,16 @@ const config = {
     minSecenek: 2,
 }
 
+const deviceLanguage =
+    Platform.OS === 'ios'
+        ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
+        : NativeModules.I18nManager.localeIdentifier;
+
 const INITIAL_STATE = {
     deviceInfo: {
         /*
-            uid: 'topla_' + getUniqueId(),
+            uuid: 'topla_' + getUniqueId(),
             id: getDeviceId(),
             buildNumber: getBuildNumber(),
             model: getModel(),
@@ -20,6 +32,9 @@ const INITIAL_STATE = {
     },
     connection: {},
     pauseModalShown: false,
+    API: {
+        register: {},
+    },
     settings: {
         darkMode: false,
     },
@@ -270,6 +285,58 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                     rangeIncremental: action.payload,
                 }
             }
+        case 'API_REGISTER':
+            console.log("@API_REGISTER");
+
+            console.log("[!!!] USING URL: ", (Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL) + '/device');
+
+            const registerDevice = async () => {
+                const response = await fetch((Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL) + '/device', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uuid: state.deviceInfo.uuid,
+                        bundle_id: state.deviceInfo.bundleId,
+                        platform: Platform.OS,
+                        channel: "organic",
+                        language_code: deviceLanguage,
+                        adjust_attr: "test aaa adjust",
+                        app_version: getBuildNumber(),
+                        country_code: RNLocalize.getCountry(),
+                        timezone: RNLocalize.getTimeZone(),
+                        model: state.deviceInfo.model,
+                    }),
+                }).then(response => {
+                    response.json().then((data) => {
+                        console.log("API_REGISTER: ", data);
+
+                        return {
+                            ...state,
+                            API: {
+                                ...state.API,
+                                register: data,
+                            }
+                        }
+                    })
+                }).catch(function (error) {
+                    throw error;
+                });
+                return response
+            }
+
+            registerDevice().catch(err => {
+                console.log("[ERROR]: ", err);
+                return {
+                    ...state,
+                    API: {
+                        ...state.API,
+                        register: "error " + err,
+                    }
+                }
+            });
         default:
             return state
     }

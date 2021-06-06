@@ -9,7 +9,13 @@ app.listen(3000, () => {
 
 const connectionString = "mongodb+srv://eren:KuGWKdlTKkR1oHHy@cluster0.ic4u5.mongodb.net/Cluster0?retryWrites=true&w=majority";
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.use(express.json({
+    type: ['application/json', 'text/plain']
+}))
 
 MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client) => {
     if (err) return console.error(err)
@@ -17,12 +23,15 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
     const db = client.db('star-wars-quotes')
     const quotesCollection = db.collection('quotes')
 
+    app.post('/device', (req, res) => {
+        console.log("Got request! ", req.body);
+        return res.json({ "success": "true" });
+    })
+
+    /*
     app.get('/rq', (req, res) => {
         quotesCollection.insertOne({
-            ilayda: "cekemeyen",
-            burc: "ucuzler",
-            sevgilisi: "23232",
-            dogumtarihi: "2002/06/15",
+            sadas: "asdas",
         })
             .then(result => {
                 console.log(result)
@@ -53,7 +62,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
             })
             .catch(error => console.error(error))
 
-    })
+    })*/
 })
 
 /*

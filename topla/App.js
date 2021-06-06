@@ -16,6 +16,10 @@ import ContactScreen from './src/modules/screens/contact';
 import QuestionScreen from './src/modules/screens/question';
 import ResultScreen from './src/modules/screens/result';
 
+// API
+//import API from './src/classes/api';
+//const MyApi = new API();
+
 import reducer from './reducers';
 
 const store = createStore(reducer);
@@ -26,7 +30,7 @@ const App = props => {
 
   const _setDeviceInfo = async () => {
     let deviceInfo = {
-      uid: 'topla_' + getUniqueId(),
+      uuid: 'topla_' + getUniqueId(),
       id: getDeviceId(),
       buildNumber: getBuildNumber(),
       model: getModel(),
@@ -45,8 +49,24 @@ const App = props => {
     SplashScreen.hide();
   }
 
+  const _API_REGISTER = async () => {
+    await _setDeviceInfo();
+    store.dispatch({ type: 'API_REGISTER' });
+  }
+
   useEffect(() => {
-    _setDeviceInfo();
+    _API_REGISTER();
+
+    //console.log("API", MyApi.registerDevice());
+    /*
+    API.registerDevice()
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("response -> ", json);
+      })
+      .catch((error) => {
+        console.error(error);
+      });*/
   }, []);
 
   return (
