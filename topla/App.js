@@ -16,17 +16,26 @@ import ContactScreen from './src/modules/screens/contact';
 import QuestionScreen from './src/modules/screens/question';
 import ResultScreen from './src/modules/screens/result';
 
-// API
-//import API from './src/classes/api';
-//const MyApi = new API();
-
 import reducer from './reducers';
 
 const store = createStore(reducer);
 
 const Stack = createStackNavigator();
 
-const App = props => {
+const App = () => {
+
+  const _checkConnection = async () => {
+    NetInfo.addEventListener((state) => {
+      store.dispatch({ type: 'SET_DEVICE_CONNECTION', payload: { connectionType: state.type, isConnected: state.isConnected } });
+      if (store.getState().reducer.connection.isConnected) {
+        store.dispatch({ type: 'API_REGISTER' });
+        SplashScreen.hide();
+      } else {
+        console.log("[!!!] cihazda bağlantı yok")
+        SplashScreen.hide();
+      }
+    });
+  }
 
   const _setDeviceInfo = async () => {
     let deviceInfo = {
@@ -37,36 +46,19 @@ const App = props => {
       bundleId: getBundleId(),
     }
 
-    NetInfo.addEventListener(state => {
-      store.dispatch({ type: 'SET_DEVICE_CONNECTION', payload: { connectionType: state.type, isConnected: state.isConnected } });
-    });
-
     await getLastUpdateTime().then((lastUpdateTime) => {
       deviceInfo.lastUpdated = lastUpdateTime;
       store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
     });
-
-    SplashScreen.hide();
   }
 
-  const _API_REGISTER = async () => {
+  const _INITIALIZE = async () => {
     await _setDeviceInfo();
-    store.dispatch({ type: 'API_REGISTER' });
+    await _checkConnection();
   }
 
   useEffect(() => {
-    _API_REGISTER();
-
-    //console.log("API", MyApi.registerDevice());
-    /*
-    API.registerDevice()
-      .then((response) => response.json())
-      .then((json) => {
-        console.log("response -> ", json);
-      })
-      .catch((error) => {
-        console.error(error);
-      });*/
+    _INITIALIZE();
   }, []);
 
   return (

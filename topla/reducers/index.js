@@ -7,6 +7,8 @@ import { NativeModules, Platform } from 'react-native';
 import * as RNLocalize from 'react-native-localize';
 //import base64 from 'react-native-base64';
 
+const API_URL = (Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL)
+
 const config = {
     maxSoru: 15,
     minSoru: 2,
@@ -34,6 +36,8 @@ const INITIAL_STATE = {
     pauseModalShown: false,
     API: {
         register: {},
+        apiError: "",
+        apiStatus: 200,
     },
     settings: {
         darkMode: false,
@@ -288,10 +292,10 @@ const mainReducer = (state = INITIAL_STATE, action) => {
         case 'API_REGISTER':
             console.log("@API_REGISTER");
 
-            console.log("[!!!] USING URL: ", (Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL) + '/device');
+            console.log("[!!!] USING URL: ", API_URL);
 
             const registerDevice = async () => {
-                const response = await fetch((Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL) + '/device', {
+                const response = await fetch(API_URL + '/device', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -310,9 +314,12 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                         model: state.deviceInfo.model,
                     }),
                 }).then(response => {
+                    console.log("response status ", response.status);
                     response.json().then((data) => {
                         console.log("API_REGISTER: ", data);
-
+                        if (response.status == 404) {
+                            throw [data, response.status];
+                        }
                         return {
                             ...state,
                             API: {
@@ -333,10 +340,56 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                     ...state,
                     API: {
                         ...state.API,
-                        register: "error " + err,
+                        apiError: err[0],
+                        apiStatus: err[1],
                     }
                 }
             });
+        case 'API_SEND_MESSAGE':
+            console.log("@API_SEND_MESSAGE");
+
+            console.log("[!!!] USING URL: ", API_URL);
+
+            const sendMessage = async () => {
+                const response = await fetch(API_URL + '/message', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uuid: state.deviceInfo.uuid,
+                        bundle_id: state.deviceInfo.bundleId,
+                        platform: Platform.OS,
+                        channel: "organic",
+                        language_code: deviceLanguage,
+                        adjust_attr: "test aaa adjust",
+                        app_version: getBuildNumber(),
+                        country_code: RNLocalize.getCountry(),
+                        timezone: RNLocalize.getTimeZone(),
+                        model: state.deviceInfo.model,
+                        message: action.payload.message,
+                        email: action.payload.email,
+                    }),
+                }).then(response => {
+                    console.log("response status ", response.status);
+                    response.json().then((data) => {
+                        console.log("API_REGISTER: ", data);
+                        if (response.status == 404) {
+                            throw [data, response.status];
+                        }
+                    })
+                }).catch(function (error) {
+                    throw error;
+                });
+                return response
+            }
+
+            sendMessage().catch(err => {
+                console.log("[ERROR]: ", err);
+            });
+
+            return state
         default:
             return state
     }
