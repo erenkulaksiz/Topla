@@ -1,6 +1,13 @@
 
+- 07/06/2021 - Topla(v1.0) - Topla Server(v1.0)
 
-- 06/06/2021 - Commit 38
+> Commit sayıları yerine versiyona geçiş yapıldı.
+> Sunucu tarafında artık gelen kayıt isteklerinde API_TOKEN üretiliyor, token göndermeyen istekler reddediliyor
+> Reklam gösterimleri Admob ile çalışıyor
+> #TODO: Api ile mesaj gönderiminde kontrol edilecek zart zurt
+> Token doğru çalışıyor
+
+- 07/06/2021 - Commit 38
 
 > Apiye UUID ve diğer bilgiler gönderildiğinde yoksa kaydediliyor varsa geri gönderiliyor
 > Reklam gösterimi için hazırlıklar

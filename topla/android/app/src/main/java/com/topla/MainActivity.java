@@ -22,12 +22,5 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.show(this); 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
     }
 }

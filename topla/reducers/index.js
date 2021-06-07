@@ -38,6 +38,7 @@ const INITIAL_STATE = {
         register: {},
         apiError: "",
         apiStatus: 200,
+        API_TOKEN: null,
     },
     settings: {
         darkMode: false,
@@ -295,7 +296,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
             console.log("[!!!] USING URL: ", API_URL);
 
             const registerDevice = async () => {
-                const response = await fetch(API_URL + '/device', {
+                return await fetch(API_URL + '/device', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -313,42 +314,40 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                         timezone: RNLocalize.getTimeZone(),
                         model: state.deviceInfo.model,
                     }),
-                }).then(response => {
-                    console.log("response status ", response.status);
-                    response.json().then((data) => {
-                        console.log("API_REGISTER: ", data);
-                        if (response.status == 404) {
-                            throw [data, response.status];
-                        }
-                        return {
-                            ...state,
-                            API: {
-                                ...state.API,
-                                register: data,
-                            }
-                        }
-                    })
                 }).catch(function (error) {
                     throw error;
                 });
-                return response
             }
 
-            registerDevice().catch(err => {
-                console.log("[ERROR]: ", err);
-                return {
-                    ...state,
-                    API: {
-                        ...state.API,
-                        apiError: err[0],
-                        apiStatus: err[1],
+            registerDevice().then(response => {
+                console.log("response status ", response.status);
+                response.json().then((data) => {
+                    console.log("API_REGISTER: ", data);
+                    if (data.success) {
+                        console.log("@API_REGISTER SUCCESSFUL");
+                        console.log("API TOKEN: ", data.API_TOKEN);
+                        state.API = data;
+
+                    } else {
+                        console.log("@API_REGISTER ERROR");
                     }
-                }
+                    if (response.status == 404) {
+                        throw [data, response.status];
+                    }
+                })
+            }).catch(err => {
+                console.log("[ERROR]: ", err);
+                state.API.apiError = err[0];
+                state.API.apiStatus = err[1];
             });
+
+            return state
         case 'API_SEND_MESSAGE':
             console.log("@API_SEND_MESSAGE");
 
             console.log("[!!!] USING URL: ", API_URL);
+
+            console.log("MESSAGE: ", action.payload);
 
             const sendMessage = async () => {
                 const response = await fetch(API_URL + '/message', {
@@ -370,11 +369,13 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                         model: state.deviceInfo.model,
                         message: action.payload.message,
                         email: action.payload.email,
+                        topic: action.payload.topic,
+                        API_TOKEN: state.API.API_TOKEN,
                     }),
                 }).then(response => {
                     console.log("response status ", response.status);
                     response.json().then((data) => {
-                        console.log("API_REGISTER: ", data);
+                        console.log("API_SEND_MESSAGE RESULT: ", data);
                         if (response.status == 404) {
                             throw [data, response.status];
                         }

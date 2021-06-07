@@ -7,6 +7,7 @@ import com.facebook.react.ReactApplication;
 import com.sbugert.rnadmob.RNAdMobPackage;
 import com.sbugert.rnadmob.RNAdMobPackage;
 import com.sbugert.rnadmob.RNAdMobPackage;
+import com.sbugert.rnadmob.RNAdMobPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;

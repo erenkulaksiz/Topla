@@ -55,6 +55,7 @@ const App = () => {
   const _INITIALIZE = async () => {
     await _setDeviceInfo();
     await _checkConnection();
+    console.log("GOT API_TOKEN: ", store.getState().API);
   }
 
   useEffect(() => {

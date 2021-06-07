@@ -34,6 +34,5 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://www.jitpack.io' }
-        implementation 'com.google.android.gms:play-services-ads:19.8.0'
     }
 }

@@ -8,6 +8,7 @@ import Header from "../../header";
 const ContactScreen = props => {
 
     const _sendToAPI = () => {
+        console.log("trying to send message");
         props.dispatch({ type: "API_SEND_MESSAGE", payload: { message: "MESAJJJ", email: "royjce@gmail.com" } });
     }
 
@@ -20,7 +21,7 @@ const ContactScreen = props => {
             </View>
             <View style={style.content}>
                 <Text>Contact</Text>
-                <Button title='GONDER' onPress={() => _sendToAPI}></Button>
+                <Button title='GONDER' onPress={() => _sendToAPI()}></Button>
             </View>
         </View>
     );

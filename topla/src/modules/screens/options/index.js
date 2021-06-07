@@ -76,10 +76,17 @@ const OptionsScreen = props => {
                         </View>
                         <Text style={style.buttonText}>{I18n.t("settings_darkMode")}</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => console.log("api", props.reducer.API)}>
+                        <View style={style.buttonIcon}>
+                            <FontAwesomeIcon icon={faAdjust} size={16} color={"#000"} />
+                        </View>
+                        <Text style={style.buttonText}>Debug</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={style.altContent}>
                     <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uid); alert("UID Kopyalandı") }}>
-                        <Text style={style.altText}>UID: {props.reducer.deviceInfo.uid}</Text>
+                        <Text style={style.altText}>UID: {props.reducer.deviceInfo.uuid}</Text>
+                        <Text style={style.altText}>TOKEN: {props.reducer.API.API_TOKEN ? props.reducer.API.API_TOKEN : "no token"}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

@@ -9,6 +9,10 @@ import questionTypes from "../../../utils/config/questionTypes.js";
 
 import I18n from "../../../utils/i18n.js";
 
+import {
+    AdMobBanner,
+} from 'react-native-admob'
+
 const HomeScreen = props => {
 
     const _questionPlay = question => {
@@ -31,6 +35,14 @@ const HomeScreen = props => {
                     />)
                 })}
             </ScrollView>
+            <View style={{ width: "100%" }}>
+                <AdMobBanner
+                    adSize="smartBanner"
+                    adUnitID="ca-app-pub-3940256099942544/6300978111"
+                    testDevices={[AdMobBanner.simulatorId]}
+                    onAdFailedToLoad={error => console.error(error)}
+                />
+            </View>
         </View>
     );
 }
