@@ -15,6 +15,7 @@ import QuestionSolve from '../../questionsolve';
 const QuestionScreen = props => {
 
     const [timer, setTimer] = useState(0);
+    const [thisQuestionTime, setQTime] = useState(0);
     const [timerStarted, setTimerStarted] = useState(false);
 
     useEffect(() => {
@@ -47,7 +48,7 @@ const QuestionScreen = props => {
             /*clearInterval(_timer.timer);
             setTime(0);*/
             //setTimerStarted(false);
-            setResetTimer(true);
+            setTimer(0);
         },
         pause: () => {
             /*
@@ -80,16 +81,26 @@ const QuestionScreen = props => {
         },
         _render: () => {
             return (
-                <Text style={{ marginLeft: 8 }}>{timer}</Text>
+                <Text style={{ marginLeft: 8 }}>{prettyMs(timer - thisQuestionTime, { colonNotation: false })}</Text>
             )
         }
     }
 
     useEffect(() => {
+        let timeout = null;
         if (timerStarted) {
-            const timeout = setTimeout(() => {
+            timeout = setTimeout(() => {
                 setTimer(timer + 100);
+                if ((timer - thisQuestionTime) >= props.questionSettings.perQuestionTime) {
+                    setTimerStarted(false);
+                    //clearTimeout(timeout);
+                }
             }, 100);
+        }
+        return () => {
+            if (!timerStarted) {
+                clearTimeout(timeout);
+            }
         }
     }, [timer, timerStarted]);
 
@@ -111,6 +122,7 @@ const QuestionScreen = props => {
         },
         _finishQuestionSolving: () => {
             console.log("@finish question solving");
+            _timer.pause();
             props.navigation.navigate('ResultScreen');
         },
         _renderBars: () => {
@@ -164,20 +176,59 @@ const QuestionScreen = props => {
                     questionAnswerCorrect: (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer),
                     questionAnswer: element,
                     questionSolveTime: timer,
+                    questionTime: timer - thisQuestionTime,
                 }
             });
             if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
                 props.dispatch({ type: "GOTO_NEXT_QUESTION" });
-                _timer.clear();
+                //
+                setQTime(timer);
+                console.log("qTime ", timer);
             } else {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
                 props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
 
+                // Toplam statları hesapla
+
+                /* 
+                    stats: {
+                        finalTime: 0,
+                        totalCorrect: 0,
+                        totalEmpty: 0,
+                        totalWrong: 0,
+                    }
+                */
+
+                let totalCorrect = 0;
+                let totalWrong = 0;
+                props.currentQuestion.questionResults.map((element, index) => {
+                    if (element.questionAnswerCorrect) {
+                        totalCorrect += 1;
+                    } else {
+                        totalWrong += 1;
+                    }
+                })
+
+                console.log("TOTAL CORRECT: " + totalCorrect + " TOTAL WRONG: " + totalWrong);
+
+                props.dispatch({
+                    type: "SET_STATS", payload: {
+                        finalTime: timer,
+                        totalCorrect: totalCorrect,
+                        totalWrong: totalWrong,
+                        totalEmpty: 0,
+                    }
+                });
+
                 console.log("SORU ÇÖZÜMÜ BİTTİ: ", props.currentQuestion.questionResults);
+
+                // Timer'ı durdur
+
+                _timer.pause();
 
                 props.navigation.removeListener('beforeRemove')
                 props.navigation.popToTop();
-                _finishQuestionSolving();
+                page._finishQuestionSolving();
             }
         }
     }
@@ -236,7 +287,7 @@ const QuestionScreen = props => {
                     let result = 0;
                     for (let i = 1; i < value; i++) { if (value % i == 0) result++; }
                     if (result > 1) return false
-                    else return true
+                    return true
                 }
 
                 number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
@@ -321,7 +372,7 @@ const QuestionScreen = props => {
                 <View style={style.headerLeft}>
                     <FontAwesomeIcon icon={faClock} size={16} color={"#000"} />
                     {_timer._render()}
-                    <Text style={style.timerFinishText}>/ 10sn</Text>
+                    <Text style={style.timerFinishText}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
                 </View>
                 <View style={style.headerRight}>
                     <Text style={style.questionCountTitle}>{I18n.t("question")}:</Text>

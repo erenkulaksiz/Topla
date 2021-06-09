@@ -4,7 +4,7 @@ import { Text, View, Button, ScrollView } from 'react-native';
 import style from './style';
 import I18n from "../../../utils/i18n.js";
 import Header from "../../header";
-//import question from '../question';
+import prettyMs from 'pretty-ms';
 
 const ResultScreen = props => {
 
@@ -21,6 +21,16 @@ const ResultScreen = props => {
                 <Text style={style.headerText}>{I18n.t("question_results")}</Text>
                 <View style={style.headerBar}></View>
             </View>
+            <View style={style.infoBox}>
+                <Text style={style.infoTitle}>Özet</Text>
+                <View style={style.infoBar}></View>
+                <View style={style.infoContent}>
+                    <Text>Toplam Süre: {prettyMs(props.reducer.currentQuestion.stats.finalTime, { colonNotation: true })}</Text>
+                    <Text>Doğru Sayısı: {props.reducer.currentQuestion.stats.totalCorrect}</Text>
+                    <Text>Yanlış Sayısı: {props.reducer.currentQuestion.stats.totalWrong}</Text>
+                    <Text>Boş Sayısı: {props.reducer.currentQuestion.stats.totalEmpty}</Text>
+                </View>
+            </View>
             <ScrollView style={style.content}>
                 {props.reducer.currentQuestion.questionResults.map((element, index) => {
                     return (
@@ -31,6 +41,7 @@ const ResultScreen = props => {
                             <Text>{(element.questionStep) + 1}. {I18n.t("question")} - <Text style={{ color: element.questionAnswerCorrect ? "green" : "red" }}>{"" + (element.questionAnswerCorrect ? I18n.t("question_answer_correct") : I18n.t("question_answer_wrong"))}</Text></Text>
                             <Text>{props.reducer.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
                             {!element.questionAnswerCorrect && <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.reducer.currentQuestion.questions[element.questionStep].questionAnswer}</Text>}
+                            <Text>Süre: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
                         </View>
                     )
                 })}

@@ -24,5 +24,12 @@ export default StyleSheet.create({
     },
     content: {
         padding: 16,
+    },
+    input: {
+        backgroundColor: "white",
+        borderRadius: 12,
+        elevation: 2,
+        padding: 8,
+        marginBottom: 8,
     }
 });

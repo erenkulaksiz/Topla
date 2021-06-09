@@ -45,21 +45,50 @@ const App = () => {
       model: getModel(),
       bundleId: getBundleId(),
     }
-
     await getLastUpdateTime().then((lastUpdateTime) => {
       deviceInfo.lastUpdated = lastUpdateTime;
       store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
     });
   }
 
-  const _INITIALIZE = async () => {
-    await _setDeviceInfo();
-    await _checkConnection();
-    console.log("GOT API_TOKEN: ", store.getState().API);
+  const _INITIALIZE = {
+    connTimer: null,
+    init: async () => {
+      await _setDeviceInfo();
+      await _checkConnection();
+      setTimeout(() => {
+        _INITIALIZE.connection();
+      }, 2000)
+    },
+    connection: async () => {
+      if (store.getState().reducer.connection.isConnected) {
+        console.log("CONNECTED TO WIFI!");
+        if (store.getState().reducer.API.API_TOKEN) {
+          console.log("GOT API_TOKEN: ", store.getState().reducer.API.API_TOKEN);
+        } else {
+          console.log("NO API TOKEN")
+          // Eğer internete bağlıysa & API token yoksa sunucuya bağlanmayı dene
+
+          connTimer = setInterval(() => {
+            if (!store.getState().reducer.API.API_TOKEN) {
+              store.dispatch({ type: 'API_REGISTER' });
+            }
+            console.log("@API_TOKEN: ", store.getState().reducer.API.API_TOKEN);
+
+            if (store.getState().reducer.API.API_TOKEN) {
+              clearInterval(connTimer);
+            }
+          }, 2000)
+
+        }
+      } else {
+        console.log("NO CONNECTION & NO API TOKEN");
+      }
+    }
   }
 
   useEffect(() => {
-    _INITIALIZE();
+    _INITIALIZE.init();
   }, []);
 
   return (

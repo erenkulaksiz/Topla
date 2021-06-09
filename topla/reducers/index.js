@@ -39,6 +39,9 @@ const INITIAL_STATE = {
         apiError: "",
         apiStatus: 200,
         API_TOKEN: null,
+        APP: {
+            latestBuild: 1,
+        }
     },
     settings: {
         darkMode: false,
@@ -63,6 +66,12 @@ const INITIAL_STATE = {
         isQuestionsLoaded: false, // -> tüm sorular yüklendi mi
         questions: [], // -> şimdi mesela 5 tane soru varsa 5 tane soruyu buraya pushlayacak (doğru seçeneklerle beraber)
         questionResults: [], // örn: 1. soru doğru, 2. soru yanlış, ne zaman doğru ne zaman yanlış vs.
+        stats: {
+            finalTime: 0,
+            totalCorrect: 0,
+            totalEmpty: 0,
+            totalWrong: 0,
+        }
     },
     questionTimer: {
         time: 0,
@@ -290,6 +299,15 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                     rangeIncremental: action.payload,
                 }
             }
+        case 'SET_STATS':
+            console.log("NEW VALUE FOR STATS: ", action.payload);
+            return {
+                ...state,
+                currentQuestion: {
+                    ...state.currentQuestion,
+                    stats: action.payload,
+                }
+            }
 
         /* ******************************************************************************************* */
 
@@ -322,7 +340,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 });
             }
 
-            if (!state.connection) {
+            if (state.connection) {
                 registerDevice().then(response => {
                     console.log("response status ", response.status);
                     response.json().then((data) => {
@@ -331,7 +349,6 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                             console.log("@API_REGISTER SUCCESSFUL");
                             console.log("API TOKEN: ", data.API_TOKEN);
                             state.API = data;
-
                         } else {
                             console.log("@API_REGISTER ERROR");
                         }
@@ -394,7 +411,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 return response
             }
 
-            if (!state.connection.isConnected) {
+            if (state.connection.isConnected) {
                 sendMessage().catch(err => {
                     console.log("[ERROR]: ", err);
                 });

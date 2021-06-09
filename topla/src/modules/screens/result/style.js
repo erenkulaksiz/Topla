@@ -24,5 +24,26 @@ export default StyleSheet.create({
     },
     content: {
         padding: 16,
+    },
+    infoBox: {
+        padding: 12,
+        marginLeft: 18,
+        marginRight: 18,
+        marginTop: 8,
+        elevation: 2,
+        backgroundColor: "white",
+        borderRadius: 8,
+    },
+    infoTitle: {
+        fontSize: 18,
+        marginBottom: 8,
+    },
+    infoBar: {
+        width: "100%",
+        height: 2,
+        backgroundColor: "#000",
+    },
+    infoContent: {
+        marginTop: 8,
     }
 });

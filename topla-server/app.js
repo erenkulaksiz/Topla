@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 var app = express();
 const MongoClient = require('mongodb').MongoClient
 const saltedSha256 = require('salted-sha256');
-const { ResumeToken } = require("mongodb");
 
 app.listen(3000, () => {
     console.log("Server running on port 3000");
@@ -34,6 +33,13 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         console.log("GENERATED API_TOKEN: " + saltedHash);
         return saltedHash
     }
+
+    /* TEST
+    app.get('/', (req, res) => {
+
+        return res.send("APP");
+    })
+    */
 
     app.post('/device', (req, res) => {
         console.log("________________________")
@@ -70,7 +76,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                         language_code: req.body.language_code,
                         app_version: req.body.app_version,
                         timezone: req.body.timezone,
-                        API_TOKEN: _GENERATE_API_TOKEN(req.body.uuid, Date.now()),
+                        API_TOKEN: _GENERATE_API_TOKEN(req.body.uuid, Date.now() + 999214),
                     })
                         .then(result => {
                             console.log("ADDED 1", result.ops[0]);
@@ -114,6 +120,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
             || !req.body.country_code
             || !req.body.email
             || !req.body.message
+            || !req.body.API_TOKEN
         ) {
             res.status(404);
             return res.send(JSON.stringify({
@@ -124,18 +131,44 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
         console.log("IP: ", req.ip);
 
-        // Match UUID with Topla API TOKEN here
-
-        messagesCollection.insertOne({
-            uuid: req.body.uuid,
-            bundle_id: req.body.bundle_id,
-            message: req.body.message,
-            email: req.body.email,
-            date: Date.now(),
+        messagesCollection.find({ 'uuid': { $in: [req.body.uuid] } }).toArray().then(results => {
+            console.log("MYRESULTS: ", results)
+            if (results.length > 3) {
+                console.log("SPAM DETECTED!");
+                return res.json({
+                    reason: "Cannot send message more than 3",
+                    success: false,
+                });
+            } else {
+                devicesCollection.findOne({ uuid: req.body.uuid }).then(result => {
+                    console.log("API_TOKEN_MATCH: ", result);
+                    if (result) {
+                        messagesCollection.insertOne({
+                            uuid: req.body.uuid,
+                            bundle_id: req.body.bundle_id,
+                            message: req.body.message,
+                            email: req.body.email,
+                            API_TOKEN: result.API_TOKEN,
+                            language: req.body.country_code,
+                            ip: req.ip,
+                            date: Date.now(),
+                        })
+                            .then(result => {
+                                console.log("ADDED 1", result.ops)
+                            })
+                            .catch(error => console.error(error))
+                        return res.json({
+                            success: true,
+                        });
+                    } else {
+                        console.log("THIS DEVICE DOES NOT EXIST");
+                        return res.json({
+                            reason: "This device does not exist",
+                            success: false,
+                        });
+                    }
+                })
+            }
         })
-            .then(result => {
-                console.log("ADDED 1", result.ops)
-            })
-            .catch(error => console.error(error))
     })
 })
