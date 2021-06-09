@@ -1,4 +1,21 @@
 
+- 10/06/2021 - Topla(v1.20)
+
+> Soru sonuçlarında özet kısmı eklendi
+> Soru sonuçlarında her soru kaç saniye sürdüğü yazdırılıyor
+> Özet kısmında toplam doğru - yanlış - boş sayısı yazdırılıyor
+> Soru aralarındaki sayaç düzeltildi, artık baştan başlamıyor
+> Node.js backend kısmında API_TOKEN olmayan Contact istekleri artık reddediliyor
+> Backend kısmında performans ve güvenlik iyileştirmeleri
+> Reklam gösterimleri tamamen çalışıyor
+> Soru sayfasında arkaplanda performans iyileştirmeleri ve kodu toparlama yapıldı
+> Backend kısmında Contact mesajı gönderilirse ve önceden 3den fazla mesaj aynı UUID ve token üstünden gönderildiyse istek reddediliyor (spam)
+> Cihazda internet var ve sunucuya bağlanılamıyor & token alınamıyorsa uygulama arkaplanda her 3 saniyede bir sunucuya istek gönderiyor #TODO: 100 saniyelik timeout ayarlamam lazım, sınırsız süre çalışıyor
+> Uygulama API_TOKEN almadan önce 2 saniye bekliyor & cihazda internetin olup olmadığını kontrol ediyor
+> Ayarlardaki TOKEN yazısı kaldırıldı #TODO: Debug butonunu da kaldır 
+> Reducer'a uygulamanın son versionu ile ilgili verileri çekecek bir bilgi kısmı (API.APP) eklendi
+> API.js dosyası silindi ve Reducer ile işlemler yapılmaya başlandı
+
 - 09/06/2021 - Topla(v1.0)
 
 > Sorular için sayaç artık çalışıyor

@@ -40,6 +40,7 @@ const INITIAL_STATE = {
         apiStatus: 200,
         API_TOKEN: null,
         APP: {
+            // Sunucudan çekilecek son uygulama ile ilgili bilgiler burada olacak
             latestBuild: 1,
         }
     },

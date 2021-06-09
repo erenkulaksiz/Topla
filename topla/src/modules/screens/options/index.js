@@ -86,7 +86,7 @@ const OptionsScreen = props => {
                 <View style={style.altContent}>
                     <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uid); alert("UID Kopyalandı") }}>
                         <Text style={style.altText}>UID: {props.reducer.deviceInfo.uuid}</Text>
-                        <Text style={style.altText}>TOKEN: {props.reducer.API.API_TOKEN ? props.reducer.API.API_TOKEN : "no token"}</Text>
+                        {/*<Text style={style.altText}>TOKEN: {props.reducer.API.API_TOKEN ? props.reducer.API.API_TOKEN : "no token"}</Text>*/}
                     </TouchableOpacity>
                 </View>
             </View>

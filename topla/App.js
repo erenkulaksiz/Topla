@@ -78,8 +78,7 @@ const App = () => {
             if (store.getState().reducer.API.API_TOKEN) {
               clearInterval(connTimer);
             }
-          }, 2000)
-
+          }, 3000)
         }
       } else {
         console.log("NO CONNECTION & NO API TOKEN");
