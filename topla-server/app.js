@@ -124,6 +124,8 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
         console.log("IP: ", req.ip);
 
+        // Match UUID with Topla API TOKEN here
+
         messagesCollection.insertOne({
             uuid: req.body.uuid,
             bundle_id: req.body.bundle_id,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Alert, TouchableOpacity, Button } from 'react-native';
 import style from './style';
@@ -8,42 +8,178 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import _ from "lodash";
 import I18n from "../../../utils/i18n.js";
+import prettyMs from 'pretty-ms';
 
-// Components
 import QuestionSolve from '../../questionsolve';
 
 const QuestionScreen = props => {
 
+    const [timer, setTimer] = useState(0);
+    const [timerStarted, setTimerStarted] = useState(false);
+
     useEffect(() => {
-        props.navigation.addListener('beforeRemove', (e) => _preventGoingBack(e))
+        _INITIALIZE();
+    }, []);
+
+    const _INITIALIZE = async () => {
+        props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e))
 
         if (!props.currentQuestion.isStarted) {
             props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
 
         _loadQuestions();
-    }, []);
-
-    const _modal = control => {
-        props.dispatch({ type: "SET_PAUSE_MODAL", payload: control });
+        _timer.startTimer();
     }
 
-    const _pause = () => {
-        _modal(true);
+    const _timer = { // buna 5 saat harcadım
+        //timer: null,
+        startTimer: () => {
+            console.log("@START TIMER");
+            //setStart(Date.now());
+            /*
+            _timer.timer = setInterval(() => {
+                setTime(time + 100);
+            }, 100);*/
+            setTimerStarted(true);
+        },
+        clear: () => {
+            /*clearInterval(_timer.timer);
+            setTime(0);*/
+            //setTimerStarted(false);
+            setResetTimer(true);
+        },
+        pause: () => {
+            /*
+            clearInterval(_timer.timer);
+            _timer.oldStart = Date.now();*/
+
+            setTimerStarted(false);
+        },
+        resume: () => {
+            //setStart(Date.now());
+            //console.log("Paused for this long: ", (Date.now() - _timer.oldStart))
+            //const myold = Date.now() - _timer.oldStart;
+            //console.log("myold: ", (Date.now() - Date.now() + myold))
+            //_timer.clear();
+            //setStart(Date.now());
+
+            //setStart(_timer.oldStart);
+
+            /*
+            _timer.timer = setInterval(() => { // set another interval
+                setTime(time + 100);
+            }, 100);*/
+
+            /*clearInterval(_timer.timer);
+            _timer.timer = setInterval(() => { // set another interval
+                setTime(Date.now());
+            }, 100);*/
+
+            setTimerStarted(true);
+        },
+        _render: () => {
+            return (
+                <Text style={{ marginLeft: 8 }}>{timer}</Text>
+            )
+        }
     }
 
-    const _continue = () => {
-        _modal(false);
-    }
+    useEffect(() => {
+        if (timerStarted) {
+            const timeout = setTimeout(() => {
+                setTimer(timer + 100);
+            }, 100);
+        }
+    }, [timer, timerStarted]);
 
-    const _goBack = () => {
-        _modal(false);
-        props.navigation.goBack();
-    }
+    //
 
-    const _generateRandomInt = (min, max) => {
-        const random = Math.floor(Math.random() * (max - min + 1)) + min;
-        return random
+    const page = { // page handler 
+        _modal: control => {
+            props.dispatch({ type: "SET_PAUSE_MODAL", payload: control });
+        },
+        _pause: () => {
+            page._modal(true);
+        },
+        _continue: () => {
+            page._modal(false);
+        },
+        _goBack: () => {
+            page._modal(false);
+            props.navigation.goBack();
+        },
+        _finishQuestionSolving: () => {
+            console.log("@finish question solving");
+            props.navigation.navigate('ResultScreen');
+        },
+        _renderBars: () => {
+            const bars = [];
+            for (let a = 0; a < props.questionSettings.questionCount; a++) {
+                if (a == props.currentQuestion.currentStep) {
+                    bars.push(<View style={{ ...style.bars, backgroundColor: "#A1A1A1" }} key={a}></View>);
+                } else {
+                    if (props.currentQuestion.currentStep < a) {
+                        bars.push(<View style={style.bars} key={a}></View>);
+                    } else {
+                        bars.push(<View style={{ ...style.bars, backgroundColor: props.currentQuestion.questionResults[a].questionAnswerCorrect ? "#63D816" : "#E80707" }} key={a}></View>);
+                    }
+                }
+            }
+            return bars
+        },
+        _generateRandomInt: (min, max) => {
+            const random = Math.floor(Math.random() * (max - min + 1)) + min;
+            return random
+        },
+        _preventGoingBack: e => {
+            e.preventDefault();
+            _timer.pause();
+            Alert.alert(
+                I18n.t("question_solving_back_title"),
+                I18n.t("question_solving_back_desc"),
+                [
+                    {
+                        text: I18n.t("question_solving_back_cancel"), style: 'cancel', onPress: () => {
+                            _timer.resume();
+                        }
+                    },
+                    {
+                        text: I18n.t("question_solving_back_back"),
+                        style: 'destructive',
+                        onPress: () => {
+                            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+                            props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+                            props.dispatch({ type: "RESET_QUESTION_RESULTS" });
+                            props.navigation.dispatch(e.data.action)
+                        },
+                    },
+                ]
+            )
+        },
+        _gotoNextQuestion: async (element, index) => {
+            await props.dispatch({
+                type: "PUSH_TO_QUESTION_RESULT", payload: {
+                    questionStep: props.currentQuestion.currentStep,
+                    questionAnswerCorrect: (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer),
+                    questionAnswer: element,
+                    questionSolveTime: timer,
+                }
+            });
+            if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
+                props.dispatch({ type: "GOTO_NEXT_QUESTION" });
+                _timer.clear();
+            } else {
+                props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+                props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+
+                console.log("SORU ÇÖZÜMÜ BİTTİ: ", props.currentQuestion.questionResults);
+
+                props.navigation.removeListener('beforeRemove')
+                props.navigation.popToTop();
+                _finishQuestionSolving();
+            }
+        }
     }
 
     const _loadQuestions = () => {
@@ -70,12 +206,10 @@ const QuestionScreen = props => {
         }
 
         for (let a = 1; a <= props.questionSettings.questionCount; a++) {
-            let number1 = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
-            let number2 = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
+            let number1 = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
+            let number2 = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
             let numberTemp = 0;
-
             console.log("________________________");
-
             const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true); // true olan keyleri arraya al
             const questionOperationRandom = keys[_.sample(Object.keys(keys))] // arraydan rastgele key getir
             console.log("KEY: ", questionOperationRandom)
@@ -100,23 +234,20 @@ const QuestionScreen = props => {
 
                 const isPrime = value => {
                     let result = 0;
-
                     for (let i = 1; i < value; i++) { if (value % i == 0) result++; }
-
                     if (result > 1) return false
                     else return true
                 }
 
-                number1 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
-
+                number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
                 const bolenler = []; // bölmenin olasılıkları
 
                 while (isPrime(number1)) {
-                    number1 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
+                    number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
                 }
 
                 while (!isInt(number1 / number2)) {
-                    number2 = _generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
+                    number2 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
                 }
 
                 for (let i = 1; i < number1; i++) {
@@ -129,13 +260,10 @@ const QuestionScreen = props => {
                 console.log("bölenler ", bolenler);
 
                 let randomKey = _.sample(bolenler); // Arraydan rastgele bölen al
-
                 while (randomKey == number1) {
                     randomKey = _.sample(bolenler)
                 }
-
                 number2 = randomKey;
-
                 numberTemp = number1 / number2;
 
                 console.log("İŞLEM: " + number1 + " / " + number2 + " = " + numberTemp);
@@ -156,7 +284,7 @@ const QuestionScreen = props => {
                 if (a == 1) {
                     question.questionOptions.push(question.questionAnswer);
                 } else {
-                    let randomNumber = _generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
+                    let randomNumber = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
 
                     /*
                     if(question.questionOperation == values[2]){
@@ -186,90 +314,13 @@ const QuestionScreen = props => {
         console.log("questions ", questions);
     }
 
-    const _renderBars = () => {
-        const bars = [];
-        for (let a = 0; a < props.questionSettings.questionCount; a++) {
-            if (a == props.currentQuestion.currentStep) {
-                bars.push(<View style={{ ...style.bars, backgroundColor: "#A1A1A1" }} key={a}></View>);
-            } else {
-                if (props.currentQuestion.currentStep < a) {
-                    bars.push(<View style={style.bars} key={a}></View>);
-                } else {
-                    bars.push(<View style={{ ...style.bars, backgroundColor: props.currentQuestion.questionResults[a].questionAnswerCorrect ? "#63D816" : "#E80707" }} key={a}></View>);
-                }
-            }
-        }
-        return bars
-    }
-
-    const _renderTimer = () => {
-
-        return (
-            <Text style={{ marginLeft: 8 }}>8sn</Text>
-        )
-    }
-
-    const _finishQuestionSolving = () => {
-        console.log("@finish question solving");
-        props.navigation.navigate('ResultScreen')
-
-    }
-
-    const _preventGoingBack = e => {
-        e.preventDefault();
-        Alert.alert(
-            I18n.t("question_solving_back_title"),
-            I18n.t("question_solving_back_desc"),
-            [
-                { text: I18n.t("question_solving_back_cancel"), style: 'cancel', onPress: () => { } },
-                {
-                    text: I18n.t("question_solving_back_back"),
-                    style: 'destructive',
-                    onPress: () => {
-                        props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-                        props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-                        props.dispatch({ type: "RESET_QUESTION_RESULTS" });
-                        props.navigation.dispatch(e.data.action)
-                    },
-                },
-            ]
-        )
-    }
-
-    const _gotoNextQuestion = async (element, index) => {
-
-        // TODO: iki ayrı if else içinde iki ayrı dispatch değil bir tane merkezi dispatch'a bağla
-
-        await props.dispatch({
-            type: "PUSH_TO_QUESTION_RESULT", payload: {
-                questionStep: props.currentQuestion.currentStep,
-                questionAnswerCorrect: (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer),
-                questionAnswer: element,
-            }
-        });
-
-        if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
-            props.dispatch({ type: "GOTO_NEXT_QUESTION" });
-        } else {
-            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-            props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-
-            console.log("SORU ÇÖZÜMÜ BİTTİ: ", props.currentQuestion.questionResults);
-
-            props.navigation.removeListener('beforeRemove')
-            props.navigation.popToTop();
-            _finishQuestionSolving();
-        }
-
-    }
-
     return (
         <View style={style.container}>
             <Header pauseShown onPause={() => _pause()} />
             <View style={style.headerContainer}>
                 <View style={style.headerLeft}>
                     <FontAwesomeIcon icon={faClock} size={16} color={"#000"} />
-                    {_renderTimer()}
+                    {_timer._render()}
                     <Text style={style.timerFinishText}>/ 10sn</Text>
                 </View>
                 <View style={style.headerRight}>
@@ -281,14 +332,14 @@ const QuestionScreen = props => {
 
             <View style={style.barsWrapper}>
                 {/* Bars */}
-                {_renderBars()}
+                {page._renderBars()}
             </View>
 
             <View style={style.content}>
                 {props.reducer.currentQuestion.isQuestionsLoaded &&
                     <QuestionSolve
                         currentQuestion={props.currentQuestion}
-                        onAnswerPress={(element, index) => _gotoNextQuestion(element, index)}
+                        onAnswerPress={(element, index) => page._gotoNextQuestion(element, index)}
                     />
                 }
             </View>
@@ -296,21 +347,21 @@ const QuestionScreen = props => {
             {/* #################### MODAL #################### */}
             <Modal
                 isVisible={props.reducer.pauseModalShown}
-                onSwipeComplete={() => _continue()}
+                onSwipeComplete={() => page._continue()}
                 swipeDirection={['down']}
                 style={style.modalWrapper}
-                onBackdropPress={() => _continue()}>
+                onBackdropPress={() => page._continue()}>
 
                 <View style={style.modal}>
 
                     <Text style={style.modalTitle}>{I18n.t("modal_paused")}</Text>
                     <View style={style.modalSeperator}></View>
 
-                    <TouchableOpacity style={style.button} onPress={() => _continue()}>
+                    <TouchableOpacity style={style.button} onPress={() => page._continue()}>
                         <Text style={style.buttonText}>{I18n.t("modal_continue")}</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => _goBack()}>
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => page._goBack()}>
                         <Text style={style.buttonText}>{I18n.t("modal_exit")}</Text>
                     </TouchableOpacity>
                 </View>

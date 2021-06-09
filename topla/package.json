@@ -21,7 +21,7 @@
     "@react-navigation/stack": "^5.14.4",
     "i18n-js": "^3.8.0",
     "lodash": "^4.17.21",
-    "prop-types": "^15.7.2",
+    "pretty-ms": "^7.0.1",
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-admob": "^2.0.0-beta.6",

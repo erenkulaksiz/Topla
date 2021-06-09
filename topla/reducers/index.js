@@ -290,6 +290,9 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                     rangeIncremental: action.payload,
                 }
             }
+
+        /* ******************************************************************************************* */
+
         case 'API_REGISTER':
             console.log("@API_REGISTER");
 
@@ -319,27 +322,32 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 });
             }
 
-            registerDevice().then(response => {
-                console.log("response status ", response.status);
-                response.json().then((data) => {
-                    console.log("API_REGISTER: ", data);
-                    if (data.success) {
-                        console.log("@API_REGISTER SUCCESSFUL");
-                        console.log("API TOKEN: ", data.API_TOKEN);
-                        state.API = data;
+            if (!state.connection) {
+                registerDevice().then(response => {
+                    console.log("response status ", response.status);
+                    response.json().then((data) => {
+                        console.log("API_REGISTER: ", data);
+                        if (data.success) {
+                            console.log("@API_REGISTER SUCCESSFUL");
+                            console.log("API TOKEN: ", data.API_TOKEN);
+                            state.API = data;
 
-                    } else {
-                        console.log("@API_REGISTER ERROR");
-                    }
-                    if (response.status == 404) {
-                        throw [data, response.status];
-                    }
-                })
-            }).catch(err => {
-                console.log("[ERROR]: ", err);
-                state.API.apiError = err[0];
-                state.API.apiStatus = err[1];
-            });
+                        } else {
+                            console.log("@API_REGISTER ERROR");
+                        }
+                        if (response.status == 404) {
+                            throw [data, response.status];
+                        }
+                    })
+                }).catch(err => {
+                    console.log("[ERROR]: ", err);
+                    state.API.apiError = err[0];
+                    state.API.apiStatus = err[1];
+                });
+            } else {
+                console.log("NO CONNECTION, API REGISTER FAILED");
+                return state
+            }
 
             return state
         case 'API_SEND_MESSAGE':
@@ -386,9 +394,14 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 return response
             }
 
-            sendMessage().catch(err => {
-                console.log("[ERROR]: ", err);
-            });
+            if (!state.connection.isConnected) {
+                sendMessage().catch(err => {
+                    console.log("[ERROR]: ", err);
+                });
+            } else {
+                console.log("NO CONNECTION DETECTED, SEND MESSAGE FAILED");
+                return state
+            }
 
             return state
         default:
