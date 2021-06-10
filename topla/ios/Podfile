@@ -18,6 +18,8 @@ target 'topla' do
 
   pod 'react-native-admob', :path => '../node_modules/react-native-admob'
 
+  pod 'RNFBCrashlytics', :path => '../node_modules/@react-native-firebase/crashlytics'
+
   target 'toplaTests' do
     inherit! :complete
     # Pods for testing
