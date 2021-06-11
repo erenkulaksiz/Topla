@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Button, ScrollView } from 'react-native';
 import style from './style';
@@ -7,6 +7,11 @@ import Header from "../../header";
 import prettyMs from 'pretty-ms';
 
 const ResultScreen = props => {
+
+    useEffect(() => {
+        //console.log("PERFORMANCE ON QUESTION END: ", (performance.now() - props.reducer.PERFORMANCE.questionEnd_StartPerf))
+        props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_EndPerf: performance.now() } });
+    }, []);
 
     const _navigateToHome = () => {
         props.navigation.navigate('Home');
@@ -25,22 +30,22 @@ const ResultScreen = props => {
                 <Text style={style.infoTitle}>Özet</Text>
                 <View style={style.infoBar}></View>
                 <View style={style.infoContent}>
-                    <Text>Toplam Süre: {prettyMs(props.reducer.currentQuestion.stats.finalTime, { colonNotation: true })}</Text>
-                    <Text>Doğru Sayısı: {props.reducer.currentQuestion.stats.totalCorrect}</Text>
-                    <Text>Yanlış Sayısı: {props.reducer.currentQuestion.stats.totalWrong}</Text>
-                    <Text>Boş Sayısı: {props.reducer.currentQuestion.stats.totalEmpty}</Text>
+                    <Text>Toplam Süre: {prettyMs(props.currentQuestion.stats.finalTime, { colonNotation: true })}</Text>
+                    <Text>Doğru Sayısı: {props.currentQuestion.stats.totalCorrect}</Text>
+                    <Text>Yanlış Sayısı: {props.currentQuestion.stats.totalWrong}</Text>
+                    <Text>Boş Sayısı: {props.currentQuestion.stats.totalEmpty}</Text>
                 </View>
             </View>
             <ScrollView style={style.content}>
-                {props.reducer.currentQuestion.questionResults.map((element, index) => {
+                {props.currentQuestion.questionResults.map((element, index) => {
                     return (
                         <View
                             style={{ margin: 4, padding: 12, elevation: 2, backgroundColor: "white", marginBottom: 8, borderRadius: 8, }}
                             key={index}
                         >
                             <Text>{(element.questionStep) + 1}. {I18n.t("question")} - <Text style={{ color: element.questionAnswerCorrect ? "green" : "red" }}>{"" + (element.questionAnswerCorrect ? I18n.t("question_answer_correct") : I18n.t("question_answer_wrong"))}</Text></Text>
-                            <Text>{props.reducer.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
-                            {!element.questionAnswerCorrect && <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.reducer.currentQuestion.questions[element.questionStep].questionAnswer}</Text>}
+                            <Text>{props.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
+                            {!element.questionAnswerCorrect && <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>}
                             <Text>Süre: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
                         </View>
                     )
@@ -55,8 +60,9 @@ const ResultScreen = props => {
 }
 
 const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
+    return {
+        currentQuestion: state.currentQuestion
+    }
 };
 
 export default connect(mapStateToProps)(ResultScreen);

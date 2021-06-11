@@ -12,9 +12,6 @@ import prettyMs from 'pretty-ms';
 
 import QuestionSolve from '../../questionsolve';
 
-// Firebase
-import crashlytics from "@react-native-firebase/crashlytics";
-
 const QuestionScreen = props => {
 
     const [timer, setTimer] = useState(0);
@@ -23,7 +20,6 @@ const QuestionScreen = props => {
 
     useEffect(() => {
         _INITIALIZE();
-        crashlytics().log("App mounted.");
     }, []);
 
     const _INITIALIZE = async () => {
@@ -224,11 +220,9 @@ const QuestionScreen = props => {
                     }
                 });
 
-                console.log("SORU ÇÖZÜMÜ BİTTİ: ", props.currentQuestion.questionResults);
+                console.log("SORU ÇÖZÜMÜ BİTTİ (QUESTIONRESULTS): ", props.currentQuestion.questionResults);
 
-                // Timer'ı durdur
-
-                _timer.pause();
+                props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } })
 
                 /*
                 crashlytics().crash();
@@ -425,7 +419,7 @@ const QuestionScreen = props => {
             </View>
 
             <View style={style.content}>
-                {props.reducer.currentQuestion.isQuestionsLoaded &&
+                {props.currentQuestion.isQuestionsLoaded &&
                     <QuestionSolve
                         currentQuestion={props.currentQuestion}
                         onAnswerPress={(element, index) => page._gotoNextQuestion(element, index)}
@@ -460,10 +454,11 @@ const QuestionScreen = props => {
 }
 
 const mapStateToProps = (state) => {
-    const { reducer } = state;
-    const { questionSettings } = reducer;
-    const { currentQuestion } = reducer;
-    return { reducer, currentQuestion, questionSettings }
+    return {
+        reducer: state.mainReducer,
+        currentQuestion: state.currentQuestion,
+        questionSettings: state.questionSettings
+    }
 };
 
 export default connect(mapStateToProps)(QuestionScreen);

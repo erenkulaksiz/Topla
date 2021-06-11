@@ -1,433 +1,62 @@
 import { combineReducers } from 'redux';
-import Config from 'react-native-config';
-import {
-    getBuildNumber,
-} from 'react-native-device-info';
-import { NativeModules, Platform } from 'react-native';
-import * as RNLocalize from 'react-native-localize';
 //import base64 from 'react-native-base64';
 
-const API_URL = (Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL)
-
-const config = {
-    maxSoru: 15,
-    minSoru: 2,
-    maxSecenek: 7,
-    minSecenek: 2,
-}
-
-const deviceLanguage =
-    Platform.OS === 'ios'
-        ? NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
-        : NativeModules.I18nManager.localeIdentifier;
+import API from './API'
+import questionSettings from './questionSettings'
+import currentQuestion from './currentQuestion'
 
 const INITIAL_STATE = {
-    deviceInfo: {
-        /*
-            uuid: 'topla_' + getUniqueId(),
-            id: getDeviceId(),
-            buildNumber: getBuildNumber(),
-            model: getModel(),
-            bundleId: getBundleId(),
-        */
-    },
+    deviceInfo: {},
     connection: {},
     pauseModalShown: false,
-    API: {
-        register: {},
-        apiError: "",
-        apiStatus: 200,
-        API_TOKEN: null,
-        APP: {
-            // Sunucudan çekilecek son uygulama ile ilgili bilgiler burada olacak
-            latestBuild: 1,
-        }
+    PERFORMANCE: { // Performans ölçümü
+        questions: {
+            questionEnd_StartPerf: 0,
+            questionEnd_EndPerf: 0,
+            //questionEnd_perfBetween: 0,
+        },
+        questionPassPerf: [], // Sonraki soruya geçerken performansı test et
     },
     settings: {
         darkMode: false,
     },
-    questionSettings: {
-        questionCount: 5, // -> Şuanda çözülen sorunun max soru sayısı.
-        optionCount: 4, // -> Seçenek sayısı
-        perQuestionTime: 5000, // 5000 = 5 sn
-        operations: {
-            addition: true,
-            subtraction: true,
-            multiplication: false,
-            division: false,
-        },
-        minRange: 1,
-        maxRange: 20,
-        rangeIncremental: 10,
-    },
-    currentQuestion: {
-        currentStep: 0, // -> şuanda çözülen soru
-        isStarted: false, // -> soru çözümü başladı mı
-        isQuestionsLoaded: false, // -> tüm sorular yüklendi mi
-        questions: [], // -> şimdi mesela 5 tane soru varsa 5 tane soruyu buraya pushlayacak (doğru seçeneklerle beraber)
-        questionResults: [], // örn: 1. soru doğru, 2. soru yanlış, ne zaman doğru ne zaman yanlış vs.
-        stats: {
-            finalTime: 0,
-            totalCorrect: 0,
-            totalEmpty: 0,
-            totalWrong: 0,
-        }
-    },
-    questionTimer: {
-        time: 0,
-        started: false,
-    }
 };
 
 const mainReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case 'SET_DEVICE_INFO':
             console.log("set device info ", action.payload);
-            return {
-                ...state,
-                deviceInfo: action.payload
-            }
+            state.deviceInfo = action.payload;
+            return { ...state }
+
         case 'SET_DEVICE_CONNECTION':
             console.log("connection ", action.payload);
-            return {
-                ...state,
-                connection: action.payload
-            }
+            state.connection = action.payload;
+            return { ...state }
+
         case 'SET_PAUSE_MODAL':
-            return {
-                ...state,
-                pauseModalShown: action.payload
-            }
-        case 'SET_ACTIVE_QUESTION_SOLVING':
-            console.log("set active question to " + action.payload);
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    currentStep: action.payload
-                }
-            }
-        case 'GOTO_NEXT_QUESTION':
-            console.log("went to next question: " + (state.currentQuestion.currentStep + 1));
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    currentStep: state.currentQuestion.currentStep + 1
-                }
-            }
-        case 'SET_QUESTION_SOLVING':
-            console.log("question solving set: " + action.payload);
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    isStarted: action.payload
-                }
-            }
-        case 'SET_ALL_QUESTIONS':
-            console.log("SET ALL QUESTIONS");
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    questions: action.payload
-                }
-            }
-        case 'SET_QUESTIONS_LOADED':
-            console.log("questions loaded: " + action.payload)
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    isQuestionsLoaded: action.payload
-                }
-            }
-        case 'PUSH_TO_QUESTION_RESULT':
-            console.log("question result: ", action.payload)
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    questionResults: [...state.currentQuestion.questionResults, action.payload]
-                }
-            }
-        case 'RESET_QUESTION_RESULTS':
-            console.log("question results reset")
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    questionResults: []
-                }
-            }
-        case 'INCREMENT_QUESTION_OPTIONS':
+            state.pauseModalShown = action.payload;
+            return { ...state }
 
-            let incremental_questionOptions = 0;
+        case 'SET_PERF_QUESTION':
+            console.log("NEW VALUE FOR PERF: ", action.payload);
+            state.PERFORMANCE = { ...state.PERFORMANCE, ...action.payload };
+            return { ...state }
 
-            if (state.questionSettings.optionCount >= config.maxSecenek) {
-                incremental_questionOptions = 0;
-            } else {
-                incremental_questionOptions = 1;
-            }
-
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    optionCount: state.questionSettings.optionCount + incremental_questionOptions,
-                }
-            }
-        case 'DECREMENT_QUESTION_OPTIONS':
-
-            let decremental_questionOptions = 0;
-
-            if (state.questionSettings.optionCount <= config.minSecenek) {
-                decremental_questionOptions = 0;
-            } else {
-                decremental_questionOptions = 1;
-            }
-
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    optionCount: state.questionSettings.optionCount - decremental_questionOptions,
-                }
-            }
-        case 'SET_OPTION_COUNT':
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    optionCount: action.payload,
-                }
-            }
-        case 'INCREMENT_QUESTION_COUNT':
-
-            let incremental_questionCount = 0;
-
-            if (state.questionSettings.questionCount >= config.maxSoru) {
-                incremental_questionCount = 0;
-            } else {
-                incremental_questionCount = 1;
-            }
-
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    questionCount: state.questionSettings.questionCount + incremental_questionCount,
-                }
-            }
-        case 'DECREMENT_QUESTION_COUNT':
-
-            let decremental_questionCount = 0;
-
-            if (state.questionSettings.questionCount <= config.minSoru) {
-                decremental_questionCount = 0;
-            } else {
-                decremental_questionCount = 1;
-            }
-
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    questionCount: state.questionSettings.questionCount - decremental_questionCount,
-                }
-            }
-        case 'SET_QUESTION_COUNT':
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    questionCount: action.payload,
-                }
-            }
         case 'DARK_MODE':
             console.log("SET DARK MODE: ", !state.settings.darkMode);
-            return {
-                ...state,
-                settings: {
-                    ...state.settings,
-                    darkMode: !state.settings.darkMode
-                }
-            }
-        case 'SET_QUESTION_SETTINGS_OPERATIONS':
-            console.log("NEW VALUE FOR SETTINGS: ", action.payload);
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    operations: action.payload,
-                }
-            }
-        case 'SET_MAX_RANGE':
-            console.log("NEW VALUE FOR MAX RANGE: ", action.payload);
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    maxRange: action.payload,
-                }
-            }
-        case 'INCREMENT_MAX_RANGE':
-            console.log("NEW VALUE FOR MAX RANGE: ", state.questionSettings.maxRange + action.payload);
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    maxRange: parseInt(state.questionSettings.maxRange) + action.payload,
-                }
-            }
-        case 'DECREMENT_MAX_RANGE':
-            console.log("NEW VALUE FOR MAX RANGE: ", state.questionSettings.maxRange - action.payload);
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    maxRange: parseInt(state.questionSettings.maxRange) - action.payload,
-                }
-            }
-        case 'SET_RANGE_INCREMENTAL':
-            console.log("NEW VALUE FOR INCREMENTAL: ", action.payload);
-            return {
-                ...state,
-                questionSettings: {
-                    ...state.questionSettings,
-                    rangeIncremental: action.payload,
-                }
-            }
-        case 'SET_STATS':
-            console.log("NEW VALUE FOR STATS: ", action.payload);
-            return {
-                ...state,
-                currentQuestion: {
-                    ...state.currentQuestion,
-                    stats: action.payload,
-                }
-            }
+            state.settings.darkMode = !state.settings.darkMode;
+            return { ...state }
 
-        /* ******************************************************************************************* */
-
-        case 'API_REGISTER':
-            console.log("@API_REGISTER");
-
-            console.log("[!!!] USING URL: ", API_URL);
-
-            const registerDevice = async () => {
-                return await fetch(API_URL + '/device', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        uuid: state.deviceInfo.uuid,
-                        bundle_id: state.deviceInfo.bundleId,
-                        platform: Platform.OS,
-                        channel: "organic",
-                        language_code: deviceLanguage,
-                        adjust_attr: "test aaa adjust",
-                        app_version: getBuildNumber(),
-                        country_code: RNLocalize.getCountry(),
-                        timezone: RNLocalize.getTimeZone(),
-                        model: state.deviceInfo.model,
-                    }),
-                }).catch(function (error) {
-                    throw error;
-                });
-            }
-
-            if (state.connection) {
-                registerDevice().then(response => {
-                    console.log("response status ", response.status);
-                    response.json().then((data) => {
-                        console.log("API_REGISTER: ", data);
-                        if (data.success) {
-                            console.log("@API_REGISTER SUCCESSFUL");
-                            console.log("API TOKEN: ", data.API_TOKEN);
-                            state.API = data;
-                        } else {
-                            console.log("@API_REGISTER ERROR");
-                        }
-                        if (response.status == 404) {
-                            throw [data, response.status];
-                        }
-                    })
-                }).catch(err => {
-                    console.log("[ERROR]: ", err);
-                    state.API.apiError = err[0];
-                    state.API.apiStatus = err[1];
-                });
-            } else {
-                console.log("NO CONNECTION, API REGISTER FAILED");
-                return state
-            }
-
-            return state
-        case 'API_SEND_MESSAGE':
-            console.log("@API_SEND_MESSAGE");
-
-            console.log("[!!!] USING URL: ", API_URL);
-
-            console.log("MESSAGE: ", action.payload);
-
-            const sendMessage = async () => {
-                const response = await fetch(API_URL + '/message', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        uuid: state.deviceInfo.uuid,
-                        bundle_id: state.deviceInfo.bundleId,
-                        platform: Platform.OS,
-                        channel: "organic",
-                        language_code: deviceLanguage,
-                        adjust_attr: "test aaa adjust",
-                        app_version: getBuildNumber(),
-                        country_code: RNLocalize.getCountry(),
-                        timezone: RNLocalize.getTimeZone(),
-                        model: state.deviceInfo.model,
-                        message: action.payload.message,
-                        email: action.payload.email,
-                        topic: action.payload.topic,
-                        API_TOKEN: state.API.API_TOKEN,
-                    }),
-                }).then(response => {
-                    console.log("response status ", response.status);
-                    response.json().then((data) => {
-                        console.log("API_SEND_MESSAGE RESULT: ", data);
-                        if (response.status == 404) {
-                            throw [data, response.status];
-                        }
-                    })
-                }).catch(function (error) {
-                    throw error;
-                });
-                return response
-            }
-
-            if (state.connection.isConnected) {
-                sendMessage().catch(err => {
-                    console.log("[ERROR]: ", err);
-                });
-            } else {
-                console.log("NO CONNECTION DETECTED, SEND MESSAGE FAILED");
-                return state
-            }
-
-            return state
         default:
             return state
     }
 };
 
 export default combineReducers({
-    reducer: mainReducer
+    mainReducer,
+    API,
+    questionSettings,
+    currentQuestion,
 });
 

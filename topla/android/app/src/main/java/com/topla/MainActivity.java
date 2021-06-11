@@ -7,6 +7,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class MainActivity extends ReactActivity {
 
   /**
@@ -18,9 +20,12 @@ public class MainActivity extends ReactActivity {
     return "topla";
   }
 
+  private FirebaseAnalytics mFirebaseAnalytics;
+
   @Override
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.show(this); 
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 }

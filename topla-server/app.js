@@ -76,7 +76,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                         language_code: req.body.language_code,
                         app_version: req.body.app_version,
                         timezone: req.body.timezone,
-                        API_TOKEN: _GENERATE_API_TOKEN(req.body.uuid, Date.now() + 999214),
+                        API_TOKEN: _GENERATE_API_TOKEN(req.body.uuid, Date.now() + 999214 + Math.random()),
                     })
                         .then(result => {
                             console.log("ADDED 1", result.ops[0]);

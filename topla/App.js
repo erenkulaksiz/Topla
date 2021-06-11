@@ -1,12 +1,14 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import SplashScreen from 'react-native-splash-screen'
 import { getUniqueId, getDeviceId, getBundleId, getBuildNumber, getModel, getLastUpdateTime } from 'react-native-device-info';
 import NetInfo from "@react-native-community/netinfo"; // #TODO: -> switch to react-native-offline 
+// Firebase
+import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 // Components 
 import Main from './src/modules/Main';
@@ -16,9 +18,7 @@ import ContactScreen from './src/modules/screens/contact';
 import QuestionScreen from './src/modules/screens/question';
 import ResultScreen from './src/modules/screens/result';
 
-import reducer from './reducers';
-
-const store = createStore(reducer);
+import store from './store';
 
 const Stack = createStackNavigator();
 
@@ -27,8 +27,16 @@ const App = () => {
   const _checkConnection = async () => {
     NetInfo.addEventListener((state) => {
       store.dispatch({ type: 'SET_DEVICE_CONNECTION', payload: { connectionType: state.type, isConnected: state.isConnected } });
-      if (store.getState().reducer.connection.isConnected) {
-        store.dispatch({ type: 'API_REGISTER' });
+      if (store.getState().mainReducer.connection.isConnected) {
+        console.log("UUID: ", store.getState().mainReducer.deviceInfo.uuid);
+        store.dispatch({
+          type: 'API_REGISTER',
+          payload: {
+            uuid: store.getState().mainReducer.deviceInfo.uuid,
+            bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+            model: store.getState().mainReducer.deviceInfo.model,
+          }
+        });
         SplashScreen.hide();
       } else {
         console.log("[!!!] cihazda bağlantı yok")
@@ -37,45 +45,67 @@ const App = () => {
     });
   }
 
-  const _setDeviceInfo = async () => {
-    let deviceInfo = {
-      uuid: 'topla_' + getUniqueId(),
-      id: getDeviceId(),
-      buildNumber: getBuildNumber(),
-      model: getModel(),
-      bundleId: getBundleId(),
+  const _setDeviceInfo = {
+    deviceInfo: () => {
+      return {
+        uuid: 'topla_' + getUniqueId(),
+        id: getDeviceId(),
+        buildNumber: getBuildNumber(),
+        model: getModel(),
+        bundleId: getBundleId(),
+      }
+    },
+    set: async () => {
+      await getLastUpdateTime().then((lastUpdateTime) => {
+        //deviceInfo.lastUpdated = lastUpdateTime;
+        const deviceInfo = { ..._setDeviceInfo.deviceInfo(), lastUpdated: lastUpdateTime };
+        store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
+      });
     }
-    await getLastUpdateTime().then((lastUpdateTime) => {
-      deviceInfo.lastUpdated = lastUpdateTime;
-      store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
-    });
   }
 
   const _INITIALIZE = {
     connTimer: null,
     init: async () => {
-      await _setDeviceInfo();
+      await _setDeviceInfo.set();
       await _checkConnection();
       setTimeout(() => {
         _INITIALIZE.connection();
       }, 2000)
+
+      const appInstanceId = await analytics().getAppInstanceId();
+      console.log("APP_INSTANCE_ID: ", appInstanceId);
     },
     connection: async () => {
-      if (store.getState().reducer.connection.isConnected) {
+      if (store.getState().mainReducer.connection.isConnected) {
         console.log("CONNECTED TO WIFI!");
-        if (store.getState().reducer.API.API_TOKEN) {
-          console.log("GOT API_TOKEN: ", store.getState().reducer.API.API_TOKEN);
+        if (store.getState().API.DATA.API_TOKEN) {
+          console.log("GOT API_TOKEN: ", store.getState().API.DATA.API_TOKEN);
         } else {
           console.log("NO API TOKEN")
-          // Eğer internete bağlıysa & API token yoksa sunucuya bağlanmayı dene
+
+          let retries = 0;
 
           connTimer = setInterval(() => {
-            if (!store.getState().reducer.API.API_TOKEN) {
-              store.dispatch({ type: 'API_REGISTER' });
+            if (store.getState().API.DATA.API_TOKEN) {
+              console.log("@API_TOKEN: ", store.getState().API.API_TOKEN);
+              clearInterval(connTimer);
+            } else {
+              store.dispatch({
+                type: 'API_REGISTER',
+                payload: {
+                  uuid: store.getState().mainReducer.deviceInfo.uuid,
+                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                  model: store.getState().mainReducer.deviceInfo.model,
+                }
+              });
             }
-            console.log("@API_TOKEN: ", store.getState().reducer.API.API_TOKEN);
 
-            if (store.getState().reducer.API.API_TOKEN) {
+            retries++;
+            const maxRetries = 2;
+
+            if (retries >= maxRetries) {
+              console.log(`API TIMEOUT AFTER ${maxRetries} RETRIES`);
               clearInterval(connTimer);
             }
           }, 3000)

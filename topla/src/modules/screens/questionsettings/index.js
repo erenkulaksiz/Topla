@@ -37,7 +37,7 @@ const QuestionSettings = props => {
     }
 
     const _navigateToQuestion = question => {
-        const keys = Object.keys(props.reducer.questionSettings.operations).filter(k => props.reducer.questionSettings.operations[k] === true);
+        const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
 
         console.log("WHO GOT THE KEYS -> ", keys);
         if (keys.length == 0) {
@@ -69,9 +69,9 @@ const QuestionSettings = props => {
             value = parseInt(value)
         }
         /*
-        if (props.reducer.questionSettings.maxRange >= 90) {
+        if (props.questionSettings.maxRange >= 90) {
             setIncremental(100);
-        } else if (props.reducer.questionSettings.maxRange < 90) {
+        } else if (props.questionSettings.maxRange < 90) {
             setIncremental(10);
         }*/
         props.dispatch({ type: "SET_MAX_RANGE", payload: value });
@@ -81,24 +81,24 @@ const QuestionSettings = props => {
 
         // TODO: Increment ve decrement bozuk.
 
-        if (props.reducer.questionSettings.maxRange >= 90) {
+        if (props.questionSettings.maxRange >= 90) {
             props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 100 });
-        } else if (props.reducer.questionSettings.maxRange <= 100) {
+        } else if (props.questionSettings.maxRange <= 100) {
             props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 10 });
         }
-        console.log(props.reducer.questionSettings.maxRange + " <maxrange - incremental> " + props.reducer.questionSettings.rangeIncremental);
-        props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: props.reducer.questionSettings.rangeIncremental });
+        console.log(props.questionSettings.maxRange + " <maxrange - incremental> " + props.questionSettings.rangeIncremental);
+        props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: props.questionSettings.rangeIncremental });
     }
 
     const _decrementMaxRange = () => {
-        if (!props.reducer.questionSettings.maxRange <= 0) {
-            if (props.reducer.questionSettings.maxRange >= 90) {
+        if (!props.questionSettings.maxRange <= 0) {
+            if (props.questionSettings.maxRange >= 90) {
                 props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 100 });
-            } else if (props.reducer.questionSettings.maxRange <= 100) {
+            } else if (props.questionSettings.maxRange <= 100) {
                 props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 10 });
             }
-            console.log(props.reducer.questionSettings.maxRange + " <maxrange - incremental> " + props.reducer.questionSettings.rangeIncremental);
-            props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: props.reducer.questionSettings.rangeIncremental });
+            console.log(props.questionSettings.maxRange + " <maxrange - incremental> " + props.questionSettings.rangeIncremental);
+            props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: props.questionSettings.rangeIncremental });
         }
     }
 
@@ -130,7 +130,7 @@ const QuestionSettings = props => {
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
                                         <TouchableOpacity style={style.decrement} onPress={() => _decrementMaxRange()}>
-                                            <Text style={{ fontSize: 18 }}>-{props.reducer.questionSettings.rangeIncremental}</Text>
+                                            <Text style={{ fontSize: 18 }}>-{props.questionSettings.rangeIncremental}</Text>
                                         </TouchableOpacity>
                                         <View style={style.incrementCenter_field}>
                                             <TextInput
@@ -138,13 +138,13 @@ const QuestionSettings = props => {
                                                 onChangeText={text => {
                                                     _setMaxRange(text);
                                                 }}
-                                                value={props.reducer.questionSettings.maxRange.toString()}
+                                                value={props.questionSettings.maxRange.toString()}
                                                 placeholder="0"
                                                 keyboardType="numeric"
                                             />
                                         </View>
                                         <TouchableOpacity style={style.increment} onPress={() => _incrementMaxRange()}>
-                                            <Text style={{ fontSize: 18 }}>+{props.reducer.questionSettings.rangeIncremental}</Text>
+                                            <Text style={{ fontSize: 18 }}>+{props.questionSettings.rangeIncremental}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -159,7 +159,7 @@ const QuestionSettings = props => {
                                             <Text style={{ fontSize: 18 }}>-</Text>
                                         </TouchableOpacity>
                                         <View style={style.incrementCenter}>
-                                            <Text style={{ fontSize: 16 }}>{props.reducer.questionSettings.questionCount}</Text>
+                                            <Text style={{ fontSize: 16 }}>{props.questionSettings.questionCount}</Text>
                                         </View>
                                         <TouchableOpacity style={style.increment} onPress={() => _incrementQuestionCount()}>
                                             <Text style={{ fontSize: 18 }}>+</Text>
@@ -177,7 +177,7 @@ const QuestionSettings = props => {
                                             <Text style={{ fontSize: 18 }}>-</Text>
                                         </TouchableOpacity>
                                         <View style={style.incrementCenter}>
-                                            <Text style={{ fontSize: 16 }}>{props.reducer.questionSettings.optionCount}</Text>
+                                            <Text style={{ fontSize: 16 }}>{props.questionSettings.optionCount}</Text>
                                         </View>
                                         <TouchableOpacity style={style.increment} onPress={() => _incrementOptions()}>
                                             <Text style={{ fontSize: 18 }}>+</Text>
@@ -189,32 +189,32 @@ const QuestionSettings = props => {
                         <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
-                                value={props.reducer.questionSettings.operations.addition}
-                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, addition: newValue } })}
+                                value={props.questionSettings.operations.addition}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: newValue } })}
                             />
                             <Text style={style.label}>{I18n.t("question_add")}</Text>
                         </View>
                         <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
-                                value={props.reducer.questionSettings.operations.subtraction}
-                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, subtraction: newValue } })}
+                                value={props.questionSettings.operations.subtraction}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: newValue } })}
                             />
                             <Text style={style.label}>{I18n.t("question_sub")}</Text>
                         </View>
                         <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
-                                value={props.reducer.questionSettings.operations.multiplication}
-                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, multiplication: newValue } })}
+                                value={props.questionSettings.operations.multiplication}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: newValue } })}
                             />
                             <Text style={style.label}>{I18n.t("question_mul")}</Text>
                         </View>
                         <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
-                                value={props.reducer.questionSettings.operations.division}
-                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.reducer.questionSettings.operations, division: newValue } })}
+                                value={props.questionSettings.operations.division}
+                                onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: newValue } })}
                             />
                             <Text style={style.label}>{I18n.t("question_div")}</Text>
                         </View>
@@ -232,8 +232,7 @@ const QuestionSettings = props => {
 }
 
 const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
+    return { mainReducer: state.mainReducer, questionSettings: state.questionSettings };
 };
 
 export default connect(mapStateToProps)(QuestionSettings);

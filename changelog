@@ -1,4 +1,12 @@
 
+- 11/06/2021 - Topla(v1.22)
+
+> Reducer'da performans iyileştirmeleri
+> Firebase Crashlytics ve Analytics için uygulama içi testler
+> Uygulama içi performans testleri
+> Redux Reducer tamamen baştan yazıldı & parçalara bölündü
+> Uygulamada performans iyileştirmeleri (500ms~)
+
 - 10/06/2021 - Topla(v1.21)
 
 > Uygulamaya Firebase Analytics eklendi

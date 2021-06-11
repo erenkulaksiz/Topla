@@ -95,8 +95,9 @@ const OptionsScreen = props => {
 }
 
 const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
+    return {
+        reducer: state.mainReducer
+    }
 };
 
 export default connect(mapStateToProps)(OptionsScreen);

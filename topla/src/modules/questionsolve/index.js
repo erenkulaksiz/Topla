@@ -15,12 +15,12 @@ const QuestionSolve = props => {
         <View style={style.container}>
             <View style={style.questionTitleWrapper}>
                 <Text style={style.questionTitle}>
-                    {props.reducer.currentQuestion.questions[props.reducer.currentQuestion.currentStep].question}
+                    {props.currentQuestion.questions[props.currentQuestion.currentStep].question}
                 </Text>
             </View>
 
             <View style={style.buttonsWrapper}>
-                {props.reducer.currentQuestion.questions[props.reducer.currentQuestion.currentStep].questionOptions.map((element, index) => {
+                {props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions.map((element, index) => {
                     return _renderButton(element, index);
                 })}
             </View>
@@ -29,8 +29,9 @@ const QuestionSolve = props => {
 }
 
 const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
+    return {
+        currentQuestion: state.currentQuestion
+    }
 };
 
 export default connect(mapStateToProps)(QuestionSolve);
