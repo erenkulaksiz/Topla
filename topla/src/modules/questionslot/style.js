@@ -8,14 +8,12 @@ export default StyleSheet.create({
     },
     element: {
         padding: 16,
-        backgroundColor: "white",
         borderRadius: 12,
         width: "100%",
 
         marginBottom: 12,
 
         // Shadow
-        shadowColor: "#919191",
         shadowOffset: {
             width: 0,
             height: 1,

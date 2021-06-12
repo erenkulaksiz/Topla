@@ -18,7 +18,7 @@ const INITIAL_STATE = {
         questionPassPerf: [], // Sonraki soruya geçerken performansı test et
     },
     settings: {
-        darkMode: false,
+        darkMode: "light",
     },
 };
 
@@ -44,8 +44,8 @@ const mainReducer = (state = INITIAL_STATE, action) => {
             return { ...state }
 
         case 'DARK_MODE':
-            console.log("SET DARK MODE: ", !state.settings.darkMode);
-            state.settings.darkMode = !state.settings.darkMode;
+            console.log("SET DARK MODE: ", action.payload);
+            state.settings.darkMode = action.payload;
             return { ...state }
 
         default:

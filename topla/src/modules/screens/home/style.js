@@ -13,14 +13,12 @@ export default StyleSheet.create({
     },
     headerText: {
         fontSize: 32,
-        color: "#0F7CBB",
         marginBottom: 8,
         fontWeight: "bold",
     },
     headerBar: {
         width: "100%",
         height: 2,
-        backgroundColor: "#0F7CBB",
     },
     questionsScroll: {
         flex: 1,

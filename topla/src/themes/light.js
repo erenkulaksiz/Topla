@@ -1,0 +1,17 @@
+export default {
+    container: "#e3e3e3",
+    background: "#ededed",
+    border: "#bdbdbd",
+    backgroundAlt: "#eaeaeb",
+    borderAlt: "#bdbdbd",
+    text: "#0F7CBB",
+    textDefault: "#000",
+    bar: "#0F7CBB",
+    tabBar: "#FFF",
+    tabBarActiveTint: "#0F7CBB",
+    tabBarInactiveTint: "#6b8a9c",
+    headerBackground: "#FFF",
+    headerButtonsBackground: "#EEEE",
+    headerButtonsColor: "#000",
+    questionSlotBackground: "#FFF",
+}

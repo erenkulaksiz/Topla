@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Button, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
 import Header from "../../header";
-
+import Theme from '../../../themes'
 import I18n from "../../../utils/i18n.js";
+import style from './style';
 
 const QuestionSettings = props => {
 
@@ -103,19 +103,19 @@ const QuestionSettings = props => {
     }
 
     return (
-        <View style={style.container}>
+        <View style={{ ...style.container, backgroundColor: Theme(props.reducer.settings.darkMode).container }}>
             <Header backShown onBack={() => props.navigation.goBack()} />
             <View style={style.headerContainer}>
                 <View>
-                    <Text style={style.headerText}>{I18n.t("question_settings")}</Text>
+                    <Text style={{ ...style.headerText, color: Theme(props.reducer.settings.darkMode).text }}>{I18n.t("question_settings")}</Text>
                 </View>
                 <View style={style.headerTextWrapperRight}>
-                    <Text style={style.headerTextQuestionSettings}>{I18n.t("question_defaults")} - {props.route.params.question.name}</Text>
+                    <Text style={{ ...style.headerTextQuestionSettings, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_defaults")} - {props.route.params.question.name}</Text>
                 </View>
             </View>
-            <View style={style.headerBar}></View>
+            <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
             <ScrollView style={style.content}>
-                <View style={style.questionSettingsWrapper}>
+                <View style={{ ...style.questionSettingsWrapper, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
                     <View style={style.elementLogoWrapper}>
                         <Image
                             style={style.elementLogo}
@@ -125,16 +125,16 @@ const QuestionSettings = props => {
                     </View>
                     <View style={style.settingsWrapper}>
                         <View style={style.setting}>
-                            <Text style={style.settingTitle}>{I18n.t("question_numberRange")}: </Text>
+                            <Text style={{ ...style.settingTitle, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_numberRange")}: </Text>
                             <View style={style.settingWrapper}>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
-                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementMaxRange()}>
-                                            <Text style={{ fontSize: 18 }}>-{props.questionSettings.rangeIncremental}</Text>
+                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _decrementMaxRange()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>-{props.questionSettings.rangeIncremental}</Text>
                                         </TouchableOpacity>
-                                        <View style={style.incrementCenter_field}>
+                                        <View style={{ ...style.incrementCenter_field, borderColor: Theme(props.reducer.settings.darkMode).textDefault }}>
                                             <TextInput
-                                                style={style.inputfield}
+                                                style={{ ...style.inputfield, color: Theme(props.reducer.settings.darkMode).textDefault }}
                                                 onChangeText={text => {
                                                     _setMaxRange(text);
                                                 }}
@@ -143,80 +143,80 @@ const QuestionSettings = props => {
                                                 keyboardType="numeric"
                                             />
                                         </View>
-                                        <TouchableOpacity style={style.increment} onPress={() => _incrementMaxRange()}>
-                                            <Text style={{ fontSize: 18 }}>+{props.questionSettings.rangeIncremental}</Text>
+                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _incrementMaxRange()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>+{props.questionSettings.rangeIncremental}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
                         </View>
                         <View style={style.setting}>
-                            <Text style={style.settingTitle}>{I18n.t("question_count")}: </Text>
+                            <Text style={{ ...style.settingTitle, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_count")}: </Text>
                             <View style={style.settingWrapper}>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
-                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementQuestionCount()}>
-                                            <Text style={{ fontSize: 18 }}>-</Text>
+                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _decrementQuestionCount()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>-</Text>
                                         </TouchableOpacity>
-                                        <View style={style.incrementCenter}>
-                                            <Text style={{ fontSize: 16 }}>{props.questionSettings.questionCount}</Text>
+                                        <View style={{ ...style.incrementCenter, borderColor: Theme(props.reducer.settings.darkMode).textDefault }}>
+                                            <Text style={{ fontSize: 16, color: Theme(props.reducer.settings.darkMode).textDefault }}>{props.questionSettings.questionCount}</Text>
                                         </View>
-                                        <TouchableOpacity style={style.increment} onPress={() => _incrementQuestionCount()}>
-                                            <Text style={{ fontSize: 18 }}>+</Text>
+                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _incrementQuestionCount()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>+</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
                         </View>
                         <View style={style.setting}>
-                            <Text style={style.settingTitle}>{I18n.t("question_optionCount")}: </Text>
+                            <Text style={{ ...style.settingTitle, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_optionCount")}: </Text>
                             <View style={style.settingWrapper}>
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
-                                        <TouchableOpacity style={style.decrement} onPress={() => _decrementOptions()}>
-                                            <Text style={{ fontSize: 18 }}>-</Text>
+                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _decrementOptions()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>-</Text>
                                         </TouchableOpacity>
-                                        <View style={style.incrementCenter}>
-                                            <Text style={{ fontSize: 16 }}>{props.questionSettings.optionCount}</Text>
+                                        <View style={{ ...style.incrementCenter, borderColor: Theme(props.reducer.settings.darkMode).textDefault }}>
+                                            <Text style={{ fontSize: 16, color: Theme(props.reducer.settings.darkMode).textDefault }}>{props.questionSettings.optionCount}</Text>
                                         </View>
-                                        <TouchableOpacity style={style.increment} onPress={() => _incrementOptions()}>
-                                            <Text style={{ fontSize: 18 }}>+</Text>
+                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _incrementOptions()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>+</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
                         </View>
-                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
+                        <View style={{ ...style.setting, backgroundColor: Theme(props.reducer.settings.darkMode).container, borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.questionSettings.operations.addition}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: newValue } })}
                             />
-                            <Text style={style.label}>{I18n.t("question_add")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_add")}</Text>
                         </View>
-                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
+                        <View style={{ ...style.setting, backgroundColor: Theme(props.reducer.settings.darkMode).container, borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.questionSettings.operations.subtraction}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: newValue } })}
                             />
-                            <Text style={style.label}>{I18n.t("question_sub")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_sub")}</Text>
                         </View>
-                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
+                        <View style={{ ...style.setting, backgroundColor: Theme(props.reducer.settings.darkMode).container, borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.questionSettings.operations.multiplication}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: newValue } })}
                             />
-                            <Text style={style.label}>{I18n.t("question_mul")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_mul")}</Text>
                         </View>
-                        <View style={{ ...style.setting, backgroundColor: "#e6e6e6", borderRadius: 4 }}>
+                        <View style={{ ...style.setting, backgroundColor: Theme(props.reducer.settings.darkMode).container, borderRadius: 4 }}>
                             <CheckBox
                                 disabled={false}
                                 value={props.questionSettings.operations.division}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: newValue } })}
                             />
-                            <Text style={style.label}>{I18n.t("question_div")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_div")}</Text>
                         </View>
                     </View>
                 </View>
@@ -232,7 +232,7 @@ const QuestionSettings = props => {
 }
 
 const mapStateToProps = (state) => {
-    return { mainReducer: state.mainReducer, questionSettings: state.questionSettings };
+    return { reducer: state.mainReducer, questionSettings: state.questionSettings };
 };
 
 export default connect(mapStateToProps)(QuestionSettings);

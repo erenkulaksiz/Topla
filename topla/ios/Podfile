@@ -20,6 +20,8 @@ target 'topla' do
 
   pod 'RNFBCrashlytics', :path => '../node_modules/@react-native-firebase/crashlytics'
 
+  pod 'react-native-appearance', :path => '../node_modules/react-native-appearance'
+
   target 'toplaTests' do
     inherit! :complete
     # Pods for testing

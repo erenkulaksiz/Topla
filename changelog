@@ -1,4 +1,11 @@
 
+- 12/06/2021 - Topla(v1.23)
+
+> Uygulama sadece portre modunda çalışır halde ayarlandı
+> Uygulamanın tasarımları baştan aşağı karanlık mod için baştan yapıldı #TODO: Ayarlar kısmı, soru kısmı, sonuçlar kısmı, iletişim kısımları kaldı!
+> Uygulamada artık karanlık mod çalışıyor
+> Karanlık mod, hem otomatik olarak cihazın ayarlarından hem de manuel olarak ayarlardan ayarlanabiliyor
+
 - 11/06/2021 - Topla(v1.22)
 
 > Reducer'da performans iyileştirmeleri
@@ -23,7 +30,7 @@
 > Reklam gösterimleri tamamen çalışıyor
 > Soru sayfasında arkaplanda performans iyileştirmeleri ve kodu toparlama yapıldı
 > Backend kısmında Contact mesajı gönderilirse ve önceden 3den fazla mesaj aynı UUID ve token üstünden gönderildiyse istek reddediliyor (spam)
-> Cihazda internet var ve sunucuya bağlanılamıyor & token alınamıyorsa uygulama arkaplanda her 3 saniyede bir sunucuya istek gönderiyor #TODO: 100 saniyelik timeout ayarlamam lazım, sınırsız süre çalışıyor
+> Cihazda internet var ve sunucuya bağlanılamıyor & token alınamıyorsa uygulama arkaplanda her 3 saniyede bir sunucuya istek gönderiyor
 > Uygulama API_TOKEN almadan önce 2 saniye bekliyor & cihazda internetin olup olmadığını kontrol ediyor
 > Ayarlardaki TOKEN yazısı kaldırıldı #TODO: Debug butonunu da kaldır 
 > Reducer'a uygulamanın son versionu ile ilgili verileri çekecek bir bilgi kısmı (API.APP) eklendi
@@ -33,14 +40,12 @@
 
 > Sorular için sayaç artık çalışıyor
 > Soru sayfasının kodları baştan düzeltildi
-> #TODO: Sayaç sıfırlanmıyor
 
 - 07/06/2021 - Topla(v1.0) - Topla Server(v1.0)
 
 > Commit sayıları yerine versiyona geçiş yapıldı.
 > Sunucu tarafında artık gelen kayıt isteklerinde API_TOKEN üretiliyor, token göndermeyen istekler reddediliyor
 > Reklam gösterimleri Admob ile çalışıyor
-> #TODO: Api ile mesaj gönderiminde kontrol edilecek zart zurt
 > Token doğru çalışıyor
 
 - 07/06/2021 - Commit 38
@@ -86,7 +91,7 @@
 
 > Bütün uygulama artık React Hooks kullanır hale getirildi
 > Uygulamaya dil eklendi: İngilizce // Baştan aşağı tüm yazılar çevrildi
-> Soru ekranında artık sorunun içeriği düzgün gösteriliyor // #TODO: Sorunun defaultlarını soru ayarlarına girmeden önce dispatch et.
+> Soru ekranında artık sorunun içeriği düzgün gösteriliyor
 > Soru ayarlarında sayı arttırma/azaltma kısmındaki hata giderildi, artık genişliği 160pixel olacak
 
 - 31/05/2021 - Commit 32

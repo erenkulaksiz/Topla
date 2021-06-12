@@ -1,13 +1,13 @@
 import React from 'react';
 import { Text, View, ScrollView } from "react-native";
-import style from './style';
+import { connect } from 'react-redux';
 
+import style from './style';
+import I18n from "../../../utils/i18n.js";
 import QuestionSlot from "../../questionslot";
 import Header from "../../header";
-
 import questionTypes from "../../../utils/config/questionTypes.js";
-
-import I18n from "../../../utils/i18n.js";
+import Theme from '../../../themes'
 
 import {
     AdMobBanner,
@@ -20,11 +20,11 @@ const HomeScreen = props => {
     }
 
     return (
-        <View style={style.container}>
+        <View style={{ ...style.container, backgroundColor: Theme(props.reducer.settings.darkMode).container }}>
             <Header />
             <View style={style.headerContainer}>
-                <Text style={style.headerText}>{I18n.t("home")}</Text>
-                <View style={style.headerBar}></View>
+                <Text style={{ ...style.headerText, color: Theme(props.reducer.settings.darkMode).text }}>{I18n.t("home")}</Text>
+                <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
             </View>
             <ScrollView style={style.questionsScroll}>
                 {questionTypes.map((question, index) => {
@@ -47,4 +47,10 @@ const HomeScreen = props => {
     );
 }
 
-export default HomeScreen;
+const mapStateToProps = (state) => {
+    return {
+        reducer: state.mainReducer,
+    }
+};
+
+export default connect(mapStateToProps)(HomeScreen);

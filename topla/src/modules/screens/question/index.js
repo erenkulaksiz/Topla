@@ -33,7 +33,7 @@ const QuestionScreen = props => {
         _timer.startTimer();
     }
 
-    const _timer = { // buna 5 saat harcadım
+    const _timer = { // 5 saat
         //timer: null,
         startTimer: () => {
             console.log("@START TIMER");
@@ -66,11 +66,6 @@ const QuestionScreen = props => {
             //setStart(Date.now());
 
             //setStart(_timer.oldStart);
-
-            /*
-            _timer.timer = setInterval(() => { // set another interval
-                setTime(time + 100);
-            }, 100);*/
 
             /*clearInterval(_timer.timer);
             _timer.timer = setInterval(() => { // set another interval
@@ -112,9 +107,11 @@ const QuestionScreen = props => {
         },
         _pause: () => {
             page._modal(true);
+            _timer.pause();
         },
         _continue: () => {
             page._modal(false);
+            _timer.resume();
         },
         _goBack: () => {
             page._modal(false);
@@ -399,7 +396,7 @@ const QuestionScreen = props => {
 
     return (
         <View style={style.container}>
-            <Header pauseShown onPause={() => _pause()} />
+            <Header pauseShown onPause={() => page._pause()} />
             <View style={style.headerContainer}>
                 <View style={style.headerLeft}>
                     <FontAwesomeIcon icon={faClock} size={16} color={"#000"} />
@@ -412,12 +409,9 @@ const QuestionScreen = props => {
                     <Text> /{props.questionSettings.questionCount}</Text>
                 </View>
             </View>
-
             <View style={style.barsWrapper}>
-                {/* Bars */}
                 {page._renderBars()}
             </View>
-
             <View style={style.content}>
                 {props.currentQuestion.isQuestionsLoaded &&
                     <QuestionSolve
@@ -426,24 +420,18 @@ const QuestionScreen = props => {
                     />
                 }
             </View>
-
-            {/* #################### MODAL #################### */}
             <Modal
                 isVisible={props.reducer.pauseModalShown}
                 onSwipeComplete={() => page._continue()}
                 swipeDirection={['down']}
                 style={style.modalWrapper}
                 onBackdropPress={() => page._continue()}>
-
                 <View style={style.modal}>
-
                     <Text style={style.modalTitle}>{I18n.t("modal_paused")}</Text>
                     <View style={style.modalSeperator}></View>
-
                     <TouchableOpacity style={style.button} onPress={() => page._continue()}>
                         <Text style={style.buttonText}>{I18n.t("modal_continue")}</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => page._goBack()}>
                         <Text style={style.buttonText}>{I18n.t("modal_exit")}</Text>
                     </TouchableOpacity>

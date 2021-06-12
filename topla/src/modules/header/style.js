@@ -36,13 +36,11 @@ export default StyleSheet.create({
     back: {
         marginLeft: 12,
         padding: 12,
-        backgroundColor: "#EEEE",
         borderRadius: 24,
     },
     pause: {
         marginRight: 12,
         padding: 12,
-        backgroundColor: "#EEEE",
         borderRadius: 24,
     },
     pauseWrapper: {

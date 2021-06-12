@@ -6,8 +6,8 @@ import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust } from '@fortawesome/free-solid-svg-icons'
 
+import Theme from '../../../themes'
 import Header from "../../header";
-
 import I18n from "../../../utils/i18n.js";
 
 const OptionsScreen = props => {
@@ -33,16 +33,16 @@ const OptionsScreen = props => {
     }
 
     const _darkMode = () => {
-        props.dispatch({ type: "DARK_MODE" });
-        alert("Koyu mod: " + props.reducer.settings.darkMode);
+        props.dispatch({ type: "DARK_MODE", payload: props.reducer.settings.darkMode == 'dark' ? "light" : "dark" });
+        //alert("Koyu mod: " + props.reducer.settings.darkMode);
     }
 
     return (
-        <View style={style.container}>
+        <View style={{ ...style.container, backgroundColor: Theme(props.reducer.settings.darkMode).container }}>
             <Header />
             <View style={style.headerContainer}>
-                <Text style={style.headerText}>{I18n.t("settings")}</Text>
-                <View style={style.headerBar}></View>
+                <Text style={{ ...style.headerText, color: Theme(props.reducer.settings.darkMode).text }}>{I18n.t("settings")}</Text>
+                <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
             </View>
             <View style={style.content}>
                 <View style={style.buttonsWrapper}>

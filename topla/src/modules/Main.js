@@ -1,19 +1,29 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faHome, /*faCrown,*/ faCog } from '@fortawesome/free-solid-svg-icons'
-
+import { connect } from 'react-redux';
 import I18n from "../utils/i18n.js";
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+// Components 
 import HomeScreen from './screens/home'
 import OptionsScreen from './screens/options';
 
+import Theme from '../themes'
+
 const Tab = createBottomTabNavigator();
 
-const Home = () => {
+const Home = (props) => {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+            tabBarOptions={{
+                showLabel: true,
+                activeTintColor: Theme(props.reducer.settings.darkMode).tabBarActiveTint,
+                inactiveTintColor: Theme(props.reducer.settings.darkMode).tabBarInactiveTint,
+                style: {
+                    backgroundColor: Theme(props.reducer.settings.darkMode).tabBar,
+                    borderTopWidth: 0,
+                }
+            }}>
             <Tab.Screen name="Home" component={HomeScreen}
                 options={{
                     tabBarLabel: I18n.t("home"),
@@ -39,4 +49,10 @@ const Home = () => {
     );
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+    return {
+        reducer: state.mainReducer,
+    }
+};
+
+export default connect(mapStateToProps)(Home);
