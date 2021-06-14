@@ -9,7 +9,18 @@ const ContactScreen = props => {
 
     const _sendToAPI = () => {
         console.log("trying to send message");
-        props.dispatch({ type: "API_SEND_MESSAGE", payload: { message: "MESAJJJ", email: "royjce@gmail.com" } });
+        console.log("API: ", props.API);
+        props.dispatch({
+            type: "API_SEND_MESSAGE",
+            payload: {
+                uuid: props.reducer.deviceInfo.uuid,
+                bundleId: props.reducer.deviceInfo.bundleId,
+                model: props.reducer.deviceInfo.model,
+                message: "MESAJJJ",
+                email: "royjce@gmail.com",
+                API_TOKEN: props.API.API_TOKEN,
+            }
+        });
     }
 
     return (
@@ -47,8 +58,10 @@ const ContactScreen = props => {
 }
 
 const mapStateToProps = (state) => {
-    const { reducer } = state
-    return { reducer }
+    return {
+        reducer: state.mainReducer,
+        API: state.API,
+    }
 };
 
 export default connect(mapStateToProps)(ContactScreen);

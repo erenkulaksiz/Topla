@@ -2,13 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faHome, /*faCrown,*/ faCog } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux';
-import I18n from "../utils/i18n.js";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import I18n from "../utils/i18n.js";
+import Theme from '../themes'
+
 // Components 
 import HomeScreen from './screens/home'
 import OptionsScreen from './screens/options';
-
-import Theme from '../themes'
 
 const Tab = createBottomTabNavigator();
 

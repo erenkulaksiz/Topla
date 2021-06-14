@@ -1,8 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-//import { useColorScheme } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { Appearance, AppearanceProvider } from 'react-native-appearance';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import SplashScreen from 'react-native-splash-screen'
@@ -26,7 +25,6 @@ import store from './store';
 const Stack = createStackNavigator();
 
 const App = () => {
-  //const scheme = useColorScheme();
 
   const _checkConnection = async () => {
     NetInfo.addEventListener((state) => {
@@ -87,9 +85,7 @@ const App = () => {
           console.log("GOT API_TOKEN: ", store.getState().API.DATA.API_TOKEN);
         } else {
           console.log("NO API TOKEN")
-
           let retries = 0;
-
           connTimer = setInterval(() => {
             if (store.getState().API.DATA.API_TOKEN) {
               console.log("@API_TOKEN: ", store.getState().API.API_TOKEN);
@@ -104,10 +100,8 @@ const App = () => {
                 }
               });
             }
-
             retries++;
             const maxRetries = 2;
-
             if (retries >= maxRetries) {
               console.log(`API TIMEOUT AFTER ${maxRetries} RETRIES`);
               clearInterval(connTimer);
@@ -122,7 +116,6 @@ const App = () => {
 
   useEffect(() => {
     _INITIALIZE.init();
-
     store.dispatch({ type: 'DARK_MODE', payload: Appearance.getColorScheme() });
     Appearance.addChangeListener(({ colorScheme }) => {
       store.dispatch({ type: 'DARK_MODE', payload: colorScheme });

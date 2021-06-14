@@ -15,6 +15,7 @@ export default StyleSheet.create({
     },
     questionTitle: {
         fontSize: 26,
+        fontWeight: "bold",
     },
     buttonsWrapper: {
         marginTop: 12,

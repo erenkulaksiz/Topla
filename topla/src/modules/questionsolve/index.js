@@ -1,7 +1,8 @@
 import React from 'react';
 import { Text, View, TouchableOpacity } from "react-native";
-import style from './style';
 import { connect } from 'react-redux';
+
+import style from './style';
 
 const QuestionSolve = props => {
 
@@ -18,7 +19,6 @@ const QuestionSolve = props => {
                     {props.currentQuestion.questions[props.currentQuestion.currentStep].question}
                 </Text>
             </View>
-
             <View style={style.buttonsWrapper}>
                 {props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions.map((element, index) => {
                     return _renderButton(element, index);

@@ -5,9 +5,9 @@ import CheckBox from '@react-native-community/checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
+import I18n from "../../../utils/i18n.js";
 import Header from "../../header";
 import Theme from '../../../themes'
-import I18n from "../../../utils/i18n.js";
 import style from './style';
 
 const QuestionSettings = props => {
@@ -232,7 +232,10 @@ const QuestionSettings = props => {
 }
 
 const mapStateToProps = (state) => {
-    return { reducer: state.mainReducer, questionSettings: state.questionSettings };
+    return {
+        reducer: state.mainReducer,
+        questionSettings: state.questionSettings
+    };
 };
 
 export default connect(mapStateToProps)(QuestionSettings);

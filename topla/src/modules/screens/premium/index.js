@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View } from 'react-native';
-import style from './style';
 
+import style from './style';
 import Header from "../../header";
 
 const PremiumScreen = props => {

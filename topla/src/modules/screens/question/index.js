@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Alert, TouchableOpacity, Button } from 'react-native';
-import style from './style';
-import Header from "../../header";
+import { Text, View, Alert, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import _ from "lodash";
-import I18n from "../../../utils/i18n.js";
 import prettyMs from 'pretty-ms';
 
+import I18n from "../../../utils/i18n.js";
+import style from './style';
+import Header from "../../header";
 import QuestionSolve from '../../questionsolve';
 
 const QuestionScreen = props => {
@@ -24,56 +24,21 @@ const QuestionScreen = props => {
 
     const _INITIALIZE = async () => {
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e))
-
         if (!props.currentQuestion.isStarted) {
             props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
-
         _loadQuestions();
         _timer.startTimer();
     }
 
     const _timer = { // 5 saat
-        //timer: null,
         startTimer: () => {
             console.log("@START TIMER");
-            //setStart(Date.now());
-            /*
-            _timer.timer = setInterval(() => {
-                setTime(time + 100);
-            }, 100);*/
             setTimerStarted(true);
         },
-        clear: () => {
-            /*clearInterval(_timer.timer);
-            setTime(0);*/
-            //setTimerStarted(false);
-            setTimer(0);
-        },
-        pause: () => {
-            /*
-            clearInterval(_timer.timer);
-            _timer.oldStart = Date.now();*/
-
-            setTimerStarted(false);
-        },
-        resume: () => {
-            //setStart(Date.now());
-            //console.log("Paused for this long: ", (Date.now() - _timer.oldStart))
-            //const myold = Date.now() - _timer.oldStart;
-            //console.log("myold: ", (Date.now() - Date.now() + myold))
-            //_timer.clear();
-            //setStart(Date.now());
-
-            //setStart(_timer.oldStart);
-
-            /*clearInterval(_timer.timer);
-            _timer.timer = setInterval(() => { // set another interval
-                setTime(Date.now());
-            }, 100);*/
-
-            setTimerStarted(true);
-        },
+        clear: () => setTimer(0),
+        pause: () => setTimerStarted(false),
+        resume: () => setTimerStarted(true),
         _render: () => {
             return (
                 <Text style={{ marginLeft: 8 }}>{prettyMs(timer - thisQuestionTime, { colonNotation: true })}</Text>
@@ -87,7 +52,7 @@ const QuestionScreen = props => {
             timeout = setTimeout(() => {
                 setTimer(timer + 100);
                 if ((timer - thisQuestionTime) >= props.questionSettings.perQuestionTime) {
-                    setTimerStarted(false);
+                    setTimerStarted(false); // -> Soru süresi aşılırsa
                     //clearTimeout(timeout);
                 }
             }, 100);
@@ -149,7 +114,8 @@ const QuestionScreen = props => {
                 I18n.t("question_solving_back_desc"),
                 [
                     {
-                        text: I18n.t("question_solving_back_cancel"), style: 'cancel', onPress: () => {
+                        text: I18n.t("question_solving_back_cancel"), style: 'cancel',
+                        onPress: () => {
                             _timer.resume();
                         }
                     },
@@ -184,18 +150,6 @@ const QuestionScreen = props => {
             } else {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
                 props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-
-                // Toplam statları hesapla
-
-                /* 
-                    stats: {
-                        finalTime: 0,
-                        totalCorrect: 0,
-                        totalEmpty: 0,
-                        totalWrong: 0,
-                    }
-                */
-
                 let totalCorrect = 0;
                 let totalWrong = 0;
                 props.currentQuestion.questionResults.map((element, index) => {
@@ -205,9 +159,7 @@ const QuestionScreen = props => {
                         totalWrong += 1;
                     }
                 })
-
                 console.log("TOTAL CORRECT: " + totalCorrect + " TOTAL WRONG: " + totalWrong);
-
                 props.dispatch({
                     type: "SET_STATS", payload: {
                         finalTime: timer,
@@ -216,9 +168,7 @@ const QuestionScreen = props => {
                         totalEmpty: 0,
                     }
                 });
-
                 console.log("SORU ÇÖZÜMÜ BİTTİ (QUESTIONRESULTS): ", props.currentQuestion.questionResults);
-
                 props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } })
 
                 /*
@@ -254,7 +204,6 @@ const QuestionScreen = props => {
                 await logCrashlytics();
                 await logError();
                 */
-
                 props.navigation.removeListener('beforeRemove')
                 props.navigation.popToTop();
                 page._finishQuestionSolving();
@@ -264,13 +213,9 @@ const QuestionScreen = props => {
 
     const _loadQuestions = () => {
         console.log("@Load Questions")
-
-        const performance_begin = performance.now();
-
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
-
+        const performance_begin = performance.now();
         const questions = [];
-
         const values = [
             "addition",
             "subtraction",
@@ -290,20 +235,18 @@ const QuestionScreen = props => {
             let number2 = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
             let numberTemp = 0;
             console.log("________________________");
-            const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true); // true olan keyleri arraya al
-            const questionOperationRandom = keys[_.sample(Object.keys(keys))] // arraydan rastgele key getir
+            const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
+            const questionOperationRandom = keys[_.sample(Object.keys(keys))]
             console.log("KEY: ", questionOperationRandom)
-
             if (questionOperationRandom == values[0]) {
                 numberTemp = number1 + number2;
             } else if (questionOperationRandom == values[1]) {
                 numberTemp = number1 - number2;
                 if (numberTemp < 0) {
-                    // Swap number1 with number2
                     number1 = number1 ^ number2
                     number2 = number1 ^ number2
                     number1 = number1 ^ number2
-                    numberTemp = number1 - number2; // Yeniden hesapla
+                    numberTemp = number1 - number2;
                 }
             } else if (questionOperationRandom == values[2]) {
                 numberTemp = number1 * number2;
@@ -311,41 +254,27 @@ const QuestionScreen = props => {
                 const isInt = value => {
                     return (parseFloat(value) == parseInt(value)) && !isNaN(value);
                 }
-
                 const isPrime = value => {
                     let result = 0;
                     for (let i = 1; i < value; i++) { if (value % i == 0) result++; }
                     if (result > 1) return false
                     return true
                 }
-
                 number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
-                const bolenler = []; // bölmenin olasılıkları
-
-                while (isPrime(number1)) {
-                    number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
-                }
-
-                while (!isInt(number1 / number2)) {
-                    number2 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
-                }
-
+                const bolenler = [];
+                while (isPrime(number1)) { number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
+                while (!isInt(number1 / number2)) { number2 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
                 for (let i = 1; i < number1; i++) {
                     let sonuc = number1 / i;
                     if (isInt(sonuc)) {
                         bolenler.push(sonuc);
                     }
                 }
-
                 console.log("bölenler ", bolenler);
-
-                let randomKey = _.sample(bolenler); // Arraydan rastgele bölen al
-                while (randomKey == number1) {
-                    randomKey = _.sample(bolenler)
-                }
+                let randomKey = _.sample(bolenler);
+                while (randomKey == number1) { randomKey = _.sample(bolenler) }
                 number2 = randomKey;
                 numberTemp = number1 / number2;
-
                 console.log("İŞLEM: " + number1 + " / " + number2 + " = " + numberTemp);
             }
 
@@ -358,38 +287,26 @@ const QuestionScreen = props => {
             });
         }
 
-        // rasgele seçenek üretimi
         questions.map(question => {
             for (let a = 1; a <= props.questionSettings.optionCount; a++) {
                 if (a == 1) {
                     question.questionOptions.push(question.questionAnswer);
                 } else {
                     let randomNumber = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
-
-                    /*
-                    if(question.questionOperation == values[2]){
+                    /*if(question.questionOperation == values[2]){
                         // Çarpmaysa rasgele seçenekleri ona göre üret
-                    }
-                    */
-
-                    if (question.questionOptions.indexOf(randomNumber) < 0) {
-                        question.questionOptions.push(randomNumber);
-                    } else {
-                        a--;
-                    }
+                    }*/
+                    if (question.questionOptions.indexOf(randomNumber) < 0) question.questionOptions.push(randomNumber);
+                    else a--;
                 }
             }
         });
-
         questions.map(question => {
             question.questionOptions.sort(() => Math.random() - 0.5);
         })
-
         props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
-
         const performance_after = performance.now();
-
         console.log("generation performance: " + (performance_after - performance_begin) + "ms")
         console.log("questions ", questions);
     }

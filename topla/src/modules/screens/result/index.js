@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Button, ScrollView } from 'react-native';
-import style from './style';
-import I18n from "../../../utils/i18n.js";
-import Header from "../../header";
 import prettyMs from 'pretty-ms';
+
+import I18n from "../../../utils/i18n.js";
+import style from './style';
+import Header from "../../header";
 
 const ResultScreen = props => {
 

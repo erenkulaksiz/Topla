@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import style from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust } from '@fortawesome/free-solid-svg-icons'
 
+import I18n from "../../../utils/i18n.js";
 import Theme from '../../../themes'
 import Header from "../../header";
-import I18n from "../../../utils/i18n.js";
+import style from './style';
 
 const OptionsScreen = props => {
 
