@@ -11,6 +11,7 @@ const INITIAL_STATE = {
     },
     minRange: 1,
     maxRange: 20,
+    rangeDecremental: 10,
     rangeIncremental: 10,
 };
 
@@ -102,6 +103,11 @@ export default (state = INITIAL_STATE, action) => {
         case 'SET_RANGE_INCREMENTAL':
             console.log("NEW VALUE FOR INCREMENTAL: ", action.payload);
             state.rangeIncremental = action.payload;
+            return { ...state }
+
+        case 'SET_RANGE_DECREMENTAL':
+            console.log("NEW VALUE FOR DECREMENTAL: ", action.payload);
+            state.rangeDecremental = action.payload;
             return { ...state }
 
         default:

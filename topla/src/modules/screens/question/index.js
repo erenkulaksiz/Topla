@@ -4,7 +4,7 @@ import { Text, View, Alert, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import _ from "lodash";
+import _, { intersection } from "lodash";
 import prettyMs from 'pretty-ms';
 
 import I18n from "../../../utils/i18n.js";
@@ -240,6 +240,7 @@ const QuestionScreen = props => {
             console.log("KEY: ", questionOperationRandom)
             if (questionOperationRandom == values[0]) {
                 numberTemp = number1 + number2;
+                console.log("toplama: " + number1 + " x " + number2 + " = " + numberTemp);
             } else if (questionOperationRandom == values[1]) {
                 numberTemp = number1 - number2;
                 if (numberTemp < 0) {
@@ -248,8 +249,10 @@ const QuestionScreen = props => {
                     number1 = number1 ^ number2
                     numberTemp = number1 - number2;
                 }
+                console.log("cikarma: " + number1 + " x " + number2 + " = " + numberTemp);
             } else if (questionOperationRandom == values[2]) {
                 numberTemp = number1 * number2;
+                console.log("carpma: " + number1 + " x " + number2 + " = " + numberTemp);
             } else if (questionOperationRandom == values[3]) {
                 const isInt = value => {
                     return (parseFloat(value) == parseInt(value)) && !isNaN(value);
@@ -292,10 +295,10 @@ const QuestionScreen = props => {
                 if (a == 1) {
                     question.questionOptions.push(question.questionAnswer);
                 } else {
-                    let randomNumber = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
-                    /*if(question.questionOperation == values[2]){
-                        // Çarpmaysa rasgele seçenekleri ona göre üret
-                    }*/
+                    // Basamak sayısını al.
+                    const basamak = Math.max(Math.floor(Math.log10(Math.abs(question.questionAnswer))), 0) + 1
+                    const range = (Math.pow(10, (basamak - 1)));
+                    let randomNumber = page._generateRandomInt((question.questionAnswer - range), (question.questionAnswer + range));
                     if (question.questionOptions.indexOf(randomNumber) < 0) question.questionOptions.push(randomNumber);
                     else a--;
                 }
@@ -330,7 +333,8 @@ const QuestionScreen = props => {
                 {page._renderBars()}
             </View>
             <View style={style.content}>
-                {props.currentQuestion.isQuestionsLoaded &&
+                {
+                    props.currentQuestion.isQuestionsLoaded &&
                     <QuestionSolve
                         currentQuestion={props.currentQuestion}
                         onAnswerPress={(element, index) => page._gotoNextQuestion(element, index)}
@@ -346,10 +350,10 @@ const QuestionScreen = props => {
                 <View style={style.modal}>
                     <Text style={style.modalTitle}>{I18n.t("modal_paused")}</Text>
                     <View style={style.modalSeperator}></View>
-                    <TouchableOpacity style={style.button} onPress={() => page._continue()}>
+                    <TouchableOpacity style={style.button} activeOpacity={0.7} onPress={() => page._continue()}>
                         <Text style={style.buttonText}>{I18n.t("modal_continue")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} onPress={() => page._goBack()}>
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#bd0f0f", marginTop: 6 }} activeOpacity={0.7} onPress={() => page._goBack()}>
                         <Text style={style.buttonText}>{I18n.t("modal_exit")}</Text>
                     </TouchableOpacity>
                 </View>

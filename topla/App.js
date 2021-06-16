@@ -26,27 +26,6 @@ const Stack = createStackNavigator();
 
 const App = () => {
 
-  const _checkConnection = async () => {
-    NetInfo.addEventListener((state) => {
-      store.dispatch({ type: 'SET_DEVICE_CONNECTION', payload: { connectionType: state.type, isConnected: state.isConnected } });
-      if (store.getState().mainReducer.connection.isConnected) {
-        console.log("UUID: ", store.getState().mainReducer.deviceInfo.uuid);
-        store.dispatch({
-          type: 'API_REGISTER',
-          payload: {
-            uuid: store.getState().mainReducer.deviceInfo.uuid,
-            bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-            model: store.getState().mainReducer.deviceInfo.model,
-          }
-        });
-        SplashScreen.hide();
-      } else {
-        console.log("[!!!] cihazda bağlantı yok")
-        SplashScreen.hide();
-      }
-    });
-  }
-
   const _setDeviceInfo = {
     deviceInfo: () => {
       return {
@@ -70,15 +49,26 @@ const App = () => {
     connTimer: null,
     init: async () => {
       await _setDeviceInfo.set();
-      await _checkConnection();
-      setTimeout(() => {
-        _INITIALIZE.connection();
+      //await _checkConnection();
+      await store.dispatch({
+        type: 'API_REGISTER',
+        payload: {
+          uuid: store.getState().mainReducer.deviceInfo.uuid,
+          bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+          model: store.getState().mainReducer.deviceInfo.model,
+        }
+      });
+
+      setTimeout(async () => {
+        await _INITIALIZE.connection();
+        SplashScreen.hide();
       }, 2000)
 
       const appInstanceId = await analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);
     },
     connection: async () => {
+      //console.log("currStore: ", currStore);
       if (store.getState().mainReducer.connection.isConnected) {
         console.log("CONNECTED TO WIFI!");
         if (store.getState().API.DATA.API_TOKEN) {
@@ -87,16 +77,19 @@ const App = () => {
           console.log("NO API TOKEN")
           let retries = 0;
           connTimer = setInterval(() => {
+            console.log("--- TİMER --- : ", connTimer)
+            console.log("AAAAAAAAAAAAAAAAAA", store.getState().API.DATA)
             if (store.getState().API.DATA.API_TOKEN) {
               console.log("@API_TOKEN: ", store.getState().API.API_TOKEN);
               clearInterval(connTimer);
             } else {
+              const aStore = store.getState();
               store.dispatch({
                 type: 'API_REGISTER',
                 payload: {
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                  model: store.getState().mainReducer.deviceInfo.model,
+                  uuid: aStore.mainReducer.deviceInfo.uuid,
+                  bundleId: aStore.mainReducer.deviceInfo.bundleId,
+                  model: aStore.mainReducer.deviceInfo.model,
                 }
               });
             }
@@ -106,6 +99,7 @@ const App = () => {
               console.log(`API TIMEOUT AFTER ${maxRetries} RETRIES`);
               clearInterval(connTimer);
             }
+            console.log(`${retries} RETRIES`)
           }, 3000)
         }
       } else {
@@ -114,15 +108,22 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
+  useEffect(async () => {
     _INITIALIZE.init();
+
     store.dispatch({ type: 'DARK_MODE', payload: Appearance.getColorScheme() });
+
     Appearance.addChangeListener(({ colorScheme }) => {
       store.dispatch({ type: 'DARK_MODE', payload: colorScheme });
-      //console.log("DARK MODE CHANGED TO: ", colorScheme);
     });
+
+    NetInfo.addEventListener((state) => {
+      store.dispatch({ type: 'SET_DEVICE_CONNECTION', payload: { connectionType: state.type, isConnected: state.isConnected } });
+    });
+
     return () => {
       Appearance.removeChangeListener();
+      NetInfo.removeEventListener();
     };
   }, []);
 

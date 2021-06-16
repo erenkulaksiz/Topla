@@ -7,7 +7,7 @@ import style from './style';
 const QuestionSolve = props => {
 
     const _renderButton = (element, index) => {
-        return (<TouchableOpacity style={style.button} onPress={() => props.onAnswerPress(element, index)} key={index}>
+        return (<TouchableOpacity style={style.button} activeOpacity={0.85} onPress={() => props.onAnswerPress(element, index)} key={index}>
             <Text style={{ fontSize: 18 }}>{"" + element}</Text>
         </TouchableOpacity>)
     }

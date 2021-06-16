@@ -27,7 +27,7 @@ export default StyleSheet.create({
     },
     input: {
         backgroundColor: "white",
-        borderRadius: 12,
+        borderRadius: 4,
         elevation: 2,
         padding: 8,
         marginBottom: 8,

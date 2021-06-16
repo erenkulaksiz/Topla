@@ -68,38 +68,38 @@ const QuestionSettings = props => {
             // Eğer sayı geçerliyse
             value = parseInt(value)
         }
-        /*
-        if (props.questionSettings.maxRange >= 90) {
-            setIncremental(100);
-        } else if (props.questionSettings.maxRange < 90) {
-            setIncremental(10);
-        }*/
         props.dispatch({ type: "SET_MAX_RANGE", payload: value });
+        _calcRange();
     }
 
-    const _incrementMaxRange = () => {
+    const _calcRange = () => {
+        const basamak = Math.max(Math.floor(Math.log10(Math.abs(props.questionSettings.maxRange))), 0) + 1
+        const range = (Math.pow(10, (basamak - 1)));
 
-        // TODO: Increment ve decrement bozuk.
-
-        if (props.questionSettings.maxRange >= 90) {
-            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 100 });
-        } else if (props.questionSettings.maxRange <= 100) {
-            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 10 });
+        if (range == 100) {
+            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: range });
+        } else {
+            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: range });
         }
-        console.log(props.questionSettings.maxRange + " <maxrange - incremental> " + props.questionSettings.rangeIncremental);
+
+        if (props.questionSettings.maxRange > 100) {
+            props.dispatch({ type: "SET_RANGE_DECREMENTAL", payload: range });
+        } else {
+            props.dispatch({ type: "SET_RANGE_DECREMENTAL", payload: range });
+
+        }
+
+        console.log("RANGE: ", range);
+    }
+
+    const _incrementMaxRange = async () => {
         props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: props.questionSettings.rangeIncremental });
+        _calcRange();
     }
 
-    const _decrementMaxRange = () => {
-        if (!props.questionSettings.maxRange <= 0) {
-            if (props.questionSettings.maxRange >= 90) {
-                props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 100 });
-            } else if (props.questionSettings.maxRange <= 100) {
-                props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: 10 });
-            }
-            console.log(props.questionSettings.maxRange + " <maxrange - incremental> " + props.questionSettings.rangeIncremental);
-            props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: props.questionSettings.rangeIncremental });
-        }
+    const _decrementMaxRange = async () => {
+        props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: props.questionSettings.rangeDecremental });
+        _calcRange();
     }
 
     return (
@@ -130,7 +130,7 @@ const QuestionSettings = props => {
                                 <View style={style.setting_incrementWrapper}>
                                     <View style={style.setting_increment}>
                                         <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _decrementMaxRange()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>-{props.questionSettings.rangeIncremental}</Text>
+                                            <Text style={{ fontSize: 14, color: Theme(props.reducer.settings.darkMode).textDefault }}>-{props.questionSettings.rangeDecremental}</Text>
                                         </TouchableOpacity>
                                         <View style={{ ...style.incrementCenter_field, borderColor: Theme(props.reducer.settings.darkMode).textDefault }}>
                                             <TextInput
@@ -144,7 +144,7 @@ const QuestionSettings = props => {
                                             />
                                         </View>
                                         <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _incrementMaxRange()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>+{props.questionSettings.rangeIncremental}</Text>
+                                            <Text style={{ fontSize: 14, color: Theme(props.reducer.settings.darkMode).textDefault }}>+{props.questionSettings.rangeIncremental}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -222,7 +222,7 @@ const QuestionSettings = props => {
                 </View>
             </ScrollView>
             <View style={style.bottomButtonWrapper}>
-                <TouchableOpacity style={style.bottomButton} onPress={() => _navigateToQuestion(props.route.params.question)}>
+                <TouchableOpacity style={style.bottomButton} activeOpacity={0.7} onPress={() => _navigateToQuestion(props.route.params.question)}>
                     <FontAwesomeIcon icon={faPlay} size={12} color={"#fff"} />
                     <Text style={{ fontSize: 15, color: "#fff", marginLeft: 8 }}>{I18n.t("question_start")}</Text>
                 </TouchableOpacity>

@@ -15,6 +15,11 @@ const deviceLanguage =
 
 const INITIAL_STATE = {
     register: {},
+    contact: {
+        message: "",
+        email: "",
+        reason: "",
+    },
     apiError: "",
     DATA: {},
     apiStatus: 200,
@@ -60,15 +65,18 @@ export default (state = INITIAL_STATE, action) => {
             registerDevice().then(response => {
                 console.log("response status ", response.status);
                 response.json().then((data) => {
-                    console.log("API_REGISTER: ", data);
+                    //console.log("API_REGISTER: ", data);
+                    console.log("@api response: ", data);
+
+                    /*
                     if (data.success) {
-                        console.log("@API_REGISTER SUCCESSFUL");
-                        console.log("API TOKEN: ", data.API_TOKEN);
+                        //console.log("@API_REGISTER SUCCESSFUL");
+                        //console.log("API TOKEN: ", data.API_TOKEN);
                         //state.API = data;
                         state.DATA = data;
                     } else {
                         console.log("@API_REGISTER ERROR");
-                    }
+                    }*/
                     if (response.status == 404) {
                         throw [data, response.status];
                     }
@@ -79,7 +87,7 @@ export default (state = INITIAL_STATE, action) => {
                 state.apiStatus = err[1];
             });
 
-            return state
+            return { ...state }
         case 'API_SEND_MESSAGE':
             console.log("@API_SEND_MESSAGE");
 
@@ -124,16 +132,16 @@ export default (state = INITIAL_STATE, action) => {
                 return response
             }
 
-            if (state.connection.isConnected) {
-                sendMessage().catch(err => {
-                    console.log("[ERROR]: ", err);
-                });
-            } else {
-                console.log("NO CONNECTION DETECTED, SEND MESSAGE FAILED");
-                return state
-            }
+            sendMessage().catch(err => {
+                console.log("[ERROR]: ", err);
+            });
 
-            return state
+            return { ...state }
+
+        case 'SET_API_CONTACT':
+            state.contact = { ...state.contact, ...action.payload }
+            return { ...state }
+
         default:
             return state
     }

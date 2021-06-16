@@ -25,7 +25,7 @@ const QuestionSlot = props => {
                 <Text style={{ ...style.elementContent, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_content")} <Text style={{ flex: 1, fontSize: 12 }}>{props.question.content}</Text></Text>
                 <Text style={{ ...style.elementBasamak, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_digit")} <Text style={{ flex: 1 }}>{props.question.digit}</Text></Text>
             </View>
-            <TouchableOpacity style={style.play} onPress={() => { props.onPlay() }}>
+            <TouchableOpacity style={style.play} activeOpacity={0.7} onPress={() => { props.onPlay() }}>
                 <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />
             </TouchableOpacity>
         </View>

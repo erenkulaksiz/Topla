@@ -1,10 +1,18 @@
 
+- 16/06/2021 - Topla(v1.25)
+
+> Soru seçenekleri artık tamamen cevaba bağlı geliyor (dinamik seçenek üretimi)
+> Dokunulabilir butonların opaklığı ayarlandı
+> Soru ayarlarında sayı aralığını arttırma ve azaltma (+10 -10 kısmı) dinamik hale getirildi
+> Uygulama başlayınca oluşan bir bellek sızıntısı kaldırıldı
+> #TODO: Uygulamada API bugu var ve Reducer'daki data set edilmiyor
+
 - 14/06/2021 - Topla(v1.24)
 
 > Performans iyileştirmeleri
-> Kodda temizlik #TODO: Cihazın bağlantısını kontrol etmek için kullanılan subscribeyi temizle
+> Kodda temizlik
 
-- 12/06/2021 - Topla(v1.23)
+- 12/06/2021 - Topla(v1.23) 
 
 > Uygulama sadece portre modunda çalışır halde ayarlandı
 > Uygulamanın tasarımları baştan aşağı karanlık mod için baştan yapıldı #TODO: Ayarlar kısmı, soru kısmı, sonuçlar kısmı, iletişim kısımları kaldı!

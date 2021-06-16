@@ -91,7 +91,7 @@ export default StyleSheet.create({
     setting_increment: {
         flexDirection: "row",
         height: "100%",
-        width: 130, // TODO: NİZAMİ OLACAK
+        width: 150, // TODO: NİZAMİ OLACAK
     },
     settingWrapper: {
         width: "100%",
