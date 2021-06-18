@@ -4,6 +4,7 @@ import {
 } from 'react-native-device-info';
 import * as RNLocalize from 'react-native-localize';
 import { NativeModules, Platform } from 'react-native';
+import { set } from 'lodash';
 
 const API_URL = (Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL)
 
@@ -14,7 +15,6 @@ const deviceLanguage =
         : NativeModules.I18nManager.localeIdentifier;
 
 const INITIAL_STATE = {
-    register: {},
     contact: {
         message: "",
         email: "",
@@ -23,7 +23,6 @@ const INITIAL_STATE = {
     apiError: "",
     DATA: {},
     apiStatus: 200,
-    API_TOKEN: null,
     APP: {
         // Sunucudan çekilecek son uygulama ile ilgili bilgiler burada olacak
         latestBuild: 1,
@@ -33,9 +32,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case 'API_REGISTER':
-            console.log("@API_REGISTER");
-
-            console.log("[!!!] USING URL: ", API_URL);
+            console.log("@API_REGISTER w/ URL: ", API_URL);
 
             const registerDevice = async () => {
                 return await fetch(API_URL + '/device', {
@@ -65,18 +62,13 @@ export default (state = INITIAL_STATE, action) => {
             registerDevice().then(response => {
                 console.log("response status ", response.status);
                 response.json().then((data) => {
-                    //console.log("API_REGISTER: ", data);
                     console.log("@api response: ", data);
-
-                    /*
                     if (data.success) {
-                        //console.log("@API_REGISTER SUCCESSFUL");
-                        //console.log("API TOKEN: ", data.API_TOKEN);
-                        //state.API = data;
+                        console.log("@API_REGISTER SUCCESSFUL");
                         state.DATA = data;
                     } else {
                         console.log("@API_REGISTER ERROR");
-                    }*/
+                    }
                     if (response.status == 404) {
                         throw [data, response.status];
                     }
@@ -87,13 +79,10 @@ export default (state = INITIAL_STATE, action) => {
                 state.apiStatus = err[1];
             });
 
-            return { ...state }
+            return state
+
         case 'API_SEND_MESSAGE':
-            console.log("@API_SEND_MESSAGE");
-
-            //console.log("[!!!] USING URL: ", API_URL);
-
-            console.log("MESSAGE: ", action.payload);
+            console.log("@API_MESSAGE w/ URL: ", API_URL);
 
             const sendMessage = async () => {
                 const response = await fetch(API_URL + '/message', {
@@ -136,10 +125,12 @@ export default (state = INITIAL_STATE, action) => {
                 console.log("[ERROR]: ", err);
             });
 
-            return { ...state }
+            return state
 
         case 'SET_API_CONTACT':
-            state.contact = { ...state.contact, ...action.payload }
+            state.contact = { ...state.contact, ...action.payload };
+            console.log("state.contact: ", state.contact);
+            console.log("state: ", state);
             return { ...state }
 
         default:

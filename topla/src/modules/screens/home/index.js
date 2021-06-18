@@ -6,7 +6,6 @@ import style from './style';
 import I18n from "../../../utils/i18n.js";
 import QuestionSlot from "../../questionslot";
 import Header from "../../header";
-import questionTypes from "../../../utils/config/questionTypes.js";
 import Theme from '../../../themes'
 
 import {
@@ -27,7 +26,7 @@ const HomeScreen = props => {
                 <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
             </View>
             <ScrollView style={style.questionsScroll}>
-                {questionTypes.map((question, index) => {
+                {props.questionSettings.questionInitials.map((question, index) => {
                     return (<QuestionSlot
                         key={index}
                         onPlay={() => { _questionPlay(question) }}
@@ -50,6 +49,7 @@ const HomeScreen = props => {
 const mapStateToProps = (state) => {
     return {
         reducer: state.mainReducer,
+        questionSettings: state.questionSettings,
     }
 };
 

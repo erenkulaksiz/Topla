@@ -74,22 +74,16 @@ const QuestionSettings = props => {
 
     const _calcRange = () => {
         const basamak = Math.max(Math.floor(Math.log10(Math.abs(props.questionSettings.maxRange))), 0) + 1
-        const range = (Math.pow(10, (basamak - 1)));
+        const rangeIncremental = (Math.pow(10, (basamak - 1)));
+        const rangeDec = (Math.pow(10, (basamak - 2)));
 
-        if (range == 100) {
-            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: range });
+        props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: rangeIncremental });
+
+        if (props.questionSettings.maxRange >= 100) {
+            props.dispatch({ type: "SET_RANGE_DECREMENTAL", payload: rangeDec });
         } else {
-            props.dispatch({ type: "SET_RANGE_INCREMENTAL", payload: range });
+            props.dispatch({ type: "SET_RANGE_DECREMENTAL", payload: rangeIncremental });
         }
-
-        if (props.questionSettings.maxRange > 100) {
-            props.dispatch({ type: "SET_RANGE_DECREMENTAL", payload: range });
-        } else {
-            props.dispatch({ type: "SET_RANGE_DECREMENTAL", payload: range });
-
-        }
-
-        console.log("RANGE: ", range);
     }
 
     const _incrementMaxRange = async () => {
@@ -141,6 +135,9 @@ const QuestionSettings = props => {
                                                 value={props.questionSettings.maxRange.toString()}
                                                 placeholder="0"
                                                 keyboardType="numeric"
+                                                onSubmitEditing={() => {
+                                                    console.log("Submit MAXRANGE")
+                                                }}
                                             />
                                         </View>
                                         <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _incrementMaxRange()}>

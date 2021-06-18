@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Linking } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust } from '@fortawesome/free-solid-svg-icons'
+import Config from 'react-native-config';
 
 import I18n from "../../../utils/i18n.js";
 import Theme from '../../../themes'
@@ -25,7 +26,13 @@ const OptionsScreen = props => {
     }
 
     const _navigateToContact = () => {
-        props.navigation.navigate('ContactScreen');
+        //props.navigation.navigate('ContactScreen'); `string text ${expression} string text`
+        console.log("MAILTO: ", Config.DEVELOPER_CONTACT_MAIL);
+        const mail = {
+            subject: `[${props.reducer.deviceInfo.uuid}] Support`,
+            body: `Message: `,
+        };
+        Linking.openURL(`mailto:${Config.DEVELOPER_CONTACT_MAIL}?subject=${mail.subject}&body=${mail.body}`);
     }
 
     const _refreshPremium = () => {

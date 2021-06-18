@@ -4,14 +4,16 @@ var app = express();
 const MongoClient = require('mongodb').MongoClient
 const saltedSha256 = require('salted-sha256');
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+const port = 3000;
+
+app.listen(port, () => {
+    console.log("Application Started at port ", port);
 });
 
 // topla
 // 669RR1dI2mjT7CWv
 
-const connectionString = "mongodb+srv://topla:669RR1dI2mjT7CWv@cluster0.mpjf4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const connectionString = "mongodb+srv://topla:669RR1dI2mjT7CWv@cluster0.mpjf4.mongodb.net/topla?retryWrites=true&w=majority?authSource=topla&w=1";
 
 app.use(bodyParser.urlencoded({
     extended: true

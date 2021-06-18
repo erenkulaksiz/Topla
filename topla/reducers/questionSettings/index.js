@@ -1,8 +1,85 @@
+import I18n from "../../src/utils/i18n.js";
 
 const INITIAL_STATE = {
+    questionInitials: [
+        {
+            id: 1,
+            name: I18n.t("question_veryeasy"),
+            nameId: "ckolay",
+            content: `+ ${I18n.t("question_add")}`,
+            titleColor: "#6ccf11",
+            digit: 1,
+            maxRange: 10,
+            operations: ["addition"],
+            questionCount: 5,
+            optionCount: 3,
+        },
+        {
+            id: 2,
+            name: I18n.t("question_easy"),
+            nameId: "kolay",
+            content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")}`,
+            titleColor: "#6ccf11",
+            digit: 1,
+            maxRange: 50,
+            operations: ["addition", "subtraction"],
+            questionCount: 7,
+            optionCount: 3,
+        },
+        {
+            id: 3,
+            name: I18n.t("question_medium"),
+            nameId: "orta",
+            content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")} x ${I18n.t("question_mul")}`,
+            titleColor: "#dfe310",
+            digit: 2,
+            maxRange: 100,
+            operations: ["addition", "subtraction", "multiplication"],
+            questionCount: 10,
+            optionCount: 4,
+        },
+        {
+            id: 4,
+            name: I18n.t("question_hard"),
+            nameId: "zor",
+            content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")} x ${I18n.t("question_mul")} / ${I18n.t("question_div")}`,
+            titleColor: "#E21717",
+            digit: 3,
+            maxRange: 500,
+            operations: ["addition", "subtraction", "multiplication", "division"],
+            questionCount: 12,
+            optionCount: 5,
+        },
+        {
+            id: 5,
+            name: I18n.t("question_veryhard"),
+            nameId: "zor",
+            content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")} x ${I18n.t("question_mul")} / ${I18n.t("question_div")}`,
+            titleColor: "#E21717",
+            digit: 4,
+            maxRange: 1000,
+            operations: ["addition", "subtraction", "multiplication", "division"],
+            questionCount: 15,
+            optionCount: 6,
+        },
+        /*
+        {
+            id: 6,
+            name: "Custom",
+            nameId: "custom",
+            content: `${I18n.t("question_custom")}`,
+            titleColor: "#000",
+            digit: 1,
+            maxRange: 100,
+            operations: ["addition"],
+            questionCount: 5,
+            optionCount: 4,
+        }
+        */
+    ],
     questionCount: 5, // -> Şuanda çözülen sorunun max soru sayısı.
     optionCount: 4, // -> Seçenek sayısı
-    perQuestionTime: 5000, // 5000 = 5 sn
+    perQuestionTime: 5000, // 5000 = 5 sn 
     operations: {
         addition: true,
         subtraction: true,
@@ -87,7 +164,13 @@ export default (state = INITIAL_STATE, action) => {
 
         case 'SET_MAX_RANGE':
             console.log("NEW VALUE FOR MAX RANGE: ", action.payload);
-            state.maxRange = action.payload;
+            if (Number.isInteger(action.payload)) {
+                if (action.payload > 0) {
+                    state.maxRange = action.payload;
+                } else {
+                    state.maxRange = 1;
+                }
+            }
             return { ...state }
 
         case 'INCREMENT_MAX_RANGE':
@@ -97,7 +180,9 @@ export default (state = INITIAL_STATE, action) => {
 
         case 'DECREMENT_MAX_RANGE':
             console.log("NEW VALUE FOR MAX RANGE: ", state.maxRange - action.payload);
-            state.maxRange = parseInt(state.maxRange) - action.payload;
+            if (!(state.maxRange <= 5)) {
+                state.maxRange = parseInt(state.maxRange) - action.payload;
+            }
             return { ...state }
 
         case 'SET_RANGE_INCREMENTAL':

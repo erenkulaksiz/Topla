@@ -29,7 +29,7 @@ const App = () => {
   const _setDeviceInfo = {
     deviceInfo: () => {
       return {
-        uuid: 'topla_' + getUniqueId(),
+        uuid: getUniqueId(),
         id: getDeviceId(),
         buildNumber: getBuildNumber(),
         model: getModel(),
@@ -73,12 +73,12 @@ const App = () => {
         console.log("CONNECTED TO WIFI!");
         if (store.getState().API.DATA.API_TOKEN) {
           console.log("GOT API_TOKEN: ", store.getState().API.DATA.API_TOKEN);
+          console.log("GOT API TOKEN, NO RETRIES");
         } else {
           console.log("NO API TOKEN")
           let retries = 0;
           connTimer = setInterval(() => {
             console.log("--- TİMER --- : ", connTimer)
-            console.log("AAAAAAAAAAAAAAAAAA", store.getState().API.DATA)
             if (store.getState().API.DATA.API_TOKEN) {
               console.log("@API_TOKEN: ", store.getState().API.API_TOKEN);
               clearInterval(connTimer);
@@ -94,7 +94,7 @@ const App = () => {
               });
             }
             retries++;
-            const maxRetries = 2;
+            const maxRetries = 5;
             if (retries >= maxRetries) {
               console.log(`API TIMEOUT AFTER ${maxRetries} RETRIES`);
               clearInterval(connTimer);
@@ -150,10 +150,18 @@ const App = () => {
               name="PremiumScreen"
               component={PremiumScreen}
             />
+            {/*
             <Stack.Screen
               name="ContactScreen"
               component={ContactScreen}
-            />
+            /> 
+            */}
+            {/*
+            <Stack.Screen
+              name="CreditsScreen"
+              component={CreditsScreen}
+            /> 
+            */}
             <Stack.Screen
               name="QuestionScreen"
               component={QuestionScreen}
