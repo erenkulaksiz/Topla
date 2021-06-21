@@ -8,9 +8,7 @@ import Header from "../../header";
 const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const ContactScreen = props => {
-
     const _sendToAPI = () => {
-
         if (re.test(String(props.API.contact.email).toLowerCase())) {
             props.dispatch({
                 type: "API_SEND_MESSAGE",
@@ -27,11 +25,10 @@ const ContactScreen = props => {
         } else {
             alert("Invalid email");
         }
-
     }
 
-    const _setMail = mail => {
-        props.dispatch({ type: "SET_API_CONTACT", payload: { email: mail } })
+    const _setMail = email => {
+        props.dispatch({ type: "SET_API_CONTACT", payload: { email: email } })
     }
 
     const _setMessage = msg => {

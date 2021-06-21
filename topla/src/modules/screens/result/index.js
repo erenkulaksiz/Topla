@@ -42,11 +42,26 @@ const ResultScreen = props => {
                     return (
                         <View
                             style={{ margin: 4, padding: 12, elevation: 2, backgroundColor: "white", marginBottom: 8, borderRadius: 8, }}
-                            key={index}
-                        >
-                            <Text>{(element.questionStep) + 1}. {I18n.t("question")} - <Text style={{ color: element.questionAnswerCorrect ? "green" : "red" }}>{"" + (element.questionAnswerCorrect ? I18n.t("question_answer_correct") : I18n.t("question_answer_wrong"))}</Text></Text>
-                            <Text>{props.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
-                            {!element.questionAnswerCorrect && <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>}
+                            key={index}>
+
+                            <Text>
+                                {(element.questionStep) + 1}. {I18n.t("question")}
+                                {" - "}
+                                <Text style={{ color: (element.questionEmpty ? "black" : (element.questionAnswerCorrect ? "green" : "red")) }}>
+                                    {"" + (element.questionEmpty ? "BOŞ" : (element.questionAnswerCorrect ? I18n.t("question_answer_correct") : I18n.t("question_answer_wrong")))}
+                                </Text>
+
+                            </Text>
+
+                            {
+                                element.questionEmpty ? <Text>{props.currentQuestion.questions[element.questionStep].question} = {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>
+                                    : <Text>{props.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
+                            }
+
+                            {
+                                element.questionEmpty || (element.questionAnswerCorrect || <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>)
+                            }
+
                             <Text>Süre: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
                         </View>
                     )

@@ -4,6 +4,7 @@ import { Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'reac
 import CheckBox from '@react-native-community/checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
+import prettyMs from 'pretty-ms';
 
 import I18n from "../../../utils/i18n.js";
 import Header from "../../header";
@@ -34,6 +35,8 @@ const QuestionSettings = props => {
         // setQuestionCount
         props.dispatch({ type: "SET_QUESTION_COUNT", payload: question.questionCount });
         props.dispatch({ type: "SET_OPTION_COUNT", payload: question.optionCount });
+        // setQuestionTime
+        props.dispatch({ type: "SET_QUESTION_TIME", payload: question.questionTime });
     }
 
     const _navigateToQuestion = question => {
@@ -86,14 +89,22 @@ const QuestionSettings = props => {
         }
     }
 
-    const _incrementMaxRange = async () => {
+    const _incrementMaxRange = () => {
         props.dispatch({ type: "INCREMENT_MAX_RANGE", payload: props.questionSettings.rangeIncremental });
         _calcRange();
     }
 
-    const _decrementMaxRange = async () => {
+    const _decrementMaxRange = () => {
         props.dispatch({ type: "DECREMENT_MAX_RANGE", payload: props.questionSettings.rangeDecremental });
         _calcRange();
+    }
+
+    const _incrementQuestionTime = () => {
+        props.dispatch({ type: "INCREMENT_QUESTION_TIME" });
+    }
+
+    const _decrementQuestionTime = () => {
+        props.dispatch({ type: "DECREMENT_QUESTION_TIME" });
     }
 
     return (
@@ -177,6 +188,24 @@ const QuestionSettings = props => {
                                             <Text style={{ fontSize: 16, color: Theme(props.reducer.settings.darkMode).textDefault }}>{props.questionSettings.optionCount}</Text>
                                         </View>
                                         <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _incrementOptions()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>+</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={style.setting}>
+                            <Text style={{ ...style.settingTitle, color: Theme(props.reducer.settings.darkMode).textDefault }}>Soru Süresi: </Text>
+                            <View style={style.settingWrapper}>
+                                <View style={style.setting_incrementWrapper}>
+                                    <View style={style.setting_increment}>
+                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _decrementQuestionTime()}>
+                                            <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>-</Text>
+                                        </TouchableOpacity>
+                                        <View style={{ ...style.incrementCenter, borderColor: Theme(props.reducer.settings.darkMode).textDefault }}>
+                                            <Text style={{ fontSize: 16, color: Theme(props.reducer.settings.darkMode).textDefault }}>{prettyMs(props.questionSettings.perQuestionTime)}</Text>
+                                        </View>
+                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.reducer.settings.darkMode).textDefault }} onPress={() => _incrementQuestionTime()}>
                                             <Text style={{ fontSize: 18, color: Theme(props.reducer.settings.darkMode).textDefault }}>+</Text>
                                         </TouchableOpacity>
                                     </View>

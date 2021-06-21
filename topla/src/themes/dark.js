@@ -14,4 +14,5 @@ export default {
     headerButtonsBackground: "#636363",
     headerButtonsColor: "#FFF",
     questionSlotBackground: "#454545",
+    settingsButtonBackground: "#363636",
 }

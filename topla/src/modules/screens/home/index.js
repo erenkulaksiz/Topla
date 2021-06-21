@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View, ScrollView } from "react-native";
 import { connect } from 'react-redux';
 
@@ -10,9 +10,17 @@ import Theme from '../../../themes'
 
 import {
     AdMobBanner,
+    AdMobInterstitial,
 } from 'react-native-admob'
 
 const HomeScreen = props => {
+
+    useEffect(() => {
+        /*
+        AdMobInterstitial.setAdUnitID('ca-app-pub-5394999503168582/7972205549');
+        AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]); 
+        AdMobInterstitial.requestAd().then(() => AdMobInterstitial.showAd());*/
+    }, [])
 
     const _questionPlay = question => {
         props.navigation.navigate('QuestionSettings', { question: question })
@@ -25,7 +33,11 @@ const HomeScreen = props => {
                 <Text style={{ ...style.headerText, color: Theme(props.reducer.settings.darkMode).text }}>{I18n.t("home")}</Text>
                 <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
             </View>
-            <ScrollView style={style.questionsScroll}>
+            <ScrollView
+                style={style.questionsScroll}
+                snapToAlignment="start"
+                snapToInterval={190}
+            >
                 {props.questionSettings.questionInitials.map((question, index) => {
                     return (<QuestionSlot
                         key={index}

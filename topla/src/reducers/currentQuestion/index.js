@@ -53,7 +53,7 @@ export default (state = INITIAL_STATE, action) => {
 
         case 'SET_STATS':
             console.log("NEW VALUE FOR STATS: ", action.payload);
-            state.stats = action.payload;
+            state.stats = { ...action.payload };
             return { ...state }
 
         case 'SET_ACTIVE_QUESTION_SOLVING':

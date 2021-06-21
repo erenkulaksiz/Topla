@@ -4,8 +4,9 @@ import { Text, View, Alert, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import _, { intersection } from "lodash";
+import _ from "lodash";
 import prettyMs from 'pretty-ms';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 import I18n from "../../../utils/i18n.js";
 import style from './style';
@@ -17,6 +18,7 @@ const QuestionScreen = props => {
     const [timer, setTimer] = useState(0);
     const [thisQuestionTime, setQTime] = useState(0);
     const [timerStarted, setTimerStarted] = useState(false);
+    const [backAlert, setBackAlert] = useState(false);
 
     useEffect(() => {
         _INITIALIZE();
@@ -50,11 +52,11 @@ const QuestionScreen = props => {
         let timeout = null;
         if (timerStarted) {
             timeout = setTimeout(() => {
-                setTimer(timer + 100);
                 if ((timer - thisQuestionTime) >= props.questionSettings.perQuestionTime) {
                     setTimerStarted(false); // -> Soru süresi aşılırsa
-                    //clearTimeout(timeout);
+                    page._questionEmpty(props.currentQuestion.currentStep);
                 }
+                setTimer(timer + 100);
             }, 100);
         }
         return () => {
@@ -63,8 +65,6 @@ const QuestionScreen = props => {
             }
         }
     }, [timer, timerStarted]);
-
-    //
 
     const page = { // page handler 
         _modal: control => {
@@ -82,10 +82,64 @@ const QuestionScreen = props => {
             page._modal(false);
             props.navigation.goBack();
         },
-        _finishQuestionSolving: () => {
+        _finishQuestionSolving: async () => {
+
+            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+            props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+            let results = {
+                correct: 0,
+                wrong: 0,
+                empty: 0,
+            }
+            props.currentQuestion.questionResults.map((element, index) => {
+                if (element.questionAnswerCorrect) results.correct += 1;
+                else results.wrong += 1;
+
+                if (element.questionEmpty) results.empty += 1;
+            })
+            console.log(`TOTAL CORRECT: ${results.correct} | TOTAL WRONG: ${results.wrong} | TOTAL EMPTY: ${results.wrong}`);
+            props.dispatch({
+                type: "SET_STATS",
+                payload: {
+                    finalTime: timer,
+                    totalCorrect: results.correct,
+                    totalWrong: results.wrong,
+                    totalEmpty: results.empty,
+                }
+            });
+            console.log("SORU ÇÖZÜMÜ BİTTİ (QUESTIONRESULTS): ", props.currentQuestion.questionResults);
+            props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } })
+            props.navigation.removeListener('beforeRemove')
+
             console.log("@finish question solving");
             _timer.pause();
+            _timer.clear();
+            setQTime(0);
             props.navigation.navigate('ResultScreen');
+        },
+        _nextQuestion: () => {
+            props.dispatch({ type: "GOTO_NEXT_QUESTION" });
+            setQTime(timer);
+            console.log("qTime ", timer);
+        },
+        _questionEmpty: async () => {
+            await props.dispatch({
+                type: "PUSH_TO_QUESTION_RESULT", payload: {
+                    questionStep: props.currentQuestion.currentStep,
+                    questionAnswer: 0,
+                    questionSolveTime: timer,
+                    questionTime: timer - thisQuestionTime,
+                    questionEmpty: true,
+                }
+            });
+
+            if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
+                await page._nextQuestion();
+                setTimerStarted(true);
+            } else {
+                page._finishQuestionSolving();
+            }
+
         },
         _renderBars: () => {
             const bars = [];
@@ -109,28 +163,7 @@ const QuestionScreen = props => {
         _preventGoingBack: e => {
             e.preventDefault();
             _timer.pause();
-            Alert.alert(
-                I18n.t("question_solving_back_title"),
-                I18n.t("question_solving_back_desc"),
-                [
-                    {
-                        text: I18n.t("question_solving_back_cancel"), style: 'cancel',
-                        onPress: () => {
-                            _timer.resume();
-                        }
-                    },
-                    {
-                        text: I18n.t("question_solving_back_back"),
-                        style: 'destructive',
-                        onPress: () => {
-                            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-                            props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-                            props.dispatch({ type: "RESET_QUESTION_RESULTS" });
-                            props.navigation.dispatch(e.data.action)
-                        },
-                    },
-                ]
-            )
+            setBackAlert(true);
         },
         _gotoNextQuestion: async (element, index) => {
             await props.dispatch({
@@ -143,72 +176,11 @@ const QuestionScreen = props => {
                 }
             });
             if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
-                props.dispatch({ type: "GOTO_NEXT_QUESTION" });
-                //
-                setQTime(timer);
-                console.log("qTime ", timer);
+                page._nextQuestion();
             } else {
-                props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-                props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-                let totalCorrect = 0;
-                let totalWrong = 0;
-                props.currentQuestion.questionResults.map((element, index) => {
-                    if (element.questionAnswerCorrect) {
-                        totalCorrect += 1;
-                    } else {
-                        totalWrong += 1;
-                    }
-                })
-                console.log("TOTAL CORRECT: " + totalCorrect + " TOTAL WRONG: " + totalWrong);
-                props.dispatch({
-                    type: "SET_STATS", payload: {
-                        finalTime: timer,
-                        totalCorrect: totalCorrect,
-                        totalWrong: totalWrong,
-                        totalEmpty: 0,
-                    }
-                });
-                console.log("SORU ÇÖZÜMÜ BİTTİ (QUESTIONRESULTS): ", props.currentQuestion.questionResults);
-                props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } })
-
-                /*
-                crashlytics().crash();
-
-                const logCrashlytics = async () => {
-                    crashlytics().log("Dummy Details Added");
-                    await Promise.all([
-                        crashlytics().setUserId("101"),
-                        crashlytics().setAttribute("credits", String(50)),
-                        crashlytics().setAttributes({
-                            email: "aboutreact11@gmail.com",
-                            username: "aboutreact11",
-                        }),
-                    ]);
-                };
-
-
-                const logError = async (user) => {
-                    crashlytics().log("Updating user count.");
-                    try {
-                        if (users) {
-                            // An empty array is truthy, but not actually true.
-                            // Therefore the array was never initialised.
-                            setUserCounts(userCounts.push(users.length));
-                        }
-                    } catch (error) {
-                        crashlytics().recordError(error);
-                        console.log(error);
-                    }
-                };
-
-                await logCrashlytics();
-                await logError();
-                */
-                props.navigation.removeListener('beforeRemove')
-                props.navigation.popToTop();
                 page._finishQuestionSolving();
             }
-        }
+        },
     }
 
     const _loadQuestions = () => {
@@ -216,6 +188,7 @@ const QuestionScreen = props => {
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
         const performance_begin = performance.now();
         const questions = [];
+
         const values = [
             "addition",
             "subtraction",
@@ -314,6 +287,21 @@ const QuestionScreen = props => {
         console.log("questions ", questions);
     }
 
+    const onBackCancel = () => {
+        setBackAlert(false);
+        _timer.resume();
+    }
+
+    const onBackSubmit = () => {
+        setBackAlert(false);
+        props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
+        props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
+        props.dispatch({ type: "RESET_QUESTION_RESULTS" });
+        _timer.pause();
+        props.navigation.removeListener('beforeRemove');
+        props.navigation.popToTop();
+    }
+
     return (
         <View style={style.container}>
             <Header pauseShown onPause={() => page._pause()} />
@@ -341,6 +329,25 @@ const QuestionScreen = props => {
                     />
                 }
             </View>
+            <AwesomeAlert
+                show={backAlert}
+                showProgress={false}
+                title={I18n.t("question_solving_back_title")}
+                message={I18n.t("question_solving_back_desc")}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText={I18n.t("question_solving_back_cancel")}
+                confirmText={I18n.t("question_solving_back_back")}
+                confirmButtonColor="#DD6B55"
+                contentContainerStyle={{ width: "80%" }}
+                actionContainerStyle={{ height: 40, marginTop: 32 }}
+                cancelButtonStyle={{ height: "100%", justifyContent: "center" }}
+                confirmButtonStyle={{ height: "100%", justifyContent: "center" }}
+                onCancelPressed={() => onBackCancel()}
+                onConfirmPressed={() => onBackSubmit()}
+            />
             <Modal
                 isVisible={props.reducer.pauseModalShown}
                 onSwipeComplete={() => page._continue()}

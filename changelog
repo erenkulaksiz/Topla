@@ -1,12 +1,26 @@
 
+- 20/06/2021 - 21/06/2021 - Topla(v1.27)
+
+> .gitignore dosyasının içeriği düzeltildi
+> Ana sayfada soru başlangıç kısımlarına snap özelliği eklendi 
+> Ayarlar kısmındaki debug butonu kaldırıldı
+> React-native-awesome-alerts eklendi
+> Bütün alertler daha güzel hale getirildi
+> Kodda gereksiz kısımlar kaldırıldı (App.js)
+> Veritabanı bağlantıları için kullanılan kullanıcı adı ve şifre "./keys.js" dosyasına alındı, örnek bir template "./keys_template.js" olarak konuldu
+> Uygulama içi kullanılan environment değişkenleri ".env" dosyası gitignore'ye eklendi ve ".env_template" eklendi (Hassas bilgileri gizlemek için)
+> Soru çözülürken geri tuşuna basıldığında açılan alert'te geri butonuna basılırsa geri gelmeme sorunu çözüldü
+> Ayarlar kısmı karanlık mod'a uygun hale getirildi
+> Soru ayarlarında belirtilen süresi geçen sorular artık boş olarak nitelendiriliyor ve özet kısmında boş olarak gözüküyor
+> Soru ayarlarından her bir soru başına düşen süre belirlenebiliyor
+> Full ekran reklam için hazırlıklar
+
 - 19/06/2021 - Topla(v1.26)
 
 > API Reducer'da bilginin state'ye aktarılamamısı sorunu çözüldü.
 > Uygulama artık arkaplanda eğer internet varsa ve api token alınamadıysa 5 kere 3 saniye aralıkla sunucuya bağlanmayı deniyor bağlanamazsa iptal ediyor
 > Soru ayarlarında sayı aralığının negatife dönmesi engellendi
 > Soru çeşitleri belirli bir dosyada değil artık reducer'da yani değiştirilebilir hale getirildi
-> #TODO: soru aralarındaki zaman seçilebilir olacak 
-> #TODO: BUG! SORU AYARLARI YAPILINCA sorular yüklenmiyor
 > İletişim sayfası kaldırıldı, onun yerine mail ile direkt iletişim eklendi
 
 - 16/06/2021 - Topla(v1.25)
@@ -24,7 +38,7 @@
 - 12/06/2021 - Topla(v1.23) 
 
 > Uygulama sadece portre modunda çalışır halde ayarlandı
-> Uygulamanın tasarımları baştan aşağı karanlık mod için baştan yapıldı #TODO: Ayarlar kısmı, soru kısmı, sonuçlar kısmı, iletişim kısımları kaldı!
+> Uygulamanın tasarımları baştan aşağı karanlık mod için baştan yapıldı
 > Uygulamada artık karanlık mod çalışıyor
 > Karanlık mod, hem otomatik olarak cihazın ayarlarından hem de manuel olarak ayarlardan ayarlanabiliyor
 
@@ -54,7 +68,7 @@
 > Backend kısmında Contact mesajı gönderilirse ve önceden 3den fazla mesaj aynı UUID ve token üstünden gönderildiyse istek reddediliyor (spam)
 > Cihazda internet var ve sunucuya bağlanılamıyor & token alınamıyorsa uygulama arkaplanda her 3 saniyede bir sunucuya istek gönderiyor
 > Uygulama API_TOKEN almadan önce 2 saniye bekliyor & cihazda internetin olup olmadığını kontrol ediyor
-> Ayarlardaki TOKEN yazısı kaldırıldı #TODO: Debug butonunu da kaldır 
+> Ayarlardaki TOKEN yazısı kaldırıldı
 > Reducer'a uygulamanın son versionu ile ilgili verileri çekecek bir bilgi kısmı (API.APP) eklendi
 > API.js dosyası silindi ve Reducer ile işlemler yapılmaya başlandı
 

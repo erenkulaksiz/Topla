@@ -31,7 +31,7 @@ export default {
     modal_exit: "Çıkış Yap",
     question_solving_back_title: "Sonuçlarınız iptal olacak",
     question_solving_back_desc: "Geri dönmek istediğinizden emin misiniz?",
-    question_solving_back_back: "GERİ DÖN",
+    question_solving_back_back: "ANA SAYFA",
     question_solving_back_cancel: "İPTAL",
     question_results: "Sonuçlar",
     question_results_back: "Ana sayfaya dön",

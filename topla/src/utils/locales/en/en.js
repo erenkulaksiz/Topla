@@ -31,7 +31,7 @@ export default {
     modal_exit: "Exit",
     question_solving_back_title: "Your results will be lost",
     question_solving_back_desc: "Are you sure to go back?",
-    question_solving_back_back: "BACK",
+    question_solving_back_back: "RETURN TO HOME",
     question_solving_back_cancel: "CANCEL",
     question_results: "Results",
     question_results_back: "Back to home",

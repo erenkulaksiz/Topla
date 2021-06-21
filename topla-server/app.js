@@ -1,8 +1,10 @@
 var express = require("express");
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 var app = express();
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
 const saltedSha256 = require('salted-sha256');
+
+const keys = require('./keys.js');
 
 const port = 3000;
 
@@ -10,10 +12,7 @@ app.listen(port, () => {
     console.log("Application Started at port ", port);
 });
 
-// topla
-// 669RR1dI2mjT7CWv
-
-const connectionString = "mongodb+srv://topla:669RR1dI2mjT7CWv@cluster0.mpjf4.mongodb.net/topla?retryWrites=true&w=majority?authSource=topla&w=1";
+const connectionString = `mongodb+srv://${keys.DATABASE_USERNAME}:${keys.DATABASE_PASSWORD}@cluster0.mpjf4.mongodb.net/topla?retryWrites=true&w=majority?authSource=topla&w=1`;
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -50,6 +49,8 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
         // first, check if request is fine
 
+        console.log("IP: ", req.ip);
+
         if (!req.body.uuid
             || !req.body.bundle_id
             || !req.body.platform
@@ -62,8 +63,6 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                 success: false,
             }));
         }
-
-        console.log("IP: ", req.ip);
 
         devicesCollection.findOne({ uuid: req.body.uuid })
             .then(results => {

@@ -1,4 +1,4 @@
-import I18n from "../../src/utils/i18n.js";
+import I18n from "../../utils/i18n.js";
 
 const INITIAL_STATE = {
     questionInitials: [
@@ -13,6 +13,7 @@ const INITIAL_STATE = {
             operations: ["addition"],
             questionCount: 5,
             optionCount: 3,
+            questionTime: 5000,
         },
         {
             id: 2,
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction"],
             questionCount: 7,
             optionCount: 3,
+            questionTime: 5000,
         },
         {
             id: 3,
@@ -37,6 +39,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction", "multiplication"],
             questionCount: 10,
             optionCount: 4,
+            questionTime: 8000,
         },
         {
             id: 4,
@@ -49,6 +52,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction", "multiplication", "division"],
             questionCount: 12,
             optionCount: 5,
+            questionTime: 10000,
         },
         {
             id: 5,
@@ -61,6 +65,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction", "multiplication", "division"],
             questionCount: 15,
             optionCount: 6,
+            questionTime: 10000,
         },
         /*
         {
@@ -168,8 +173,15 @@ export default (state = INITIAL_STATE, action) => {
                 if (action.payload > 0) {
                     state.maxRange = action.payload;
                 } else {
-                    state.maxRange = 1;
+                    if (action.payload < 10) {
+                        console.log("lower than 10")
+                        state.maxRange = 10
+                    } else {
+                        state.maxRange = parseInt(state.maxRange) + action.payload;
+                    }
                 }
+            } else {
+                state.maxRange = 10;
             }
             return { ...state }
 
@@ -180,8 +192,24 @@ export default (state = INITIAL_STATE, action) => {
 
         case 'DECREMENT_MAX_RANGE':
             console.log("NEW VALUE FOR MAX RANGE: ", state.maxRange - action.payload);
-            if (!(state.maxRange <= 5)) {
+            if (!(state.maxRange <= 10)) {
                 state.maxRange = parseInt(state.maxRange) - action.payload;
+            }
+            return { ...state }
+
+        case 'SET_QUESTION_TIME':
+            state.perQuestionTime = action.payload
+            return { ...state }
+
+        case 'INCREMENT_QUESTION_TIME':
+            if (!(parseInt(state.perQuestionTime + 1000) > 15000)) {
+                state.perQuestionTime = parseInt(state.perQuestionTime) + 1000;
+            }
+            return { ...state }
+
+        case 'DECREMENT_QUESTION_TIME':
+            if (!(parseInt(state.perQuestionTime - 1000) < 1000)) {
+                state.perQuestionTime = parseInt(state.perQuestionTime) - 1000;
             }
             return { ...state }
 

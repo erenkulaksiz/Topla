@@ -51,13 +51,13 @@ const OptionsScreen = props => {
                 <Text style={{ ...style.headerText, color: Theme(props.reducer.settings.darkMode).text }}>{I18n.t("settings")}</Text>
                 <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
             </View>
-            <View style={style.content}>
+            <View style={{ ...style.content, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
                 <View style={style.buttonsWrapper}>
-                    <TouchableOpacity style={style.button} onPress={() => _refreshPremium()}>
-                        <View style={style.buttonIcon}>
-                            <FontAwesomeIcon icon={faSync} size={16} color={"#000"} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _refreshPremium()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faSync} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={style.buttonText}>{I18n.t("settings_refreshSubscription")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_refreshSubscription")}</Text>
                     </TouchableOpacity>
                     {/*<TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }}>
                         <View style={style.buttonIcon}>
@@ -65,30 +65,32 @@ const OptionsScreen = props => {
                         </View>
                         <Text style={style.buttonText}>Bildirimler</Text>
                     </TouchableOpacity>*/}
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => _navigateToContact()}>
-                        <View style={style.buttonIcon}>
-                            <FontAwesomeIcon icon={faEnvelope} size={16} color={"#000"} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToContact()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faEnvelope} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={style.buttonText}>{I18n.t("settings_contact")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_contact")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ ...style.button }} onPress={() => _navigateToPremium()}>
-                        <View style={style.buttonIcon}>
-                            <FontAwesomeIcon icon={faCrown} size={16} color={"#000"} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToPremium()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faCrown} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={style.buttonText}>{I18n.t("settings_removeAds")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_removeAds")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => _darkMode()}>
-                        <View style={style.buttonIcon}>
-                            <FontAwesomeIcon icon={faAdjust} size={16} color={"#000"} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _darkMode()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faAdjust} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={style.buttonText}>{I18n.t("settings_darkMode")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_darkMode")}</Text>
                     </TouchableOpacity>
+                    {/*
                     <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => console.log("api", props.reducer.API)}>
                         <View style={style.buttonIcon}>
                             <FontAwesomeIcon icon={faAdjust} size={16} color={"#000"} />
                         </View>
                         <Text style={style.buttonText}>Debug</Text>
                     </TouchableOpacity>
+                    */}
                 </View>
                 <View style={style.altContent}>
                     <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uid); alert("UID Kopyalandı") }}>

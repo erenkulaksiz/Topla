@@ -8,24 +8,23 @@ import SplashScreen from 'react-native-splash-screen'
 import { getUniqueId, getDeviceId, getBundleId, getBuildNumber, getModel, getLastUpdateTime } from 'react-native-device-info';
 import NetInfo from "@react-native-community/netinfo"; // #TODO: -> switch to react-native-offline 
 // Firebase
-import crashlytics from "@react-native-firebase/crashlytics";
+//import crashlytics from "@react-native-firebase/crashlytics";
 import analytics from '@react-native-firebase/analytics';
 
 // Components 
 import Main from './src/modules/Main';
 import QuestionSettings from './src/modules/screens/questionsettings';
 import PremiumScreen from './src/modules/screens/premium';
-import ContactScreen from './src/modules/screens/contact';
+//import ContactScreen from './src/modules/screens/contact';
 import QuestionScreen from './src/modules/screens/question';
 import ResultScreen from './src/modules/screens/result';
 //import CreditsScreen from './src/modules/screens/credits';
 
-import store from './store';
+import store from './src/store';
 
 const Stack = createStackNavigator();
 
 const App = () => {
-
   const _setDeviceInfo = {
     deviceInfo: () => {
       return {
@@ -38,7 +37,6 @@ const App = () => {
     },
     set: async () => {
       await getLastUpdateTime().then((lastUpdateTime) => {
-        //deviceInfo.lastUpdated = lastUpdateTime;
         const deviceInfo = { ..._setDeviceInfo.deviceInfo(), lastUpdated: lastUpdateTime };
         store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
       });
@@ -49,7 +47,7 @@ const App = () => {
     connTimer: null,
     init: async () => {
       await _setDeviceInfo.set();
-      //await _checkConnection();
+
       await store.dispatch({
         type: 'API_REGISTER',
         payload: {
@@ -66,30 +64,59 @@ const App = () => {
 
       const appInstanceId = await analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);
+
+      //console.log("aaaaaaaaaaaaaaaaaaaaa", crashlytics());
+
+      /*
+      crashlytics().crash();
+
+      const logCrashlytics = async () => {
+        crashlytics().log("Dummy Details Added");
+        await Promise.all([
+          crashlytics().setUserId("101"),
+          crashlytics().setAttribute("credits", String(50)),
+          crashlytics().setAttributes({
+            email: "aboutreact11@gmail.com",
+            username: "aboutreact11",
+          }),
+        ]);
+      };
+
+      const logError = async (user) => {
+        crashlytics().log("Updating user count.");
+        try {
+          if (users) {
+            // An empty array is truthy, but not actually true.
+            // Therefore the array was never initialised.
+            setUserCounts(userCounts.push(users.length));
+          }
+        } catch (error) {
+          crashlytics().recordError(error);
+          console.log(error);
+        }
+      };
+
+      await logCrashlytics();
+      await logError();*/
     },
     connection: async () => {
-      //console.log("currStore: ", currStore);
       if (store.getState().mainReducer.connection.isConnected) {
-        console.log("CONNECTED TO WIFI!");
         if (store.getState().API.DATA.API_TOKEN) {
-          console.log("GOT API_TOKEN: ", store.getState().API.DATA.API_TOKEN);
-          console.log("GOT API TOKEN, NO RETRIES");
+          console.log("GOT API_TOKEN, NO RETRIES: ", store.getState().API.DATA.API_TOKEN);
         } else {
           console.log("NO API TOKEN")
           let retries = 0;
           connTimer = setInterval(() => {
-            console.log("--- TİMER --- : ", connTimer)
             if (store.getState().API.DATA.API_TOKEN) {
               console.log("@API_TOKEN: ", store.getState().API.API_TOKEN);
               clearInterval(connTimer);
             } else {
-              const aStore = store.getState();
               store.dispatch({
                 type: 'API_REGISTER',
                 payload: {
-                  uuid: aStore.mainReducer.deviceInfo.uuid,
-                  bundleId: aStore.mainReducer.deviceInfo.bundleId,
-                  model: aStore.mainReducer.deviceInfo.model,
+                  uuid: store.getState().mainReducer.deviceInfo.uuid,
+                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                  model: store.getState().mainReducer.deviceInfo.model,
                 }
               });
             }
@@ -122,7 +149,7 @@ const App = () => {
     });
 
     return () => {
-      Appearance.removeChangeListener();
+      Appearance.removeChangeListener(); // Fixed memory leak
       NetInfo.removeEventListener();
     };
   }, []);

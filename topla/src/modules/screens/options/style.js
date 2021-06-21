@@ -43,7 +43,6 @@ export default StyleSheet.create({
     },
     button: {
         width: "100%",
-        backgroundColor: "#F8F8F8",
         padding: 14,
         alignItems: "center",
         flexDirection: "row",
