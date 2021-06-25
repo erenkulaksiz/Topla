@@ -4,7 +4,6 @@ import {
 } from 'react-native-device-info';
 import * as RNLocalize from 'react-native-localize';
 import { NativeModules, Platform } from 'react-native';
-import { set } from 'lodash';
 
 const API_URL = (Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL)
 
@@ -25,7 +24,7 @@ const INITIAL_STATE = {
     apiStatus: 200,
     APP: {
         // Sunucudan çekilecek son uygulama ile ilgili bilgiler burada olacak
-        latestBuild: 1,
+        latestVersion: 0,
     }
 };
 
@@ -66,6 +65,9 @@ export default (state = INITIAL_STATE, action) => {
                     if (data.success) {
                         console.log("@API_REGISTER SUCCESSFUL");
                         state.DATA = data;
+                        state.APP.latestVersion = data.APP_LATEST_VERSION;
+                        state.APP.softUpdateVer = data.APP_SOFT_UPDATE_VER;
+                        state.APP.hardUpdateVer = data.APP_HARD_UPDATE_VER;
                     } else {
                         console.log("@API_REGISTER ERROR");
                     }

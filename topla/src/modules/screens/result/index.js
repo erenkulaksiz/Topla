@@ -32,9 +32,9 @@ const ResultScreen = props => {
                 <View style={style.infoBar}></View>
                 <View style={style.infoContent}>
                     <Text>Toplam Süre: {prettyMs(props.currentQuestion.stats.finalTime, { colonNotation: true })}</Text>
-                    <Text>Doğru Sayısı: {props.currentQuestion.stats.totalCorrect}</Text>
-                    <Text>Yanlış Sayısı: {props.currentQuestion.stats.totalWrong}</Text>
-                    <Text>Boş Sayısı: {props.currentQuestion.stats.totalEmpty}</Text>
+                    {props.currentQuestion.stats.totalCorrect == 0 || <Text>Doğru Sayısı: {props.currentQuestion.stats.totalCorrect}</Text>}
+                    {props.currentQuestion.stats.totalWrong == 0 || <Text>Yanlış Sayısı: {props.currentQuestion.stats.totalWrong}</Text>}
+                    {props.currentQuestion.stats.totalEmpty == 0 || <Text>Boş Sayısı: {props.currentQuestion.stats.totalEmpty}</Text>}
                 </View>
             </View>
             <ScrollView style={style.content}>
@@ -42,7 +42,8 @@ const ResultScreen = props => {
                     return (
                         <View
                             style={{ margin: 4, padding: 12, elevation: 2, backgroundColor: "white", marginBottom: 8, borderRadius: 8, }}
-                            key={index}>
+                            key={index}
+                        >
 
                             <Text>
                                 {(element.questionStep) + 1}. {I18n.t("question")}
@@ -50,7 +51,6 @@ const ResultScreen = props => {
                                 <Text style={{ color: (element.questionEmpty ? "black" : (element.questionAnswerCorrect ? "green" : "red")) }}>
                                     {"" + (element.questionEmpty ? "BOŞ" : (element.questionAnswerCorrect ? I18n.t("question_answer_correct") : I18n.t("question_answer_wrong")))}
                                 </Text>
-
                             </Text>
 
                             {
@@ -61,6 +61,8 @@ const ResultScreen = props => {
                             {
                                 element.questionEmpty || (element.questionAnswerCorrect || <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>)
                             }
+
+                            <Text>Toplam Soru: {props.questionSettings.questionCount}</Text>
 
                             <Text>Süre: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
                         </View>
@@ -77,7 +79,8 @@ const ResultScreen = props => {
 
 const mapStateToProps = (state) => {
     return {
-        currentQuestion: state.currentQuestion
+        currentQuestion: state.currentQuestion,
+        questionSettings: state.questionSettings
     }
 };
 

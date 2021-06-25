@@ -29,14 +29,22 @@ const OptionsScreen = props => {
         //props.navigation.navigate('ContactScreen'); `string text ${expression} string text`
         console.log("MAILTO: ", Config.DEVELOPER_CONTACT_MAIL);
         const mail = {
-            subject: `[${props.reducer.deviceInfo.uuid}] Support`,
-            body: `Message: `,
+            subject: `Topla Support`,
+            body: `[${props.reducer.deviceInfo.uuid},${props.reducer.deviceInfo.buildNumber}] Message: `,
         };
         Linking.openURL(`mailto:${Config.DEVELOPER_CONTACT_MAIL}?subject=${mail.subject}&body=${mail.body}`);
     }
 
     const _refreshPremium = () => {
-        alert("Refreshed.");
+        props.dispatch({
+            type: 'API_REGISTER',
+            payload: {
+                uuid: props.reducer.deviceInfo.uuid,
+                bundleId: props.reducer.deviceInfo.bundleId,
+                model: props.reducer.deviceInfo.model,
+            }
+        });
+        alert("Abonelik yenilendi")
     }
 
     const _darkMode = () => {

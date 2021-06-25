@@ -60,4 +60,4 @@ buck-out/
 
 # Custom
 keys.js
-.env
+*.env

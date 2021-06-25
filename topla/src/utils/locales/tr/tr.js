@@ -1,3 +1,5 @@
+import Config from 'react-native-config';
+
 export default {
     home: "Ana Sayfa",
     settings: "Ayarlar",
@@ -38,4 +40,10 @@ export default {
     question_answer_correct: "Doğru",
     question_answer_wrong: "Yanlış",
     question_answer: "Cevap",
+    modals_new_update_title: "Yeni bir güncelleme yayımlandı!",
+    modals_hardupdate: "Bu sürüm uyumsuz! Lütfen uygulamayı marketten güncelleyin! ",
+    modals_softupdate: "Uygulamanın yeni bir versiyonu çıktı. Lütfen kısa zamanda güncelleyin!",
+    modals_update_cancel: "İptal",
+    modals_update_update: "Güncelle",
+    modals_banned_title: `Şu anda uygulamaya giriş yapamazsınız. Lütfen mail adresimizden bize ulaşın: ${Config.DEVELOPER_CONTACT_MAIL}`
 };

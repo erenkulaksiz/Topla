@@ -9,6 +9,15 @@ const INITIAL_STATE = {
     deviceInfo: {},
     connection: {},
     pauseModalShown: false,
+    ads: {
+        ready: false,
+    },
+    modals: {
+        backQuestion: false,
+        softUpdate: false,
+        hardUpdate: false,
+        banned: false,
+    },
     PERFORMANCE: { // Performans ölçümü
         questions: {
             questionEnd_StartPerf: 0,
@@ -34,8 +43,9 @@ const mainReducer = (state = INITIAL_STATE, action) => {
             state.connection = action.payload;
             return { ...state }
 
-        case 'SET_PAUSE_MODAL':
-            state.pauseModalShown = action.payload;
+        case 'SET_MODAL':
+            state.modals = { ...state.modals, ...action.payload };
+            console.log("MODAL SET: ", action.payload);
             return { ...state }
 
         case 'SET_PERF_QUESTION':
@@ -46,6 +56,10 @@ const mainReducer = (state = INITIAL_STATE, action) => {
         case 'DARK_MODE':
             console.log("SET DARK MODE: ", action.payload);
             state.settings.darkMode = action.payload;
+            return { ...state }
+
+        case 'SET_AD_READY':
+            state.ads.ready = action.payload;
             return { ...state }
 
         default:

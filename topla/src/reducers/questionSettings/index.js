@@ -67,24 +67,10 @@ const INITIAL_STATE = {
             optionCount: 6,
             questionTime: 10000,
         },
-        /*
-        {
-            id: 6,
-            name: "Custom",
-            nameId: "custom",
-            content: `${I18n.t("question_custom")}`,
-            titleColor: "#000",
-            digit: 1,
-            maxRange: 100,
-            operations: ["addition"],
-            questionCount: 5,
-            optionCount: 4,
-        }
-        */
     ],
-    questionCount: 5, // -> Şuanda çözülen sorunun max soru sayısı.
-    optionCount: 4, // -> Seçenek sayısı
-    perQuestionTime: 5000, // 5000 = 5 sn 
+    questionCount: 5,
+    optionCount: 4,
+    perQuestionTime: 5000,
     operations: {
         addition: true,
         subtraction: true,
@@ -174,7 +160,6 @@ export default (state = INITIAL_STATE, action) => {
                     state.maxRange = action.payload;
                 } else {
                     if (action.payload < 10) {
-                        console.log("lower than 10")
                         state.maxRange = 10
                     } else {
                         state.maxRange = parseInt(state.maxRange) + action.payload;

@@ -1,23 +1,45 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import prettyMs from 'pretty-ms';
+import Config from 'react-native-config';
 
 import I18n from "../../../utils/i18n.js";
 import Header from "../../header";
 import Theme from '../../../themes'
 import style from './style';
 
+import {
+    AdMobInterstitial,
+} from 'react-native-admob'
+
 const QuestionSettings = props => {
 
     useEffect(() => {
-        // @setQuestionParams
+        // setQuestionParams
         console.log("@params: ", props.route.params.question);
         _setQuestionParams(props.route.params.question);
     }, []);
+
+    const _showAds = question => {
+        console.log("loading ads");
+        AdMobInterstitial.setAdUnitID(Config.ADMOB_INTERSTITIAL);
+        AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+        AdMobInterstitial.requestAd().then(() => AdMobInterstitial.showAd());
+
+        AdMobInterstitial.removeAllListeners();
+
+        AdMobInterstitial.addEventListener("adClosed", () => {
+            props.navigation.navigate('QuestionScreen', { question: question })
+        });
+
+        AdMobInterstitial.addEventListener("adFailedToLoad", () => {
+            console.log("Cannot load ads!")
+        });
+    }
 
     const _setQuestionParams = question => {
         // setMaxRange
@@ -42,11 +64,18 @@ const QuestionSettings = props => {
     const _navigateToQuestion = question => {
         const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
 
-        console.log("WHO GOT THE KEYS -> ", keys);
         if (keys.length == 0) {
             alert("Please select atleast one operation");
         } else {
-            props.navigation.navigate('QuestionScreen', { question: question })
+            if (props.API.DATA.API_TOKEN) {
+                if (props.API.DATA.hasPremium) {
+                    props.navigation.navigate('QuestionScreen', { question: question })
+                } else {
+                    _showAds(question);
+                }
+            } else {
+                _showAds(question); // If no api token, atleast try to load an ad
+            }
         }
     }
 
@@ -218,7 +247,7 @@ const QuestionSettings = props => {
                                 value={props.questionSettings.operations.addition}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: newValue } })}
                             />
-                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_add")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>+ {I18n.t("question_add")}</Text>
                         </View>
                         <View style={{ ...style.setting, backgroundColor: Theme(props.reducer.settings.darkMode).container, borderRadius: 4 }}>
                             <CheckBox
@@ -226,7 +255,7 @@ const QuestionSettings = props => {
                                 value={props.questionSettings.operations.subtraction}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: newValue } })}
                             />
-                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_sub")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>- {I18n.t("question_sub")}</Text>
                         </View>
                         <View style={{ ...style.setting, backgroundColor: Theme(props.reducer.settings.darkMode).container, borderRadius: 4 }}>
                             <CheckBox
@@ -234,7 +263,7 @@ const QuestionSettings = props => {
                                 value={props.questionSettings.operations.multiplication}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: newValue } })}
                             />
-                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_mul")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>x {I18n.t("question_mul")}</Text>
                         </View>
                         <View style={{ ...style.setting, backgroundColor: Theme(props.reducer.settings.darkMode).container, borderRadius: 4 }}>
                             <CheckBox
@@ -242,7 +271,7 @@ const QuestionSettings = props => {
                                 value={props.questionSettings.operations.division}
                                 onValueChange={(newValue) => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: newValue } })}
                             />
-                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("question_div")}</Text>
+                            <Text style={{ ...style.label, color: Theme(props.reducer.settings.darkMode).textDefault }}>/ {I18n.t("question_div")}</Text>
                         </View>
                     </View>
                 </View>
@@ -260,7 +289,8 @@ const QuestionSettings = props => {
 const mapStateToProps = (state) => {
     return {
         reducer: state.mainReducer,
-        questionSettings: state.questionSettings
+        questionSettings: state.questionSettings,
+        API: state.API,
     };
 };
 

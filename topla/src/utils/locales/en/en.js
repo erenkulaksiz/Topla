@@ -1,3 +1,5 @@
+import Config from 'react-native-config';
+
 export default {
     home: "Home",
     settings: "Settings",
@@ -38,4 +40,10 @@ export default {
     question_answer_correct: "Correct",
     question_answer_wrong: "Wrong",
     question_answer: "Answer",
+    modals_new_update_title: "Theres a new update!",
+    modals_hardupdate: "This version of app is incompatible, please update app from the market!",
+    modals_softupdate: "New version of our app has been published. Please update from market soon!",
+    modals_update_cancel: "Cancel",
+    modals_update_update: "Update",
+    modals_banned_title: `You cannot enter the app right now. Please contact from our mail adress: ${Config.DEVELOPER_CONTACT_MAIL}`
 };

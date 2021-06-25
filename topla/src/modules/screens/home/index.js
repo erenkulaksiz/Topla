@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Text, View, ScrollView } from "react-native";
 import { connect } from 'react-redux';
+import Config from 'react-native-config';
 
 import style from './style';
 import I18n from "../../../utils/i18n.js";
@@ -10,17 +11,10 @@ import Theme from '../../../themes'
 
 import {
     AdMobBanner,
-    AdMobInterstitial,
+    //AdMobInterstitial,
 } from 'react-native-admob'
 
 const HomeScreen = props => {
-
-    useEffect(() => {
-        /*
-        AdMobInterstitial.setAdUnitID('ca-app-pub-5394999503168582/7972205549');
-        AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]); 
-        AdMobInterstitial.requestAd().then(() => AdMobInterstitial.showAd());*/
-    }, [])
 
     const _questionPlay = question => {
         props.navigation.navigate('QuestionSettings', { question: question })
@@ -36,8 +30,7 @@ const HomeScreen = props => {
             <ScrollView
                 style={style.questionsScroll}
                 snapToAlignment="start"
-                snapToInterval={190}
-            >
+                snapToInterval={190}>
                 {props.questionSettings.questionInitials.map((question, index) => {
                     return (<QuestionSlot
                         key={index}
@@ -46,14 +39,16 @@ const HomeScreen = props => {
                     />)
                 })}
             </ScrollView>
-            <View style={{ width: "100%" }}>
-                <AdMobBanner
-                    adSize="smartBanner"
-                    adUnitID="ca-app-pub-3940256099942544/6300978111"
-                    testDevices={[AdMobBanner.simulatorId]}
-                    onAdFailedToLoad={error => console.error(error)}
-                />
-            </View>
+            {
+                props.API.DATA.hasPremium || <View style={{ width: "100%" }}>
+                    <AdMobBanner
+                        adSize="smartBanner"
+                        adUnitID={Config.ADMOB_BANNER}
+                        testDevices={[AdMobBanner.simulatorId]}
+                        onAdFailedToLoad={error => console.error(error)}
+                    />
+                </View>
+            }
         </View>
     );
 }
@@ -62,6 +57,7 @@ const mapStateToProps = (state) => {
     return {
         reducer: state.mainReducer,
         questionSettings: state.questionSettings,
+        API: state.API,
     }
 };
 

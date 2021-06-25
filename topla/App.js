@@ -7,6 +7,11 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import SplashScreen from 'react-native-splash-screen'
 import { getUniqueId, getDeviceId, getBundleId, getBuildNumber, getModel, getLastUpdateTime } from 'react-native-device-info';
 import NetInfo from "@react-native-community/netinfo"; // #TODO: -> switch to react-native-offline 
+import Config from 'react-native-config';
+import {
+  AdMobInterstitial,
+} from 'react-native-admob'
+
 // Firebase
 //import crashlytics from "@react-native-firebase/crashlytics";
 import analytics from '@react-native-firebase/analytics';
@@ -25,6 +30,34 @@ import store from './src/store';
 const Stack = createStackNavigator();
 
 const App = () => {
+
+  const _checkAppVersion = async () => {
+    if (store.getState().API.DATA.API_TOKEN) {
+      // Theres a api token present
+      const currVer = store.getState().mainReducer.deviceInfo.buildNumber;
+      const { softUpdateVer, hardUpdateVer } = store.getState().API.APP;
+
+      if (currVer < hardUpdateVer) {
+        console.log("UPDATE NEEDED FOR HARDUPDATE | VERSION HAVE: ", currVer, " neededHard: ", hardUpdateVer);
+        store.dispatch({ type: "SET_MODAL", payload: { hardUpdate: true } })
+      } else if (currVer >= hardUpdateVer) {
+        if (store.getState().API.DATA.banned) {
+          store.dispatch({ type: "SET_MODAL", payload: { banned: true } });
+        } else {
+          SplashScreen.hide();
+          if (currVer < softUpdateVer) {
+            console.log("UPDATE NEEDED FOR SOFTUPDATE | VERSION HAVE: ", currVer, " neededSoft: ", softUpdateVer);
+            store.dispatch({ type: "SET_MODAL", payload: { softUpdate: true } })
+          } else {
+            console.log("app is up to date!! got: ", currVer, " needSoft: ", softUpdateVer, " needHard: ", hardUpdateVer);
+          }
+        }
+      }
+    } else {
+      console.log("no api token, cannot check latest version");
+    }
+  }
+
   const _setDeviceInfo = {
     deviceInfo: () => {
       return {
@@ -47,7 +80,6 @@ const App = () => {
     connTimer: null,
     init: async () => {
       await _setDeviceInfo.set();
-
       await store.dispatch({
         type: 'API_REGISTER',
         payload: {
@@ -56,53 +88,18 @@ const App = () => {
           model: store.getState().mainReducer.deviceInfo.model,
         }
       });
-
       setTimeout(async () => {
         await _INITIALIZE.connection();
-        SplashScreen.hide();
-      }, 2000)
 
+      }, 2000)
       const appInstanceId = await analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);
-
-      //console.log("aaaaaaaaaaaaaaaaaaaaa", crashlytics());
-
-      /*
-      crashlytics().crash();
-
-      const logCrashlytics = async () => {
-        crashlytics().log("Dummy Details Added");
-        await Promise.all([
-          crashlytics().setUserId("101"),
-          crashlytics().setAttribute("credits", String(50)),
-          crashlytics().setAttributes({
-            email: "aboutreact11@gmail.com",
-            username: "aboutreact11",
-          }),
-        ]);
-      };
-
-      const logError = async (user) => {
-        crashlytics().log("Updating user count.");
-        try {
-          if (users) {
-            // An empty array is truthy, but not actually true.
-            // Therefore the array was never initialised.
-            setUserCounts(userCounts.push(users.length));
-          }
-        } catch (error) {
-          crashlytics().recordError(error);
-          console.log(error);
-        }
-      };
-
-      await logCrashlytics();
-      await logError();*/
     },
     connection: async () => {
       if (store.getState().mainReducer.connection.isConnected) {
         if (store.getState().API.DATA.API_TOKEN) {
           console.log("GOT API_TOKEN, NO RETRIES: ", store.getState().API.DATA.API_TOKEN);
+          _checkAppVersion();
         } else {
           console.log("NO API TOKEN")
           let retries = 0;
@@ -110,6 +107,7 @@ const App = () => {
             if (store.getState().API.DATA.API_TOKEN) {
               console.log("@API_TOKEN: ", store.getState().API.API_TOKEN);
               clearInterval(connTimer);
+              _checkAppVersion();
             } else {
               store.dispatch({
                 type: 'API_REGISTER',

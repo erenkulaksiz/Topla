@@ -1,4 +1,18 @@
 
+- 22/06/2021 - 25/06/2021 - Topla (v1.28)
+
+> Soru çözümü başlamadan önce tam ekran reklam gösterimi yapılıyor
+> Reklamların key'leri .env dosyasına alındı ve config ile çekiliyor. #TODO: Keylerin hepsini reducer'a bağla.
+> Soru üretiminde yazılan bazı spagetti kodlar düzeltildi
+> Reklam gösterimlerinde artık kullanıcının premium'a sahip olup olmadığı kontrol ediliyor & ona göre gösteriliyor
+> Uygulama için Google Play Console satın alındı
+> Server kısmında contact kısmı tamamen kaldırıldı ve collection silindi
+> Artık cihaz sunucuya kayıt olduğunda uygulamanın en güncel versiyonu veri olarak client'e aktarılıyor
+> Cihaz hardupdate versiyonu ile uyumsuz ise uygulama açılmıyor ve uyarı veriliyor
+> Cihaz softupdate versiyonu ile uyumsuz ise uygulama açılıyor ancak uyarı veriliyor
+> Modallerin hepsi state yerine reducer kullanıyor
+> Eğer cihaz banlandıysa uygulama açılmaz hale getirildi
+
 - 20/06/2021 - 21/06/2021 - Topla(v1.27)
 
 > .gitignore dosyasının içeriği düzeltildi

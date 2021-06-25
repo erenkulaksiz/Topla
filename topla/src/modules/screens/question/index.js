@@ -18,7 +18,6 @@ const QuestionScreen = props => {
     const [timer, setTimer] = useState(0);
     const [thisQuestionTime, setQTime] = useState(0);
     const [timerStarted, setTimerStarted] = useState(false);
-    const [backAlert, setBackAlert] = useState(false);
 
     useEffect(() => {
         _INITIALIZE();
@@ -83,7 +82,6 @@ const QuestionScreen = props => {
             props.navigation.goBack();
         },
         _finishQuestionSolving: async () => {
-
             props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
             props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
             let results = {
@@ -163,7 +161,7 @@ const QuestionScreen = props => {
         _preventGoingBack: e => {
             e.preventDefault();
             _timer.pause();
-            setBackAlert(true);
+            props.dispatch({ type: "SET_MODAL", payload: { backQuestion: true } })
         },
         _gotoNextQuestion: async (element, index) => {
             await props.dispatch({
@@ -204,28 +202,25 @@ const QuestionScreen = props => {
         }
 
         for (let a = 1; a <= props.questionSettings.questionCount; a++) {
-            let number1 = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
-            let number2 = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
-            let numberTemp = 0;
-            console.log("________________________");
+            let n = { // Numbers
+                st: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
+                nd: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
+                temp: 0,
+            }
             const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
             const questionOperationRandom = keys[_.sample(Object.keys(keys))]
-            console.log("KEY: ", questionOperationRandom)
             if (questionOperationRandom == values[0]) {
-                numberTemp = number1 + number2;
-                console.log("toplama: " + number1 + " x " + number2 + " = " + numberTemp);
+                n.temp = n.st + n.nd;
             } else if (questionOperationRandom == values[1]) {
-                numberTemp = number1 - number2;
-                if (numberTemp < 0) {
-                    number1 = number1 ^ number2
-                    number2 = number1 ^ number2
-                    number1 = number1 ^ number2
-                    numberTemp = number1 - number2;
+                n.temp = n.st - n.nd;
+                if (n.temp < 0) {
+                    n.st = n.st ^ n.nd
+                    n.nd = n.st ^ n.nd
+                    n.st = n.st ^ n.nd
+                    n.temp = n.st - n.nd;
                 }
-                console.log("cikarma: " + number1 + " x " + number2 + " = " + numberTemp);
             } else if (questionOperationRandom == values[2]) {
-                numberTemp = number1 * number2;
-                console.log("carpma: " + number1 + " x " + number2 + " = " + numberTemp);
+                n.temp = n.st * n.nd;
             } else if (questionOperationRandom == values[3]) {
                 const isInt = value => {
                     return (parseFloat(value) == parseInt(value)) && !isNaN(value);
@@ -236,28 +231,26 @@ const QuestionScreen = props => {
                     if (result > 1) return false
                     return true
                 }
-                number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
-                const bolenler = [];
-                while (isPrime(number1)) { number1 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
-                while (!isInt(number1 / number2)) { number2 = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
-                for (let i = 1; i < number1; i++) {
-                    let sonuc = number1 / i;
-                    if (isInt(sonuc)) {
-                        bolenler.push(sonuc);
+                n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
+                const divider = [];
+                while (isPrime(n.st)) { n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
+                while (!isInt(n.st / n.nd)) { n.nd = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
+                for (let i = 1; i < n.st; i++) {
+                    let result = n.st / i;
+                    if (isInt(result)) {
+                        divider.push(result);
                     }
                 }
-                console.log("bölenler ", bolenler);
-                let randomKey = _.sample(bolenler);
-                while (randomKey == number1) { randomKey = _.sample(bolenler) }
-                number2 = randomKey;
-                numberTemp = number1 / number2;
-                console.log("İŞLEM: " + number1 + " / " + number2 + " = " + numberTemp);
+                let randomKey = _.sample(divider);
+                while (randomKey == n.st) { randomKey = _.sample(divider) }
+                n.nd = randomKey;
+                n.temp = n.st / n.nd;
             }
 
             questions.push({
-                question: `${number1} ${operation(questionOperationRandom)} ${number2}`,
-                questionArguments: [number1, number2],
-                questionAnswer: numberTemp,
+                question: `${n.st} ${operation(questionOperationRandom)} ${n.nd}`,
+                questionArguments: [n.st, n.nd],
+                questionAnswer: n.temp,
                 questionOptions: [],
                 questionOperation: questionOperationRandom,
             });
@@ -288,12 +281,14 @@ const QuestionScreen = props => {
     }
 
     const onBackCancel = () => {
-        setBackAlert(false);
+        //setBackAlert(false);
+        props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } })
         _timer.resume();
     }
 
     const onBackSubmit = () => {
-        setBackAlert(false);
+        //setBackAlert(false);
+        props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } })
         props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
         props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
         props.dispatch({ type: "RESET_QUESTION_RESULTS" });
@@ -330,7 +325,7 @@ const QuestionScreen = props => {
                 }
             </View>
             <AwesomeAlert
-                show={backAlert}
+                show={props.reducer.modals.backQuestion}
                 showProgress={false}
                 title={I18n.t("question_solving_back_title")}
                 message={I18n.t("question_solving_back_desc")}
