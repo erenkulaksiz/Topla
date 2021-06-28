@@ -13,19 +13,16 @@ export default StyleSheet.create({
     },
     headerText: {
         fontSize: 32,
-        color: "#0F7CBB",
         marginBottom: 8,
         fontWeight: "bold",
     },
     headerBar: {
         width: "100%",
         height: 2,
-        backgroundColor: "#0F7CBB",
     },
     content: {
         margin: 16,
         flex: 1,
-        backgroundColor: "#FFF",
         borderRadius: 12,
 
         // Shadow
@@ -49,7 +46,6 @@ export default StyleSheet.create({
     },
     buttonIcon: {
         padding: 12,
-        backgroundColor: "#fff",
         elevation: 4,
         borderRadius: 16,
 
@@ -70,8 +66,12 @@ export default StyleSheet.create({
     altContent: {
         flex: 1,
         justifyContent: "flex-end",
+        marginBottom: 12,
     },
     altTextWrapper: {
-        padding: 12,
+        paddingLeft: 12,
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
     }
 });

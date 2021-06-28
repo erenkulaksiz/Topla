@@ -14,11 +14,6 @@ const deviceLanguage =
         : NativeModules.I18nManager.localeIdentifier;
 
 const INITIAL_STATE = {
-    contact: {
-        message: "",
-        email: "",
-        reason: "",
-    },
     apiError: "",
     DATA: {},
     apiStatus: 200,
@@ -83,11 +78,12 @@ export default (state = INITIAL_STATE, action) => {
 
             return state
 
-        case 'API_SEND_MESSAGE':
-            console.log("@API_MESSAGE w/ URL: ", API_URL);
+        case 'API_LOG':
+            console.log("@API_LOG w/ URL: ", API_URL);
 
-            const sendMessage = async () => {
-                const response = await fetch(API_URL + '/message', {
+            const log = async () => {
+                console.log("ACTION_DESC: ", action.payload.ACTION_DESC);
+                const response = await fetch(API_URL + '/log', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json, text/plain, */*',
@@ -97,22 +93,20 @@ export default (state = INITIAL_STATE, action) => {
                         uuid: action.payload.uuid,
                         bundle_id: action.payload.bundleId,
                         platform: Platform.OS,
-                        channel: "organic",
                         language_code: deviceLanguage,
-                        adjust_attr: "test aaa adjust",
                         app_version: getBuildNumber(),
                         country_code: RNLocalize.getCountry(),
                         timezone: RNLocalize.getTimeZone(),
-                        model: action.payload.model,
-                        message: action.payload.message,
-                        email: action.payload.email,
-                        topic: action.payload.topic,
+                        action: action.payload.ACTION,
+                        action_desc: action.payload.ACTION_DESC,
+                        timestamp: Date.now(),
                         API_TOKEN: action.payload.API_TOKEN,
+                        hasPremium: action.payload.hasPremium,
                     }),
                 }).then(response => {
                     console.log("response status ", response.status);
                     response.json().then((data) => {
-                        console.log("API_SEND_MESSAGE RESULT: ", data);
+                        console.log("API_SEND_LOG RESULT: ", data);
                         if (response.status == 404) {
                             throw [data, response.status];
                         }
@@ -123,17 +117,11 @@ export default (state = INITIAL_STATE, action) => {
                 return response
             }
 
-            sendMessage().catch(err => {
+            log().catch(err => {
                 console.log("[ERROR]: ", err);
             });
 
             return state
-
-        case 'SET_API_CONTACT':
-            state.contact = { ...state.contact, ...action.payload };
-            console.log("state.contact: ", state.contact);
-            console.log("state: ", state);
-            return { ...state }
 
         default:
             return state

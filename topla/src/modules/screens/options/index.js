@@ -3,13 +3,18 @@ import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity, Linking } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust } from '@fortawesome/free-solid-svg-icons'
+import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust, faIdCard, faHeart } from '@fortawesome/free-solid-svg-icons'
 import Config from 'react-native-config';
+import {
+    AdMobBanner,
+    //AdMobInterstitial,
+} from 'react-native-admob'
 
 import I18n from "../../../utils/i18n.js";
 import Theme from '../../../themes'
 import Header from "../../header";
 import style from './style';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const OptionsScreen = props => {
 
@@ -21,7 +26,7 @@ const OptionsScreen = props => {
         if (_checkConnection()) {
             props.navigation.navigate('PremiumScreen');
         } else {
-            alert("İnternet bağlantınızı kontrol ediniz");
+            props.dispatch({ type: "SET_MODAL", payload: { checkConnection: true } });
         }
     }
 
@@ -48,24 +53,24 @@ const OptionsScreen = props => {
     }
 
     const _darkMode = () => {
-        props.dispatch({ type: "DARK_MODE", payload: props.reducer.settings.darkMode == 'dark' ? "light" : "dark" });
-        //alert("Koyu mod: " + props.reducer.settings.darkMode);
+        props.dispatch({ type: "DARK_MODE", payload: props.settings.darkMode == 'dark' ? "light" : "dark" });
+        props.dispatch({ type: "LAST_DARKMODE_SELECTED_BYHAND", payload: true });
     }
 
     return (
-        <View style={{ ...style.container, backgroundColor: Theme(props.reducer.settings.darkMode).container }}>
+        <View style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header />
             <View style={style.headerContainer}>
-                <Text style={{ ...style.headerText, color: Theme(props.reducer.settings.darkMode).text }}>{I18n.t("settings")}</Text>
-                <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
+                <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("settings")}</Text>
+                <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             </View>
-            <View style={{ ...style.content, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
+            <View style={{ ...style.content, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                 <View style={style.buttonsWrapper}>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _refreshPremium()}>
-                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
-                            <FontAwesomeIcon icon={faSync} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _refreshPremium()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faSync} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_refreshSubscription")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_refreshSubscription")}</Text>
                     </TouchableOpacity>
                     {/*<TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }}>
                         <View style={style.buttonIcon}>
@@ -73,47 +78,92 @@ const OptionsScreen = props => {
                         </View>
                         <Text style={style.buttonText}>Bildirimler</Text>
                     </TouchableOpacity>*/}
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToContact()}>
-                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
-                            <FontAwesomeIcon icon={faEnvelope} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToContact()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faEnvelope} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_contact")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_contact")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToPremium()}>
-                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
-                            <FontAwesomeIcon icon={faCrown} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToPremium()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faCrown} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_removeAds")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_removeAds")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.reducer.settings.darkMode).settingsButtonBackground }} onPress={() => _darkMode()}>
-                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.reducer.settings.darkMode).questionSlotBackground }}>
-                            <FontAwesomeIcon icon={faAdjust} size={16} color={Theme(props.reducer.settings.darkMode).textDefault} />
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _darkMode()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faAdjust} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
-                        <Text style={{ ...style.buttonText, color: Theme(props.reducer.settings.darkMode).textDefault }}>{I18n.t("settings_darkMode")}</Text>
+                        <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_darkMode")}</Text>
                     </TouchableOpacity>
-                    {/*
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => console.log("api", props.reducer.API)}>
-                        <View style={style.buttonIcon}>
-                            <FontAwesomeIcon icon={faAdjust} size={16} color={"#000"} />
-                        </View>
-                        <Text style={style.buttonText}>Debug</Text>
-                    </TouchableOpacity>
-                    */}
+                    {
+                        /*
+                            <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => {
+                                props.dispatch({
+                                    type: 'API_LOG',
+                                    payload: {
+                                        uuid: props.reducer.deviceInfo.uuid,
+                                        bundleId: props.reducer.deviceInfo.bundleId,
+                                        ACTION: "questionsolve_start",
+                                        API_TOKEN: props.API.DATA.API_TOKEN,
+                                        hasPremium: props.API.DATA.hasPremium,
+                                    }
+                                });
+                            }}>
+
+                                <View style={style.buttonIcon}>
+                                    <FontAwesomeIcon icon={faAdjust} size={16} color={"#000"} />
+                                </View>
+                                <Text style={style.buttonText}>Debug</Text>
+                            </TouchableOpacity>
+                        */
+                    }
                 </View>
                 <View style={style.altContent}>
                     <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uid); alert("UID Kopyalandı") }}>
-                        <Text style={style.altText}>UID: {props.reducer.deviceInfo.uuid}</Text>
-                        {/*<Text style={style.altText}>TOKEN: {props.reducer.API.API_TOKEN ? props.reducer.API.API_TOKEN : "no token"}</Text>*/}
+                        <FontAwesomeIcon icon={faIdCard} size={16} style={{ marginRight: 6, }} color={Theme(props.settings.darkMode).textDefault} />
+                        <Text style={{ ...style.altText, color: Theme(props.settings.darkMode).textDefault }}>UID: {props.reducer.deviceInfo.uuid}</Text>
+                    </TouchableOpacity>
+                    <View style={style.altTextWrapper}>
+                        <Text style={{ ...style.altText, color: Theme(props.settings.darkMode).textDefault }}>v{props.reducer.deviceInfo.version}</Text>
+                    </View>
+                    <TouchableOpacity style={style.altTextWrapper} onPress={() => { Linking.openURL(Config.DEVELOPER_GITHUB_ACCOUNT); }}>
+                        <Text style={{ ...style.altText, fontSize: 10, color: Theme(props.settings.darkMode).textDefault }}>Coded with <FontAwesomeIcon icon={faHeart} size={8} color={Theme(props.settings.darkMode).textDefault} /> by Eren Kulaksiz</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            <AwesomeAlert
+                show={props.reducer.modals.checkConnection}
+                showProgress={false}
+                title={"İnternet bağlantınızı kontrol ediniz"}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={true}
+                showConfirmButton={true}
+                confirmText={I18n.t("modals_okay")}
+                confirmButtonColor="#0f7cbb"
+                onConfirmPressed={() => {
+                    props.dispatch({ type: "SET_MODAL", payload: { checkConnection: false } })
+                }}
+            />
+            {
+                props.API.DATA.hasPremium || <View style={{ width: "100%" }}>
+                    <AdMobBanner
+                        adSize="smartBanner"
+                        adUnitID={Config.ADMOB_BANNER_OPTIONS}
+                        testDevices={[AdMobBanner.simulatorId]}
+                        onAdFailedToLoad={error => console.error(error)}
+                    />
+                </View>
+            }
         </View>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
-        reducer: state.mainReducer
+        reducer: state.mainReducer,
+        settings: state.settings,
+        API: state.API,
     }
 };
 

@@ -45,5 +45,7 @@ export default {
     modals_softupdate: "New version of our app has been published. Please update from market soon!",
     modals_update_cancel: "Cancel",
     modals_update_update: "Update",
-    modals_banned_title: `You cannot enter the app right now. Please contact from our mail adress: ${Config.DEVELOPER_CONTACT_MAIL}`
+    modals_banned_title: `You cannot enter the app right now. Please contact us from our mail adress: ${Config.DEVELOPER_CONTACT_MAIL}`,
+    modals_loading: "Loading...",
+    modals_okay: "Okay",
 };

@@ -45,5 +45,23 @@ export default StyleSheet.create({
     },
     infoContent: {
         marginTop: 8,
-    }
+    },
+    bottomButtonWrapper: {
+        position: "absolute",
+        width: "100%",
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        bottom: 16,
+    },
+    bottomButton: {
+        position: "absolute",
+        width: "90%",
+        height: 46,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0F7CBB",
+        borderRadius: 32,
+        flexDirection: "row"
+    },
 });

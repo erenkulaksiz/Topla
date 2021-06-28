@@ -24,12 +24,35 @@ app.use(express.json({
     type: ['application/json', 'text/plain']
 }))
 
+const logActions = {
+    questionsolve_start: "questionsolve_start",
+}
+
 MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client) => {
     if (err) return console.error(err)
     console.log('Connected to Database');
     const db = client.db('topla');
     const devicesCollection = db.collection('devices');
-    const config = db.collection('config');
+    const configCollection = db.collection('config');
+    const logsCollection = db.collection('logs');
+
+    const log = ({ ...log }) => {
+        const logColl = {
+            uuid: log.uuid, // Sadece uuid yeterli
+            timestamp: Date.now(),
+            time: new Date().toUTCString(),
+            action: log.action,
+            app_version: log.app_version,
+        }
+        if (log.hasPremium) {
+            logColl["hasPremium"] = true;
+        }
+        if (log.action_desc) {
+            logColl["action_desc"] = log.action_desc;
+            console.log("GELEN ACTION DESC: ", log.action_desc);
+        }
+        logsCollection.insertOne(logColl)
+    }
 
     const _GENERATE_API_TOKEN = (uuid, timestamp) => {
         const saltedHash = saltedSha256(uuid, timestamp);
@@ -44,7 +67,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
     */
 
     // Check latest version of app.
-    config.findOne()
+    configCollection.findOne()
         .then(cfx => {
             console.log("Latest version of app: ", cfx.latestVer)
         })
@@ -62,8 +85,9 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         if (!req.body.uuid
             || !req.body.bundle_id
             || !req.body.platform
-            || !req.body.channel
             || !req.body.country_code
+            || !req.body.language_code
+            || !req.body.app_version
         ) {
             res.status(404);
             return res.send(JSON.stringify({
@@ -72,11 +96,16 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
             }));
         }
 
-
         devicesCollection.findOne({ uuid: req.body.uuid })
             .then(results => {
                 if (!results) {
                     console.log("NO RESULTS");
+
+                    log({
+                        action: "register",
+                        app_version: req.body.app_version,
+                        uuid: req.body.uuid,
+                    });
 
                     devicesCollection.insertOne({
                         uuid: req.body.uuid,
@@ -92,7 +121,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                         .then(result => {
                             console.log("ADDED 1", result.ops[0]);
 
-                            config.findOne()
+                            configCollection.findOne()
                                 .then(cfx => {
                                     const _RESPONSE = {
                                         API_TOKEN: result.ops[0].API_TOKEN,
@@ -114,8 +143,15 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
                 } else {
 
-                    config.findOne()
+                    configCollection.findOne()
                         .then(cfx => {
+
+                            log({
+                                action: "login",
+                                app_version: req.body.app_version,
+                                uuid: results.uuid
+                            });
+
                             const _RESPONSE = {
                                 uuid: results.uuid,
                                 hasPremium: results.hasPremium,
@@ -135,5 +171,67 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                 }
             })
             .catch(error => console.error(error))
+    })
+
+
+    app.post('/log', (req, res) => {
+        console.log("________________________")
+        console.log("Got request! ", req.body);
+        console.log("________________________");
+
+        // first, check if request is fine
+
+        console.log("IP: ", req.ip);
+
+        if (!req.body.uuid
+            || !req.body.bundle_id
+            || !req.body.action
+            || !req.body.app_version
+        ) {
+            res.status(404);
+            return res.send(JSON.stringify({
+                reason: "Invalid Request",
+                success: false,
+            }));
+        }
+
+        Object.keys(logActions).map((element, index) => {
+            if (req.body.action == element) {
+                console.log("ACTION MATCH");
+                console.log("log action: ", element);
+                devicesCollection.findOne({ uuid: req.body.uuid })
+                    .then(result => {
+                        if (result) {
+                            // UUID Match
+
+                            log({
+                                action: req.body.action,
+                                app_version: req.body.app_version,
+                                uuid: req.body.uuid,
+                                hasPremium: req.body.hasPremium,
+                                action_desc: req.body.action_desc,
+                            });
+
+                            const _RESPONSE = {
+                                uuid: result.uuid,
+                                success: true,
+                            }
+                            console.log("RESULT: ", _RESPONSE);
+                            return res.json(_RESPONSE);
+                        } else {
+                            res.status(404);
+                            return res.send(JSON.stringify({
+                                reason: "Invalid Request",
+                                success: false,
+                            }));
+                        }
+                    })
+                    .catch(error => console.error(error))
+            }
+        })
+
+
+
+
     })
 })

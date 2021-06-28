@@ -1,5 +1,40 @@
 
-- 22/06/2021 - 25/06/2021 - Topla (v1.28)
+> Roadmap
+- ToplaGold
+- ChildPlay
+
+
+- 26/06/2021
+  27/06/2021
+  28/06/2021 
+  Topla (v1.29)
+
+> Ayarlar kısmındaki UID yazısı ortalandı ve versiyon bilgisi eklendi
+> Ayarlar kısmındaki yazılar karanlık mod'a uyumlu hale getirildi
+> Ayarlara kendi ismimi ekledim & üstüne tıklayınca github profilimi açıyor
+> Arkaplanda API'ye maksimum yapılacak deneme sayısı .env dosyasına eklendi ve configden çekiliyor
+> Internet yoksa api'ye deneme yapılamama sorunu giderildi
+> API'ye yapılacak deneme etkin olduğuna dair bilgi .env dosyasına eklendi artık configden çekiliyor
+> API'ye yapılan denemelerin sıklığı artık .env dosyasından çekiliyor
+> ⚡ Redux-persist ile yapılan bütün ayarlar cihaza kaydediliyor 
+> ⚡ React-native-async-storage eklendi
+> Koyu mod eğer uygulama içerisindeki ayarlardan değiştirilirse ilk uygulama başlangıcında öyle kalıyor & kaydediliyor
+> Koyu mod ayarı cihaza kaydediliyor
+> Geçiş reklamı artık dinamik yükleniyor, uygulama ilk başladığında ve her reklam geçişinde arkaplanda yükleniyor & artık çok hızlı çalışıyor
+> Uygulama başlangıcında artık yükleniyor alerti gösteriliyor
+> Reklamları kaldır sayfası koyu mod uyumlu hale getirildi 
+> Uygulama başlamadan önce internet kapalıysa ve uygulama açılırken internet açılırsa reklamların yüklenmemesi düzeltildi
+> Soru sonuçlarında ana sayfaya dön butonu daha güzel hale getirildi
+> İletişim sayfasının kalkmasıyla reducer'da iletişim api stateleri kaldırıldı & api bağlantısı kesildi
+> Artık her uygulamaya girişi kişinin uuid'sine göre loglanıyor
+> Her soru çözümüne başlandığında loglanıyor
+> Loglarda kullanıcının şu anda premium'a sahip olup olmadığı kaydediliyor
+> Eğer kullanıcıda premium varsa reklamların uygulama arkaplanında yüklenmesi kaldırıldı
+> Soru çözümü başladığında soru ayarları log ile api'ye gönderiliyor
+
+- 22/06/2021
+  25/06/2021
+  Topla (v1.28)
 
 > Soru çözümü başlamadan önce tam ekran reklam gösterimi yapılıyor
 > Reklamların key'leri .env dosyasına alındı ve config ile çekiliyor. #TODO: Keylerin hepsini reducer'a bağla.
@@ -13,12 +48,14 @@
 > Modallerin hepsi state yerine reducer kullanıyor
 > Eğer cihaz banlandıysa uygulama açılmaz hale getirildi
 
-- 20/06/2021 - 21/06/2021 - Topla(v1.27)
+- 20/06/2021 
+  21/06/2021
+  Topla(v1.27)
 
 > .gitignore dosyasının içeriği düzeltildi
 > Ana sayfada soru başlangıç kısımlarına snap özelliği eklendi 
 > Ayarlar kısmındaki debug butonu kaldırıldı
-> React-native-awesome-alerts eklendi
+> ⚡ React-native-awesome-alerts eklendi
 > Bütün alertler daha güzel hale getirildi
 > Kodda gereksiz kısımlar kaldırıldı (App.js)
 > Veritabanı bağlantıları için kullanılan kullanıcı adı ve şifre "./keys.js" dosyasına alındı, örnek bir template "./keys_template.js" olarak konuldu

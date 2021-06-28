@@ -24,5 +24,10 @@ export default StyleSheet.create({
     },
     content: {
         padding: 16,
+    },
+    premiumWrapper: {
+        width: "100%",
+        padding: 12,
+        borderRadius: 12,
     }
 });

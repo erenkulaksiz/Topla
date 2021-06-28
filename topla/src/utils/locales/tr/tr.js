@@ -45,5 +45,7 @@ export default {
     modals_softupdate: "Uygulamanın yeni bir versiyonu çıktı. Lütfen kısa zamanda güncelleyin!",
     modals_update_cancel: "İptal",
     modals_update_update: "Güncelle",
-    modals_banned_title: `Şu anda uygulamaya giriş yapamazsınız. Lütfen mail adresimizden bize ulaşın: ${Config.DEVELOPER_CONTACT_MAIL}`
+    modals_banned_title: `Şu anda uygulamaya giriş yapamazsınız. Lütfen mail adresimizden bize ulaşın: ${Config.DEVELOPER_CONTACT_MAIL}`,
+    modals_loading: "Yükleniyor...",
+    modals_okay: "Tamam",
 };

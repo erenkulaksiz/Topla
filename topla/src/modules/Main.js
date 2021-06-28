@@ -15,15 +15,16 @@ import OptionsScreen from './screens/options';
 const Tab = createBottomTabNavigator();
 
 const Home = (props) => {
+
     return (
         <>
             <Tab.Navigator
                 tabBarOptions={{
                     showLabel: true,
-                    activeTintColor: Theme(props.reducer.settings.darkMode).tabBarActiveTint,
-                    inactiveTintColor: Theme(props.reducer.settings.darkMode).tabBarInactiveTint,
+                    activeTintColor: Theme(props.settings.darkMode).tabBarActiveTint,
+                    inactiveTintColor: Theme(props.settings.darkMode).tabBarInactiveTint,
                     style: {
-                        backgroundColor: Theme(props.reducer.settings.darkMode).tabBar,
+                        backgroundColor: Theme(props.settings.darkMode).tabBar,
                         borderTopWidth: 0,
                     }
                 }}>
@@ -49,6 +50,18 @@ const Home = (props) => {
                         ),
                     }} />
             </Tab.Navigator>
+            <AwesomeAlert
+                show={props.reducer.modals.initialize}
+                showProgress={true}
+                progressColor={"#0f7cbb"}
+                progressSize={32}
+                title={I18n.t("modals_loading")}
+                closeOnTouchOutside={false}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={false}
+                titleStyle={{ fontSize: 16 }}
+            />
             <AwesomeAlert
                 show={props.reducer.modals.banned}
                 showProgress={false}
@@ -102,6 +115,8 @@ const Home = (props) => {
 const mapStateToProps = (state) => {
     return {
         reducer: state.mainReducer,
+        settings: state.settings,
+        API: state.API,
     }
 };
 

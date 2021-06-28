@@ -21,11 +21,11 @@ const HomeScreen = props => {
     }
 
     return (
-        <View style={{ ...style.container, backgroundColor: Theme(props.reducer.settings.darkMode).container }}>
+        <View style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header />
             <View style={style.headerContainer}>
-                <Text style={{ ...style.headerText, color: Theme(props.reducer.settings.darkMode).text }}>{I18n.t("home")}</Text>
-                <View style={{ ...style.headerBar, backgroundColor: Theme(props.reducer.settings.darkMode).bar }}></View>
+                <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("home")}</Text>
+                <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             </View>
             <ScrollView
                 style={style.questionsScroll}
@@ -58,6 +58,7 @@ const mapStateToProps = (state) => {
         reducer: state.mainReducer,
         questionSettings: state.questionSettings,
         API: state.API,
+        settings: state.settings,
     }
 };
 

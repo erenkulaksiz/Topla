@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Button, ScrollView } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import prettyMs from 'pretty-ms';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 import I18n from "../../../utils/i18n.js";
 import style from './style';
@@ -40,11 +42,11 @@ const ResultScreen = props => {
             <ScrollView style={style.content}>
                 {props.currentQuestion.questionResults.map((element, index) => {
                     return (
-                        <View
-                            style={{ margin: 4, padding: 12, elevation: 2, backgroundColor: "white", marginBottom: 8, borderRadius: 8, }}
-                            key={index}
-                        >
-
+                        <View style={{
+                            margin: 4, padding: 12, elevation: 2, backgroundColor: "white",
+                            marginBottom: props.currentQuestion.questionResults.length == (index + 1) ? 70 : 8, // Sonuncu ise aşağıya boşluk bırak
+                            borderRadius: 8,
+                        }} key={index}>
                             <Text>
                                 {(element.questionStep) + 1}. {I18n.t("question")}
                                 {" - "}
@@ -70,8 +72,11 @@ const ResultScreen = props => {
                 })}
                 <View style={{ marginBottom: 16 }}></View>
             </ScrollView>
-            <View style={{ width: "100%", padding: 8 }}>
-                <Button title={I18n.t("question_results_back")} onPress={() => _navigateToHome()}></Button>
+            <View style={style.bottomButtonWrapper}>
+                <TouchableOpacity style={style.bottomButton} activeOpacity={0.7} onPress={() => _navigateToHome()}>
+                    <FontAwesomeIcon icon={faArrowLeft} size={12} color={"#fff"} />
+                    <Text style={{ fontSize: 15, color: "#fff", marginLeft: 8 }}>{I18n.t("question_results_back")}</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
