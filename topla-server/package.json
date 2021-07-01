@@ -7,7 +7,7 @@
     "express": "^4.17.1",
     "mongodb": "^3.6.9",
     "salted-sha256": "^1.0.0"
-  }
+  },
   "scripts": {
     "start": "node app.js"
   }

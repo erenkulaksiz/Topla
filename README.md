@@ -58,6 +58,7 @@
 
 > 29/06/2021
 > 30/06/2021
+> 01/07/2021
 > (v1.30)
 
 - Bakım modu eklendi. Uygulama başlarken bakım modunda olunup olunmadığını kontrol ediyor
