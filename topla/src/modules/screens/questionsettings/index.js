@@ -29,15 +29,11 @@ const QuestionSettings = props => {
         _setQuestionParams(props.route.params.question);
     }, []);
 
-    const _showAds = question => {
+    const _showAds = async (question) => {
         console.log("show ads");
 
-        AdMobInterstitial.showAd();
+        const _navToQuestion = () => {
 
-        AdMobInterstitial.removeAllListeners();
-
-        AdMobInterstitial.addEventListener("adClosed", () => {
-            props.navigation.navigate('QuestionScreen', { question: question })
             const {
                 questionCount,
                 optionCount,
@@ -68,12 +64,35 @@ const QuestionSettings = props => {
                     ACTION_DESC: logSettings,
                 }
             });
+
+            props.navigation.navigate('QuestionScreen', { question: question });
+            console.log("Should navigate now !!!");
+            //store.dispatch({ type: 'SET_AD_READY', payload: false });
+            //store.dispatch({ type: 'LOAD_ADS' });
+        }
+
+        AdMobInterstitial.removeAllListeners();
+
+        if (props.reducer.ads.ready) {
+            AdMobInterstitial.showAd();
+            console.log("Ad is ready and showing ad");
+        } else {
+            console.log("Ad not ready, navigating to question");
+            _navToQuestion();
+            store.dispatch({ type: 'LOAD_ADS' });
+        }
+
+        AdMobInterstitial.addEventListener("adClosed", () => {
+            console.log("!!! Ad closed!!!");
+            _navToQuestion();
             store.dispatch({ type: 'SET_AD_READY', payload: false });
             store.dispatch({ type: 'LOAD_ADS' });
         });
 
         AdMobInterstitial.addEventListener("adFailedToLoad", () => {
             console.log("Cannot load ads!")
+            store.dispatch({ type: 'SET_AD_READY', payload: false });
+            _navToQuestion();
         });
     }
 
@@ -126,6 +145,8 @@ const QuestionSettings = props => {
         }
     }
 
+    //
+
     const _incrementOptions = () => {
         props.dispatch({ type: "INCREMENT_QUESTION_OPTIONS" });
     }
@@ -133,6 +154,8 @@ const QuestionSettings = props => {
     const _decrementOptions = () => {
         props.dispatch({ type: "DECREMENT_QUESTION_OPTIONS" });
     }
+
+    //
 
     const _incrementQuestionCount = () => {
         props.dispatch({ type: "INCREMENT_QUESTION_COUNT" });

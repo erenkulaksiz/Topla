@@ -56,10 +56,22 @@
 - ToplaGold
 - ChildPlay
 
+> 01/07/2021
+> Topla (v1.32)
+
+- Sunucu tarafı iyileştirmeleri
+- Node.js sunucusu artık Amazon AWS EC2'de çalıştırılıyor
+- .env dosyasında dev mode false olsa bile localhost'a bağlanmaya çalışılması giderildi
+
+> 01/07/2021
+> Topla (v1.31)
+
+- Reklam gösteriminde internet yoksa yüklenmemesi düzeltildi
+
 > 29/06/2021
 > 30/06/2021
 > 01/07/2021
-> (v1.30)
+> Topla (v1.30)
 
 - Bakım modu eklendi. Uygulama başlarken bakım modunda olunup olunmadığını kontrol ediyor
 - Soru çözümü bağladığında durdurma butonuna basıldığında alttan modal'ın çıkmaması sorunu düzeltildi

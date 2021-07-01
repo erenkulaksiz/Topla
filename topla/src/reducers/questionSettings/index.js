@@ -102,6 +102,7 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             state.optionCount += incremental_questionOptions;
+            console.log("STATE.OPTION COUNT: ", state.optionCount);
             return { ...state }
 
         case 'DECREMENT_QUESTION_OPTIONS':
@@ -113,7 +114,8 @@ export default (state = INITIAL_STATE, action) => {
                 decremental_questionOptions = 1;
             }
 
-            state.optionCount -= decremental_questionOptions
+            state.optionCount -= decremental_questionOptions;
+            console.log("STATE.OPTION COUNT: ", state.optionCount);
             return { ...state }
 
         case 'SET_OPTION_COUNT':

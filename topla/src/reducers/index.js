@@ -74,12 +74,16 @@ const mainReducer = (state = INITIAL_STATE, action) => {
 
         case 'LOAD_ADS':
             console.log("!!! LOADING AD");
-            AdMobInterstitial.setAdUnitID(Config.ADMOB_INTERSTITIAL);
-            AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-            AdMobInterstitial.requestAd().then(() => {
-                state.ads.ready = true
-                console.log("!!! AD LOADED")
-            });
+            try {
+                AdMobInterstitial.setAdUnitID(Config.ADMOB_INTERSTITIAL);
+                AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+                AdMobInterstitial.requestAd().then(() => {
+                    state.ads.ready = true
+                    console.log("!!! AD LOADED")
+                });
+            } catch (err) {
+                console.log("HATA!!! ", err);
+            }
             return { ...state }
 
         default:

@@ -5,7 +5,7 @@ import {
 import * as RNLocalize from 'react-native-localize';
 import { NativeModules, Platform } from 'react-native';
 
-const API_URL = Config.API_URL;
+const API_URL = (Config.DEV_MODE == true ? Config.API_DEV_URL : Config.API_URL);
 
 const deviceLanguage =
     Platform.OS === 'ios'

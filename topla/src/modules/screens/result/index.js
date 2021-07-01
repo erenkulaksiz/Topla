@@ -15,6 +15,7 @@ const ResultScreen = props => {
     useEffect(() => {
         //console.log("PERFORMANCE ON QUESTION END: ", (performance.now() - props.reducer.PERFORMANCE.questionEnd_StartPerf))
         props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_EndPerf: performance.now() } });
+        props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
     }, []);
 
     const _navigateToHome = () => {

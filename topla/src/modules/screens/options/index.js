@@ -128,7 +128,7 @@ const OptionsScreen = props => {
                         <Text style={{ ...style.altText, color: Theme(props.settings.darkMode).textDefault }}>v{props.reducer.deviceInfo.version}</Text>
                     </View>
                     <TouchableOpacity style={style.altTextWrapper} onPress={() => { Linking.openURL(Config.DEVELOPER_GITHUB_ACCOUNT); }}>
-                        <Text style={{ ...style.altText, fontSize: 10, color: Theme(props.settings.darkMode).textDefault }}>Coded with <FontAwesomeIcon icon={faHeart} size={8} color={Theme(props.settings.darkMode).textDefault} /> by Eren Kulaksiz</Text>
+                        <Text style={{ ...style.altText, fontSize: 10, color: Theme(props.settings.darkMode).textDefault }}>Coded with <FontAwesomeIcon icon={faHeart} size={8} color={Theme(props.settings.darkMode).textDefault} /></Text>
                     </TouchableOpacity>
                 </View>
             </View>

@@ -49,6 +49,12 @@ export default (state = INITIAL_STATE, action) => {
             console.log("question results reset")
             //console.log("[!!!] QUESTION END PERFORMANCE: ", (state.PERFORMANCE.questionEnd_EndPerf - state.PERFORMANCE.questionEnd_StartPerf))
             state.questionResults = [];
+            state.stats = {
+                finalTime: 0,
+                totalCorrect: 0,
+                totalEmpty: 0,
+                totalWrong: 0,
+            }
             return { ...state }
 
         case 'SET_STATS':

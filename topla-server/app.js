@@ -52,6 +52,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         if (log.action_desc) {
             logColl["action_desc"] = log.action_desc;
             console.log("GELEN ACTION DESC: ", log.action_desc);
+            console.log("UUID OF ACTION: ", log.uuid);
         }
         logsCollection.insertOne(logColl)
     }

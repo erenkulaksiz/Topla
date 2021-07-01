@@ -30,12 +30,12 @@ const QuestionScreen = props => {
         _INITIALIZE();
     }, []);
 
-    const _INITIALIZE = () => {
+    const _INITIALIZE = async () => {
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e))
-        if (!props.currentQuestion.isStarted) {
-            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
-        }
+        console.log("loaded question solving");
+        console.log("question params: ", props.route.params);
         page._loadQuestions();
+        props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         _timer.startTimer();
     }
 
@@ -89,6 +89,8 @@ const QuestionScreen = props => {
             props.navigation.goBack();
         },
         _finishQuestionSolving: async () => {
+            //props.dispatch({ type: 'LOAD_ADS' }); // Load ads first
+
             props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
             props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
             let results = {
@@ -203,9 +205,9 @@ const QuestionScreen = props => {
                 page._finishQuestionSolving();
             }
         },
-        _loadQuestions: () => {
+        _loadQuestions: async () => {
             console.log("@Load Questions")
-            props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
+            await props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
             const performance_begin = performance.now();
             const questions = [];
 
@@ -296,7 +298,7 @@ const QuestionScreen = props => {
                 question.questionOptions.sort(() => Math.random() - 0.5);
             })
             props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
-            props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
+            await props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
             const performance_after = performance.now();
             console.log("generation performance: " + (performance_after - performance_begin) + "ms")
             console.log("questions ", questions);
@@ -335,18 +337,20 @@ const QuestionScreen = props => {
                     <Text style={{ color: Theme(props.settings.darkMode).textDefault }}> /{props.questionSettings.questionCount}</Text>
                 </View>
             </View>
-            <View style={style.barsWrapper}>
-                {page._renderBars()}
-            </View>
-            <View style={style.content}>
-                {
-                    props.currentQuestion.isQuestionsLoaded &&
-                    <QuestionSolve
-                        currentQuestion={props.currentQuestion}
-                        onAnswerPress={(element, index) => page._gotoNextQuestion(element, index)}
-                    />
-                }
-            </View>
+            {
+                props.currentQuestion.isQuestionsLoaded && <>
+                    <View style={style.barsWrapper}>
+                        {page._renderBars()}
+                    </View>
+                    <View style={style.content}>
+                        <QuestionSolve
+                            currentQuestion={props.currentQuestion}
+                            onAnswerPress={(element, index) => page._gotoNextQuestion(element, index)}
+                        />
+                    </View>
+                </>
+            }
+
             <AwesomeAlert
                 show={props.reducer.modals.backQuestion}
                 showProgress={false}

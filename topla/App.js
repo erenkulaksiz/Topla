@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
+import { LogBox } from 'react-native';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { Appearance, AppearanceProvider } from 'react-native-appearance';
@@ -86,6 +87,9 @@ const App = () => {
   const _INITIALIZE = {
     connTimer: null,
     init: async () => {
+      console.log("API Dev Mode: ", Config.DEV_MODE);
+      console.log("API URL: ", (Config.DEV_MODE == true ? Config.API_DEV_URL : Config.API_URL));
+      LogBox.ignoreAllLogs();
       await _setDeviceInfo.set();
       await store.dispatch({
         type: 'API_REGISTER',
