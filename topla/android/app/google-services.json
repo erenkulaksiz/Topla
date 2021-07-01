@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:106853288530:android:ec2186207b249bf34d2d8b",
+        "mobilesdk_app_id": "1:106853288530:android:11d00d91e3664d0a4d2d8b",
         "android_client_info": {
-          "package_name": "com.topla"
+          "package_name": "com.erencode.topla"
         }
       },
       "oauth_client": [
@@ -33,6 +33,36 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106853288530:android:ec2186207b249bf34d2d8b",
+        "android_client_info": {
+          "package_name": "com.erencode.topla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106853288530-05ojohi73llved1m6hsd2p74i1t2nku1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMH7GO1BFoI6q6kvlbwiG6LOZwH6Rdunc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106853288530-05ojohi73llved1m6hsd2p74i1t2nku1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5394999503168582~6200481968"
     }
   ],
   "configuration_version": "1"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, TouchableOpacity, Linking } from 'react-native';
+import { Text, View, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust, faIdCard, faHeart } from '@fortawesome/free-solid-svg-icons'
@@ -35,7 +35,7 @@ const OptionsScreen = props => {
         console.log("MAILTO: ", Config.DEVELOPER_CONTACT_MAIL);
         const mail = {
             subject: `Topla Support`,
-            body: `[${props.reducer.deviceInfo.uuid},${props.reducer.deviceInfo.buildNumber}] Message: `,
+            body: `[${props.reducer.deviceInfo.uuid},${props.reducer.deviceInfo.buildNumber}] ${I18n.t("contact_message")} `,
         };
         Linking.openURL(`mailto:${Config.DEVELOPER_CONTACT_MAIL}?subject=${mail.subject}&body=${mail.body}`);
     }
@@ -58,7 +58,7 @@ const OptionsScreen = props => {
     }
 
     return (
-        <View style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
+        <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header />
             <View style={style.headerContainer}>
                 <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("settings")}</Text>
@@ -155,7 +155,7 @@ const OptionsScreen = props => {
                     />
                 </View>
             }
-        </View>
+        </SafeAreaView>
     );
 }
 

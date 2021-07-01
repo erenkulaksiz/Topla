@@ -28,6 +28,8 @@ const logActions = {
     questionsolve_start: "questionsolve_start",
 }
 
+const allowedBundles = ['com.erencode.topla']
+
 MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client) => {
     if (err) return console.error(err)
     console.log('Connected to Database');
@@ -60,11 +62,13 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         return saltedHash
     }
 
-    /* TEST
     app.get('/', (req, res) => {
-        return res.send("APP");
+        res.status(404);
+        return res.send(JSON.stringify({
+            reason: "Invalid Request",
+            success: false,
+        }));
     })
-    */
 
     // Check latest version of app.
     configCollection.findOne()
@@ -89,6 +93,24 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
             || !req.body.language_code
             || !req.body.app_version
         ) {
+            console.log("Invalid params, request denied");
+            res.status(404);
+            return res.send(JSON.stringify({
+                reason: "Invalid Request",
+                success: false,
+            }));
+        }
+
+        let pass = false;
+
+        allowedBundles.map((element, index) => {
+            if (element == req.body.bundle_id) {
+                pass = true;
+            }
+        })
+
+        if (!pass) {
+            console.log("Invalid bundle name, request denied");
             res.status(404);
             return res.send(JSON.stringify({
                 reason: "Invalid Request",
@@ -114,7 +136,9 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                         registerDate: Date.now(),
                         language_code: req.body.language_code,
                         app_version: req.body.app_version, // registered app version
+                        platform: req.body.platform, // android, ios
                         timezone: req.body.timezone,
+                        model: req.body.model,
                         banned: false,
                         API_TOKEN: _GENERATE_API_TOKEN(req.body.uuid, Date.now() + 9925 + Math.random()), // Non-regeneratable :)
                     })
@@ -133,6 +157,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                                         APP_LATEST_VERSION: cfx.latestVer,
                                         APP_SOFT_UPDATE_VER: cfx.softUpdateVer,
                                         APP_HARD_UPDATE_VER: cfx.hardUpdateVer,
+                                        APP_MAINTENANCE: cfx.maintenance,
                                     }
                                     console.log("RESULT: ", _RESPONSE);
                                     return res.json(_RESPONSE);
@@ -162,6 +187,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                                 APP_LATEST_VERSION: cfx.latestVer,
                                 APP_SOFT_UPDATE_VER: cfx.softUpdateVer,
                                 APP_HARD_UPDATE_VER: cfx.hardUpdateVer,
+                                APP_MAINTENANCE: cfx.maintenance,
                             }
                             console.log("RESULT: ", _RESPONSE);
                             return res.json(_RESPONSE);
@@ -188,6 +214,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
             || !req.body.action
             || !req.body.app_version
         ) {
+            console.log("Invalid params, request denied");
             res.status(404);
             return res.send(JSON.stringify({
                 reason: "Invalid Request",
@@ -219,6 +246,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                             console.log("RESULT: ", _RESPONSE);
                             return res.json(_RESPONSE);
                         } else {
+                            console.log("Invalid uuid, request denied");
                             res.status(404);
                             return res.send(JSON.stringify({
                                 reason: "Invalid Request",

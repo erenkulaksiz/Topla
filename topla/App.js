@@ -42,13 +42,18 @@ const App = () => {
         if (store.getState().API.DATA.banned) {
           store.dispatch({ type: "SET_MODAL", payload: { banned: true } });
         } else {
-          SplashScreen.hide();
+          if (store.getState().API.DATA.APP_MAINTENANCE) {
+            store.dispatch({ type: "SET_MODAL", payload: { maintenance: true } });
+          } else {
+            SplashScreen.hide();
+          }
           store.getState().API.DATA.hasPremium || store.dispatch({ type: 'LOAD_ADS' });
 
           store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
           if (buildNumber < softUpdateVer) {
             console.log("UPDATE NEEDED FOR SOFTUPDATE | VERSION HAVE: ", buildNumber, " neededSoft: ", softUpdateVer);
             store.dispatch({ type: "SET_MODAL", payload: { softUpdate: true } })
+            store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
           } else {
             console.log("app is up to date!! got: ", buildNumber, " needSoft: ", softUpdateVer, " needHard: ", hardUpdateVer);
           }
@@ -92,7 +97,6 @@ const App = () => {
       });
       setTimeout(async () => {
         await _INITIALIZE.connection();
-
       }, 2000)
       const appInstanceId = await analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);

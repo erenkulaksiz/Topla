@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
 
 import style from './style';
 import Header from "../../header";
@@ -9,7 +9,7 @@ import Theme from '../../../themes'
 
 const PremiumScreen = props => {
     return (
-        <View style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
+        <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header backShown onBack={() => { props.navigation.goBack() }} />
             <View style={style.headerContainer}>
                 <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("settings_removeAds")}</Text>
@@ -23,7 +23,7 @@ const PremiumScreen = props => {
                 </TouchableWithoutFeedback>
 
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

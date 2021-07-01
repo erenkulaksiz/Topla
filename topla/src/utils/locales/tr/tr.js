@@ -48,4 +48,6 @@ export default {
     modals_banned_title: `Şu anda uygulamaya giriş yapamazsınız. Lütfen mail adresimizden bize ulaşın: ${Config.DEVELOPER_CONTACT_MAIL}`,
     modals_loading: "Yükleniyor...",
     modals_okay: "Tamam",
+    modals_maintenance: "Uygulama şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
+    contact_message: "Mesaj: ",
 };

@@ -138,11 +138,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.topla"
+        applicationId "com.erencode.topla"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 29
-        versionName "1.29"
+        versionCode 30
+        versionName "1.30"
     }
     splits {
         abi {
@@ -158,6 +158,12 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        release {
+            storeFile file('erencodetopla.keystore')
+            storePassword '20002000'
+            keyAlias 'erencodetopla'
+            keyPassword '2000200'
         }
     }
     buildTypes {

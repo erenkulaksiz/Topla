@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import prettyMs from 'pretty-ms';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 import I18n from "../../../utils/i18n.js";
-import style from './style';
+import style from "./style";
 import Header from "../../header";
+import Theme from "../../../themes";
 
 const ResultScreen = props => {
 
@@ -23,31 +24,32 @@ const ResultScreen = props => {
     }
 
     return (
-        <View style={style.container}>
+        <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header />
             <View style={style.headerContainer}>
-                <Text style={style.headerText}>{I18n.t("question_results")}</Text>
-                <View style={style.headerBar}></View>
+                <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("question_results")}</Text>
+                <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             </View>
-            <View style={style.infoBox}>
-                <Text style={style.infoTitle}>Özet</Text>
-                <View style={style.infoBar}></View>
+            <View style={{ ...style.infoBox, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                <Text style={{ ...style.infoTitle, color: Theme(props.settings.darkMode).textDefault }}>Özet</Text>
+                <View style={{ ...style.infoBar, backgroundColor: Theme(props.settings.darkMode).textDefault }}></View>
                 <View style={style.infoContent}>
-                    <Text>Toplam Süre: {prettyMs(props.currentQuestion.stats.finalTime, { colonNotation: true })}</Text>
-                    {props.currentQuestion.stats.totalCorrect == 0 || <Text>Doğru Sayısı: {props.currentQuestion.stats.totalCorrect}</Text>}
-                    {props.currentQuestion.stats.totalWrong == 0 || <Text>Yanlış Sayısı: {props.currentQuestion.stats.totalWrong}</Text>}
-                    {props.currentQuestion.stats.totalEmpty == 0 || <Text>Boş Sayısı: {props.currentQuestion.stats.totalEmpty}</Text>}
+                    <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Toplam Süre: {prettyMs(props.currentQuestion.stats.finalTime, { colonNotation: true })}</Text>
+                    {props.currentQuestion.stats.totalCorrect == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Doğru Sayısı: {props.currentQuestion.stats.totalCorrect}</Text>}
+                    {props.currentQuestion.stats.totalWrong == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Yanlış Sayısı: {props.currentQuestion.stats.totalWrong}</Text>}
+                    {props.currentQuestion.stats.totalEmpty == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Boş Sayısı: {props.currentQuestion.stats.totalEmpty}</Text>}
                 </View>
             </View>
             <ScrollView style={style.content}>
                 {props.currentQuestion.questionResults.map((element, index) => {
                     return (
                         <View style={{
-                            margin: 4, padding: 12, elevation: 2, backgroundColor: "white",
+                            margin: 4, padding: 12, elevation: 2,
                             marginBottom: props.currentQuestion.questionResults.length == (index + 1) ? 70 : 8, // Sonuncu ise aşağıya boşluk bırak
                             borderRadius: 8,
+                            backgroundColor: Theme(props.settings.darkMode).questionSlotBackground
                         }} key={index}>
-                            <Text>
+                            <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>
                                 {(element.questionStep) + 1}. {I18n.t("question")}
                                 {" - "}
                                 <Text style={{ color: (element.questionEmpty ? "black" : (element.questionAnswerCorrect ? "green" : "red")) }}>
@@ -56,17 +58,17 @@ const ResultScreen = props => {
                             </Text>
 
                             {
-                                element.questionEmpty ? <Text>{props.currentQuestion.questions[element.questionStep].question} = {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>
-                                    : <Text>{props.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
+                                element.questionEmpty ? <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{props.currentQuestion.questions[element.questionStep].question} = {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>
+                                    : <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{props.currentQuestion.questions[element.questionStep].question} = {element.questionAnswer}</Text>
                             }
 
                             {
                                 element.questionEmpty || (element.questionAnswerCorrect || <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>)
                             }
 
-                            <Text>Toplam Soru: {props.questionSettings.questionCount}</Text>
+                            <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Toplam Soru: {props.questionSettings.questionCount}</Text>
 
-                            <Text>Süre: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
+                            <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Süre: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
                         </View>
                     )
                 })}
@@ -78,14 +80,16 @@ const ResultScreen = props => {
                     <Text style={{ fontSize: 15, color: "#fff", marginLeft: 8 }}>{I18n.t("question_results_back")}</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
         currentQuestion: state.currentQuestion,
-        questionSettings: state.questionSettings
+        questionSettings: state.questionSettings,
+        API: state.API,
+        settings: state.settings,
     }
 };
 

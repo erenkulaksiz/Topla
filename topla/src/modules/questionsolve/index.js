@@ -3,19 +3,20 @@ import { Text, View, TouchableOpacity } from "react-native";
 import { connect } from 'react-redux';
 
 import style from './style';
+import Theme from '../../themes';
 
 const QuestionSolve = props => {
 
     const _renderButton = (element, index) => {
-        return (<TouchableOpacity style={style.button} activeOpacity={0.85} onPress={() => props.onAnswerPress(element, index)} key={index}>
-            <Text style={{ fontSize: 18 }}>{"" + element}</Text>
+        return (<TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }} activeOpacity={0.85} onPress={() => props.onAnswerPress(element, index)} key={index}>
+            <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>{"" + element}</Text>
         </TouchableOpacity>)
     }
 
     return (
         <View style={style.container}>
-            <View style={style.questionTitleWrapper}>
-                <Text style={style.questionTitle}>
+            <View style={{ ...style.questionTitleWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                <Text style={{ ...style.questionTitle, color: Theme(props.settings.darkMode).textDefault }}>
                     {props.currentQuestion.questions[props.currentQuestion.currentStep].question}
                 </Text>
             </View>
@@ -30,7 +31,8 @@ const QuestionSolve = props => {
 
 const mapStateToProps = (state) => {
     return {
-        currentQuestion: state.currentQuestion
+        currentQuestion: state.currentQuestion,
+        settings: state.settings,
     }
 };
 

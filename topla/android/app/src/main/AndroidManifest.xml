@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.topla">
+  package="com.erencode.topla">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -24,6 +24,6 @@
       </activity>
       <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5394999503168582~6200481968"/>
+            android:value="ca-app-pub-5394999503168582~2844953630"/>
     </application>
 </manifest>

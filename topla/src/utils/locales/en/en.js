@@ -48,4 +48,6 @@ export default {
     modals_banned_title: `You cannot enter the app right now. Please contact us from our mail adress: ${Config.DEVELOPER_CONTACT_MAIL}`,
     modals_loading: "Loading...",
     modals_okay: "Okay",
+    modals_maintenance: "App is currently under maintenance. Please check back again later.",
+    contact_message: "Message: ",
 };

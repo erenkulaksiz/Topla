@@ -29,6 +29,7 @@ const INITIAL_STATE = {
         banned: false,
         initialize: true,
         checkConnection: false,
+        maintenance: false,
     },
     PERFORMANCE: {
         questions: {
@@ -50,6 +51,10 @@ const mainReducer = (state = INITIAL_STATE, action) => {
         case 'SET_DEVICE_CONNECTION':
             console.log("connection ", action.payload);
             state.connection = action.payload;
+            return { ...state }
+
+        case 'SET_PAUSE_MODAL':
+            state.pauseModalShown = action.payload;
             return { ...state }
 
         case 'SET_MODAL':

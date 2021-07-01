@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Text, View, ScrollView } from "react-native";
+import React from 'react';
+import { Text, View, ScrollView, SafeAreaView } from "react-native";
 import { connect } from 'react-redux';
 import Config from 'react-native-config';
 
@@ -21,7 +21,7 @@ const HomeScreen = props => {
     }
 
     return (
-        <View style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
+        <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header />
             <View style={style.headerContainer}>
                 <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("home")}</Text>
@@ -49,7 +49,7 @@ const HomeScreen = props => {
                     />
                 </View>
             }
-        </View>
+        </SafeAreaView>
     );
 }
 

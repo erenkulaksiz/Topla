@@ -5,7 +5,7 @@ import {
 import * as RNLocalize from 'react-native-localize';
 import { NativeModules, Platform } from 'react-native';
 
-const API_URL = (Config.DEV_MODE ? Config.API_DEV_URL : Config.API_URL)
+const API_URL = Config.API_URL;
 
 const deviceLanguage =
     Platform.OS === 'ios'
@@ -39,9 +39,7 @@ export default (state = INITIAL_STATE, action) => {
                         uuid: action.payload.uuid,
                         bundle_id: action.payload.bundleId,
                         platform: Platform.OS,
-                        channel: "organic",
                         language_code: deviceLanguage,
-                        adjust_attr: "test aaa adjust",
                         app_version: getBuildNumber(),
                         country_code: RNLocalize.getCountry(),
                         timezone: RNLocalize.getTimeZone(),

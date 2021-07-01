@@ -51,6 +51,16 @@ const Home = (props) => {
                     }} />
             </Tab.Navigator>
             <AwesomeAlert
+                show={props.reducer.modals.maintenance}
+                showProgress={false}
+                title={I18n.t("modals_maintenance")}
+                closeOnTouchOutside={false}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={false}
+                titleStyle={{ fontSize: 16 }}
+            />
+            <AwesomeAlert
                 show={props.reducer.modals.initialize}
                 showProgress={true}
                 progressColor={"#0f7cbb"}

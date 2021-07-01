@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '10.0'
 
-target 'topla' do
+target 'Topla' do
   config = use_native_modules!
 
   use_react_native!(
@@ -22,7 +22,7 @@ target 'topla' do
 
   pod 'react-native-appearance', :path => '../node_modules/react-native-appearance'
 
-  target 'toplaTests' do
+  target 'ToplaTests' do
     inherit! :complete
     # Pods for testing
   end

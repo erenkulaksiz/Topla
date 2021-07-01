@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import _ from "lodash";
 import prettyMs from 'pretty-ms';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Sound from 'react-native-sound';
 
+import Theme from '../../../themes'
 import I18n from "../../../utils/i18n.js";
 import style from './style';
 import Header from "../../header";
 import QuestionSolve from '../../questionsolve';
+
+const sounds = {
+    correct: require('../../../../src/sounds/correct_2.mp3'),
+    wrong: require('../../../../src/sounds/wrong.mp3'),
+}
 
 const QuestionScreen = props => {
 
@@ -23,12 +30,12 @@ const QuestionScreen = props => {
         _INITIALIZE();
     }, []);
 
-    const _INITIALIZE = async () => {
+    const _INITIALIZE = () => {
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e))
         if (!props.currentQuestion.isStarted) {
             props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         }
-        _loadQuestions();
+        page._loadQuestions();
         _timer.startTimer();
     }
 
@@ -42,7 +49,7 @@ const QuestionScreen = props => {
         resume: () => setTimerStarted(true),
         _render: () => {
             return (
-                <Text style={{ marginLeft: 8 }}>{prettyMs(timer - thisQuestionTime, { colonNotation: true })}</Text>
+                <Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisQuestionTime, { colonNotation: true })}</Text>
             )
         }
     }
@@ -137,7 +144,6 @@ const QuestionScreen = props => {
             } else {
                 page._finishQuestionSolving();
             }
-
         },
         _renderBars: () => {
             const bars = [];
@@ -164,120 +170,137 @@ const QuestionScreen = props => {
             props.dispatch({ type: "SET_MODAL", payload: { backQuestion: true } })
         },
         _gotoNextQuestion: async (element, index) => {
+            const questionAnswerCorrect = (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer);
             await props.dispatch({
-                type: "PUSH_TO_QUESTION_RESULT", payload: {
+                type: "PUSH_TO_QUESTION_RESULT",
+                payload: {
                     questionStep: props.currentQuestion.currentStep,
-                    questionAnswerCorrect: (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer),
+                    questionAnswerCorrect: questionAnswerCorrect,
                     questionAnswer: element,
                     questionSolveTime: timer,
                     questionTime: timer - thisQuestionTime,
                 }
             });
+            const soundCallback = (error, sound) => {
+                if (error) {
+                    Alert.alert('error', error.message);
+                    return;
+                }
+                sound.setVolume(1);
+                sound.play(() => {
+                    // Release when it's done so we're not using up resources
+                    sound.release();
+                });
+            };
+            if (questionAnswerCorrect) {
+                const sound = new Sound(sounds.correct, error => soundCallback(error, sound));
+            } else {
+                const sound = new Sound(sounds.wrong, error => soundCallback(error, sound));
+            }
             if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
                 page._nextQuestion();
             } else {
                 page._finishQuestionSolving();
             }
         },
-    }
+        _loadQuestions: () => {
+            console.log("@Load Questions")
+            props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
+            const performance_begin = performance.now();
+            const questions = [];
 
-    const _loadQuestions = () => {
-        console.log("@Load Questions")
-        props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
-        const performance_begin = performance.now();
-        const questions = [];
+            const values = [
+                "addition",
+                "subtraction",
+                "multiplication",
+                "division"
+            ];
 
-        const values = [
-            "addition",
-            "subtraction",
-            "multiplication",
-            "division"
-        ];
-
-        const operation = value => {
-            if (value == values[0]) return "+"
-            if (value == values[1]) return "-"
-            if (value == values[2]) return "x"
-            if (value == values[3]) return "/"
-        }
-
-        for (let a = 1; a <= props.questionSettings.questionCount; a++) {
-            let n = { // Numbers
-                st: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
-                nd: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
-                temp: 0,
+            const operation = value => {
+                if (value == values[0]) return "+"
+                if (value == values[1]) return "-"
+                if (value == values[2]) return "x"
+                if (value == values[3]) return "/"
             }
-            const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
-            const questionOperationRandom = keys[_.sample(Object.keys(keys))]
-            if (questionOperationRandom == values[0]) {
-                n.temp = n.st + n.nd;
-            } else if (questionOperationRandom == values[1]) {
-                n.temp = n.st - n.nd;
-                if (n.temp < 0) {
-                    n.st = n.st ^ n.nd
-                    n.nd = n.st ^ n.nd
-                    n.st = n.st ^ n.nd
+
+            for (let a = 1; a <= props.questionSettings.questionCount; a++) {
+                let n = { // Numbers
+                    st: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
+                    nd: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
+                    temp: 0,
+                }
+                const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
+                const questionOperationRandom = keys[_.sample(Object.keys(keys))]
+                if (questionOperationRandom == values[0]) {
+                    n.temp = n.st + n.nd;
+                } else if (questionOperationRandom == values[1]) {
                     n.temp = n.st - n.nd;
+                    if (n.temp < 0) {
+                        n.st = n.st ^ n.nd
+                        n.nd = n.st ^ n.nd
+                        n.st = n.st ^ n.nd
+                        n.temp = n.st - n.nd;
+                    }
+                } else if (questionOperationRandom == values[2]) {
+                    n.temp = n.st * n.nd;
+                } else if (questionOperationRandom == values[3]) {
+                    const isInt = value => {
+                        return (parseFloat(value) == parseInt(value)) && !isNaN(value);
+                    }
+                    const isPrime = value => {
+                        let result = 0;
+                        for (let i = 1; i < value; i++) { if (value % i == 0) result++; }
+                        if (result > 1) return false
+                        return true
+                    }
+                    n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
+                    const divider = [];
+                    while (isPrime(n.st)) { n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
+                    while (!isInt(n.st / n.nd)) { n.nd = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
+                    for (let i = 1; i < n.st; i++) {
+                        let result = n.st / i;
+                        if (isInt(result)) {
+                            divider.push(result);
+                        }
+                    }
+                    let randomKey = _.sample(divider);
+                    while (randomKey == n.st) { randomKey = _.sample(divider) }
+                    n.nd = randomKey;
+                    n.temp = n.st / n.nd;
                 }
-            } else if (questionOperationRandom == values[2]) {
-                n.temp = n.st * n.nd;
-            } else if (questionOperationRandom == values[3]) {
-                const isInt = value => {
-                    return (parseFloat(value) == parseInt(value)) && !isNaN(value);
-                }
-                const isPrime = value => {
-                    let result = 0;
-                    for (let i = 1; i < value; i++) { if (value % i == 0) result++; }
-                    if (result > 1) return false
-                    return true
-                }
-                n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
-                const divider = [];
-                while (isPrime(n.st)) { n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
-                while (!isInt(n.st / n.nd)) { n.nd = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
-                for (let i = 1; i < n.st; i++) {
-                    let result = n.st / i;
-                    if (isInt(result)) {
-                        divider.push(result);
+
+                questions.push({
+                    question: `${n.st} ${operation(questionOperationRandom)} ${n.nd}`,
+                    questionArguments: [n.st, n.nd],
+                    questionAnswer: n.temp,
+                    questionOptions: [],
+                    questionOperation: questionOperationRandom,
+                });
+            }
+
+            questions.map(question => {
+                for (let a = 1; a <= props.questionSettings.optionCount; a++) {
+                    if (a == 1) {
+                        question.questionOptions.push(question.questionAnswer);
+                    } else {
+                        // Basamak sayısını al.
+                        const basamak = Math.max(Math.floor(Math.log10(Math.abs(question.questionAnswer))), 0) + 1
+                        const range = (Math.pow(10, (basamak - 1)));
+                        let randomNumber = page._generateRandomInt((question.questionAnswer - range), (question.questionAnswer + range));
+                        if (question.questionOptions.indexOf(randomNumber) < 0) question.questionOptions.push(randomNumber);
+                        else a--;
                     }
                 }
-                let randomKey = _.sample(divider);
-                while (randomKey == n.st) { randomKey = _.sample(divider) }
-                n.nd = randomKey;
-                n.temp = n.st / n.nd;
-            }
-
-            questions.push({
-                question: `${n.st} ${operation(questionOperationRandom)} ${n.nd}`,
-                questionArguments: [n.st, n.nd],
-                questionAnswer: n.temp,
-                questionOptions: [],
-                questionOperation: questionOperationRandom,
             });
+            questions.map(question => {
+                question.questionOptions.sort(() => Math.random() - 0.5);
+            })
+            props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
+            props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
+            const performance_after = performance.now();
+            console.log("generation performance: " + (performance_after - performance_begin) + "ms")
+            console.log("questions ", questions);
         }
-
-        questions.map(question => {
-            for (let a = 1; a <= props.questionSettings.optionCount; a++) {
-                if (a == 1) {
-                    question.questionOptions.push(question.questionAnswer);
-                } else {
-                    // Basamak sayısını al.
-                    const basamak = Math.max(Math.floor(Math.log10(Math.abs(question.questionAnswer))), 0) + 1
-                    const range = (Math.pow(10, (basamak - 1)));
-                    let randomNumber = page._generateRandomInt((question.questionAnswer - range), (question.questionAnswer + range));
-                    if (question.questionOptions.indexOf(randomNumber) < 0) question.questionOptions.push(randomNumber);
-                    else a--;
-                }
-            }
-        });
-        questions.map(question => {
-            question.questionOptions.sort(() => Math.random() - 0.5);
-        })
-        props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
-        props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
-        const performance_after = performance.now();
-        console.log("generation performance: " + (performance_after - performance_begin) + "ms")
-        console.log("questions ", questions);
     }
 
     const onBackCancel = () => {
@@ -298,18 +321,18 @@ const QuestionScreen = props => {
     }
 
     return (
-        <View style={style.container}>
+        <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header pauseShown onPause={() => page._pause()} />
             <View style={style.headerContainer}>
                 <View style={style.headerLeft}>
-                    <FontAwesomeIcon icon={faClock} size={16} color={"#000"} />
+                    <FontAwesomeIcon icon={faClock} size={16} color={Theme(props.settings.darkMode).textDefault} />
                     {_timer._render()}
-                    <Text style={style.timerFinishText}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
+                    <Text style={{ ...style.timerFinishText, color: Theme(props.settings.darkMode).textDefault }}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
                 </View>
                 <View style={style.headerRight}>
-                    <Text style={style.questionCountTitle}>{I18n.t("question")}:</Text>
-                    <Text style={style.questionCount}>{(props.currentQuestion.currentStep + 1)}</Text>
-                    <Text> /{props.questionSettings.questionCount}</Text>
+                    <Text style={{ ...style.questionCountTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question")}:</Text>
+                    <Text style={{ ...style.questionCount, color: Theme(props.settings.darkMode).textDefault }}>{(props.currentQuestion.currentStep + 1)}</Text>
+                    <Text style={{ color: Theme(props.settings.darkMode).textDefault }}> /{props.questionSettings.questionCount}</Text>
                 </View>
             </View>
             <View style={style.barsWrapper}>
@@ -360,7 +383,7 @@ const QuestionScreen = props => {
                     </TouchableOpacity>
                 </View>
             </Modal>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -368,7 +391,8 @@ const mapStateToProps = (state) => {
     return {
         reducer: state.mainReducer,
         currentQuestion: state.currentQuestion,
-        questionSettings: state.questionSettings
+        questionSettings: state.questionSettings,
+        settings: state.settings,
     }
 };
 
