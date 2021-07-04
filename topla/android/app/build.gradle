@@ -141,8 +141,8 @@ android {
         applicationId "com.erencode.topla"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 35
-        versionName "1.32"
+        versionCode 37
+        versionName "1.32.2"
     }
     splits {
         abi {

@@ -16,9 +16,9 @@ const PremiumScreen = props => {
                 <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             </View>
             <View style={style.content}>
-                <TouchableWithoutFeedback onPress={() => { alert("asdas") }}>
+                <TouchableWithoutFeedback onPress={() => { alert("yakında dedik.") }}>
                     <View style={{ ...style.premiumWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
-                        <Text>asdasd</Text>
+                        <Text>Yakında! :)</Text>
                     </View>
                 </TouchableWithoutFeedback>
 

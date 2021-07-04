@@ -50,4 +50,5 @@ export default {
     modals_okay: "Okay",
     modals_maintenance: "App is currently under maintenance. Please check back again later.",
     contact_message: "Message: ",
+    subscription_renew: "Subscription has been renewed.",
 };

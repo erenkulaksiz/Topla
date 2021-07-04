@@ -49,7 +49,7 @@ const OptionsScreen = props => {
                 model: props.reducer.deviceInfo.model,
             }
         });
-        alert("Abonelik yenilendi")
+        alert(I18n.t("subscription_renew")); // Abonelik yenilendi .<-
     }
 
     const _darkMode = () => {
@@ -96,42 +96,50 @@ const OptionsScreen = props => {
                         </View>
                         <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_darkMode")}</Text>
                     </TouchableOpacity>
-                    {
-                        /*
-                            <TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }} onPress={() => {
-                                props.dispatch({
-                                    type: 'API_LOG',
-                                    payload: {
-                                        uuid: props.reducer.deviceInfo.uuid,
-                                        bundleId: props.reducer.deviceInfo.bundleId,
-                                        ACTION: "questionsolve_start",
-                                        API_TOKEN: props.API.DATA.API_TOKEN,
-                                        hasPremium: props.API.DATA.hasPremium,
-                                    }
-                                });
-                            }}>
 
-                                <View style={style.buttonIcon}>
-                                    <FontAwesomeIcon icon={faAdjust} size={16} color={"#000"} />
-                                </View>
-                                <Text style={style.buttonText}>Debug</Text>
-                            </TouchableOpacity>
-                        */
-                    }
+
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={async () => {
+                        await props.dispatch({
+                            type: 'API_PREMIUM',
+                            payload: {
+                                uuid: props.reducer.deviceInfo.uuid,
+                            }
+                        });
+                        await props.dispatch({ type: "SET_MODAL", payload: { premiumGiven: true } });
+                    }}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <Text>Debug</Text>
+                        </View>
+                        <Text style={style.buttonText}>givePremium</Text>
+                    </TouchableOpacity>
+
                 </View>
                 <View style={style.altContent}>
-                    <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uid); alert("UID Kopyalandı") }}>
+                    <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uuid); alert("UID Kopyalandı") }}>
                         <FontAwesomeIcon icon={faIdCard} size={16} style={{ marginRight: 6, }} color={Theme(props.settings.darkMode).textDefault} />
                         <Text style={{ ...style.altText, color: Theme(props.settings.darkMode).textDefault }}>UID: {props.reducer.deviceInfo.uuid}</Text>
                     </TouchableOpacity>
                     <View style={style.altTextWrapper}>
-                        <Text style={{ ...style.altText, color: Theme(props.settings.darkMode).textDefault }}>v{props.reducer.deviceInfo.version}</Text>
+                        <Text style={{ ...style.altText, color: Theme(props.settings.darkMode).textDefault }}>v{props.reducer.deviceInfo.version}, {props.reducer.deviceInfo.buildNumber}</Text>
                     </View>
                     <TouchableOpacity style={style.altTextWrapper} onPress={() => { Linking.openURL(Config.DEVELOPER_GITHUB_ACCOUNT); }}>
                         <Text style={{ ...style.altText, fontSize: 10, color: Theme(props.settings.darkMode).textDefault }}>Coded with <FontAwesomeIcon icon={faHeart} size={8} color={Theme(props.settings.darkMode).textDefault} /></Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            <AwesomeAlert
+                show={props.reducer.modals.premiumGiven}
+                showProgress={false}
+                title={"hasPremium: " + props.API.DATA.hasPremium}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={true}
+                showConfirmButton={true}
+                confirmText={I18n.t("modals_okay")}
+                confirmButtonColor="#0f7cbb"
+                onConfirmPressed={() => {
+                    props.dispatch({ type: "SET_MODAL", payload: { premiumGiven: false } })
+                }}
+            />
             <AwesomeAlert
                 show={props.reducer.modals.checkConnection}
                 showProgress={false}

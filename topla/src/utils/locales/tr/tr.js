@@ -50,4 +50,5 @@ export default {
     modals_okay: "Tamam",
     modals_maintenance: "Uygulama şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
     contact_message: "Mesaj: ",
+    subscription_renew: "Aboneliğiniz yenilendi.",
 };

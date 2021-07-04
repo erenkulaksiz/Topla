@@ -30,13 +30,13 @@ const QuestionScreen = props => {
         _INITIALIZE();
     }, []);
 
-    const _INITIALIZE = async () => {
-        props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e))
+    const _INITIALIZE = () => {
         console.log("loaded question solving");
         console.log("question params: ", props.route.params);
         page._loadQuestions();
         props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
         _timer.startTimer();
+        props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e))
     }
 
     const _timer = { // 5 saat
@@ -205,11 +205,12 @@ const QuestionScreen = props => {
                 page._finishQuestionSolving();
             }
         },
-        _loadQuestions: async () => {
+        _loadQuestions: () => {
             console.log("@Load Questions")
-            await props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
+            props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
             const performance_begin = performance.now();
             const questions = [];
+            console.log("Performance begin set for questions");
 
             const values = [
                 "addition",
@@ -279,26 +280,37 @@ const QuestionScreen = props => {
                     questionOperation: questionOperationRandom,
                 });
             }
+            //console.log("_____ QUESTIONS: ", questions);
 
             questions.map(question => {
                 for (let a = 1; a <= props.questionSettings.optionCount; a++) {
                     if (a == 1) {
                         question.questionOptions.push(question.questionAnswer);
                     } else {
-                        // Basamak sayısını al.
-                        const basamak = Math.max(Math.floor(Math.log10(Math.abs(question.questionAnswer))), 0) + 1
-                        const range = (Math.pow(10, (basamak - 1)));
-                        let randomNumber = page._generateRandomInt((question.questionAnswer - range), (question.questionAnswer + range));
-                        if (question.questionOptions.indexOf(randomNumber) < 0) question.questionOptions.push(randomNumber);
-                        else a--;
+                        const digits = Math.max(Math.floor(Math.log10(Math.abs(question.questionAnswer))), 1);
+                        const range = Math.pow(10, digits);
+
+                        let randomNumber = Math.abs(page._generateRandomInt(question.questionAnswer - range, question.questionAnswer + range));
+                        if (question.questionOptions.indexOf(randomNumber) < 0) {
+                            question.questionOptions.push(randomNumber);
+                            console.log("----");
+                            console.log("basamak: ", digits);
+                            console.log("range: ", range);
+                            console.log("generated questionoption: ", digits);
+                        } else {
+                            a--;
+                        }
                     }
                 }
             });
+
             questions.map(question => {
                 question.questionOptions.sort(() => Math.random() - 0.5);
             })
+
             props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
-            await props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
+            console.log("set all questions: ", questions);
+            props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
             const performance_after = performance.now();
             console.log("generation performance: " + (performance_after - performance_begin) + "ms")
             console.log("questions ", questions);
@@ -306,13 +318,11 @@ const QuestionScreen = props => {
     }
 
     const onBackCancel = () => {
-        //setBackAlert(false);
         props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } })
         _timer.resume();
     }
 
     const onBackSubmit = () => {
-        //setBackAlert(false);
         props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } })
         props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
         props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });

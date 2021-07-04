@@ -23,13 +23,14 @@ const INITIAL_STATE = {
         ready: false,
     },
     modals: {
+        initialize: true,
         backQuestion: false,
         softUpdate: false,
         hardUpdate: false,
         banned: false,
-        initialize: true,
         checkConnection: false,
         maintenance: false,
+        premiumGiven: false,
     },
     PERFORMANCE: {
         questions: {

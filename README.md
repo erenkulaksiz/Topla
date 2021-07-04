@@ -56,6 +56,19 @@
 - ToplaGold
 - ChildPlay
 
+---
+
+> 03/07/2021
+> 04/07/2021
+> 05/07/2021
+> Topla (v1.32.2)
+
+- Ayarlar kısmında UUID yazısına basılınca uuid'nin kopyalanmaması düzeltildi
+- En büyük sorun olan 5 seçenek ve üstü seçilince soru üretilelemesi ve uygulamanın kitlenmesi düzeltildi
+- API'ye soruların loglanması geçiçi olarak durduruldu
+- Uygulama başlarken sorun varsa daha kolay debug edilebilmesi için yükleniyor yazısına ek bilgileri yazıldı
+- Ayarlarda premium butonuna basınca şu anki kişiye premium veren bir geçici kod yazıldı
+
 > 01/07/2021
 > Topla (v1.32)
 

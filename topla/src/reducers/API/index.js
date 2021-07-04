@@ -5,7 +5,7 @@ import {
 import * as RNLocalize from 'react-native-localize';
 import { NativeModules, Platform } from 'react-native';
 
-const API_URL = (Config.DEV_MODE == true ? Config.API_DEV_URL : Config.API_URL);
+const API_URL = Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL;
 
 const deviceLanguage =
     Platform.OS === 'ios'
@@ -116,6 +116,40 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             log().catch(err => {
+                console.log("[ERROR]: ", err);
+            });
+
+            return state
+
+        case 'API_PREMIUM':
+            console.log("@API_premium w/ URL: ", API_URL);
+
+            const premium = async () => {
+                const response = await fetch(API_URL + '/premium', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uuid: action.payload.uuid,
+                    }),
+                }).then(response => {
+                    console.log("response status ", response.status);
+                    response.json().then((data) => {
+                        console.log("API_SEND_PREMIUM RESULT: ", data);
+                        state.DATA.hasPremium = data.hasPremium;
+                        if (response.status == 404) {
+                            throw [data, response.status];
+                        }
+                    })
+                }).catch(function (error) {
+                    throw error;
+                });
+                return response
+            }
+
+            premium().catch(err => {
                 console.log("[ERROR]: ", err);
             });
 

@@ -88,8 +88,8 @@ const App = () => {
     connTimer: null,
     init: async () => {
       console.log("API Dev Mode: ", Config.DEV_MODE);
-      console.log("API URL: ", (Config.DEV_MODE == true ? Config.API_DEV_URL : Config.API_URL));
-      LogBox.ignoreAllLogs();
+      console.log("API URL: ", Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL);
+      //LogBox.ignoreAllLogs();
       await _setDeviceInfo.set();
       await store.dispatch({
         type: 'API_REGISTER',

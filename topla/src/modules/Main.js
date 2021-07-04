@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faHome, /*faCrown,*/ faCog } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux';
@@ -11,6 +12,8 @@ import Theme from '../themes'
 // Components 
 import HomeScreen from './screens/home'
 import OptionsScreen from './screens/options';
+import API from '../reducers/API/index.js';
+import Config from 'react-native-config';
 
 const Tab = createBottomTabNavigator();
 
@@ -66,6 +69,12 @@ const Home = (props) => {
                 progressColor={"#0f7cbb"}
                 progressSize={32}
                 title={I18n.t("modals_loading")}
+                customView={<>
+                    <Text>{Config.DEV_MODE == true ? Config.API_DEV_URL : Config.API_URL}</Text>
+                    <Text>{JSON.stringify(props.reducer.connection)}</Text>
+                    <Text>{JSON.stringify(props.reducer.deviceInfo)}</Text>
+                    <Text>{JSON.stringify(props.API)}</Text>
+                </>}
                 closeOnTouchOutside={false}
                 closeOnHardwareBackPress={false}
                 showCancelButton={false}

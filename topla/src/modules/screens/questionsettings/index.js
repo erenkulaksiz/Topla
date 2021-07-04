@@ -29,31 +29,33 @@ const QuestionSettings = props => {
         _setQuestionParams(props.route.params.question);
     }, []);
 
+    const {
+        questionCount,
+        optionCount,
+        perQuestionTime,
+        operations,
+        minRange,
+        maxRange,
+        rangeDecremental,
+        rangeIncremental,
+    } = props.questionSettings;
+
+    const logSettings = {
+        questionCount: questionCount,
+        optionCount: optionCount,
+        perQuestionTime: perQuestionTime,
+        operations: operations,
+        minRange: minRange,
+        maxRange: maxRange,
+        rangeDecremental: rangeDecremental,
+        rangeIncremental: rangeIncremental,
+    }
+
     const _showAds = async (question) => {
         console.log("show ads");
 
         const _navToQuestion = () => {
-
-            const {
-                questionCount,
-                optionCount,
-                perQuestionTime,
-                operations,
-                minRange,
-                maxRange,
-                rangeDecremental,
-                rangeIncremental,
-            } = props.questionSettings;
-            const logSettings = {
-                questionCount: questionCount,
-                optionCount: optionCount,
-                perQuestionTime: perQuestionTime,
-                operations: operations,
-                minRange: minRange,
-                maxRange: maxRange,
-                rangeDecremental: rangeDecremental,
-                rangeIncremental: rangeIncremental,
-            }
+            /*
             store.dispatch({
                 type: 'API_LOG',
                 payload: {
@@ -63,7 +65,7 @@ const QuestionSettings = props => {
                     API_TOKEN: props.API.DATA.API_TOKEN,
                     ACTION_DESC: logSettings,
                 }
-            });
+            });*/
 
             props.navigation.navigate('QuestionScreen', { question: question });
             console.log("Should navigate now !!!");
@@ -125,6 +127,22 @@ const QuestionSettings = props => {
             if (props.API.DATA.API_TOKEN) {
                 if (props.API.DATA.hasPremium) {
                     props.navigation.navigate('QuestionScreen', { question: question })
+
+                    /*
+
+                    store.dispatch({
+                        type: 'API_LOG',
+                        payload: {
+                            uuid: props.reducer.deviceInfo.uuid,
+                            bundleId: props.reducer.deviceInfo.bundleId,
+                            ACTION: "questionsolve_start",
+                            API_TOKEN: props.API.DATA.API_TOKEN,
+                            ACTION_DESC: logSettings,
+                        }
+                    });*/
+
+                    /* // NAVIGATE IF USER HAS PREMIUM
+                    
                     props.dispatch({
                         type: 'API_LOG',
                         payload: {
@@ -135,7 +153,7 @@ const QuestionSettings = props => {
                             hasPremium: props.API.DATA.hasPremium,
                             ACTION_DESC: question,
                         }
-                    });
+                    });*/
                 } else {
                     _showAds(question);
                 }
