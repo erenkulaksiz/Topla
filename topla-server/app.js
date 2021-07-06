@@ -306,18 +306,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                             hasPremium: false,
                         }));
                     } else {
-                        devicesCollection.updateOne
-                            (
-                                {
-                                    uuid: result.uuid
-                                },
-                                {
-                                    $set:
-                                    {
-                                        hasPremium: true,
-                                    }
-                                }
-                            )
+                        devicesCollection.updateOne({ uuid: result.uuid }, { $set: { hasPremium: true, } })
                         console.log("hasPremium: true for uuid: ", req.body.uuid);
                         return res.send(JSON.stringify({
                             success: true,

@@ -9,6 +9,8 @@
   <img src="https://i.imgur.com/4cI3Wgb.png" width="360">
 </p>
 
+---
+
 ### Repo Linkleri
 
 - [Topla Adobe XD Design Files](./design/ui)
@@ -49,14 +51,21 @@
 
 - Reklam gösterimini kapatmak için aylık abonelik alabilirsiniz. Bu destek sayesinde yazdığım onca satır kod için bir fincan kahve alabilirim :)
 
-# Changelog
-
-> Roadmap
+# Roadmap
 
 - ToplaGold
 - ChildPlay
 
 ---
+
+# Changelog
+
+> 05/07/2021
+> 06/07/2021
+> Topla (v1.33)
+
+- Satın alımlar için ilk hazırlıklar
+- Maksimum seçenek sayısı 6'ya düşürüldü
 
 > 03/07/2021
 > 04/07/2021
@@ -67,7 +76,7 @@
 - En büyük sorun olan 5 seçenek ve üstü seçilince soru üretilelemesi ve uygulamanın kitlenmesi düzeltildi
 - API'ye soruların loglanması geçiçi olarak durduruldu
 - Uygulama başlarken sorun varsa daha kolay debug edilebilmesi için yükleniyor yazısına ek bilgileri yazıldı
-- Ayarlarda premium butonuna basınca şu anki kişiye premium veren bir geçici kod yazıldı
+- Ayarlarda premium butonuna basınca şu anki kişiye premium veren bir geçici kod yazıldı (nodejs kısmına da yazıldı)
 
 > 01/07/2021
 > Topla (v1.32)

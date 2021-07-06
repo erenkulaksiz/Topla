@@ -86,7 +86,7 @@ const INITIAL_STATE = {
 const config = {
     maxSoru: 15,
     minSoru: 2,
-    maxSecenek: 7,
+    maxSecenek: 6,
     minSecenek: 2,
 }
 

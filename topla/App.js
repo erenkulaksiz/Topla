@@ -11,6 +11,7 @@ import NetInfo from "@react-native-community/netinfo"; // #TODO: -> switch to re
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import Config from 'react-native-config';
+import * as RNIap from 'react-native-iap'; // IAP
 // Firebase
 //import crashlytics from "@react-native-firebase/crashlytics";
 import analytics from '@react-native-firebase/analytics';
@@ -148,6 +149,8 @@ const App = () => {
   useEffect(async () => {
     _INITIALIZE.init();
 
+    RNIap.initConnection();
+
     if (!store.getState().settings.lastSelectedByHand) {
       store.dispatch({ type: 'DARK_MODE', payload: Appearance.getColorScheme() });
     }
@@ -164,6 +167,7 @@ const App = () => {
     return () => {
       Appearance.removeChangeListener(); // Fixed memory leak
       NetInfo.removeEventListener();
+      RNIap.endConnection();
     };
   }, []);
 
