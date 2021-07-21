@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust, faIdCard, faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust, faIdCard, faHeart, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import Config from 'react-native-config';
 import {
     AdMobBanner,
@@ -22,22 +22,25 @@ const OptionsScreen = props => {
         return props.reducer.connection.isConnected
     }
 
-    const _navigateToPremium = () => {
-        if (_checkConnection()) {
-            props.navigation.navigate('PremiumScreen');
-        } else {
-            props.dispatch({ type: "SET_MODAL", payload: { checkConnection: true } });
+    const _navigate = {
+        premium: () => {
+            if (_checkConnection()) {
+                props.navigation.navigate('PremiumScreen');
+            } else {
+                props.dispatch({ type: "SET_MODAL", payload: { checkConnection: true } });
+            }
+        },
+        contact: () => {
+            const mail = {
+                subject: `Topla Support`,
+                body: `[${props.reducer.deviceInfo.uuid},${props.reducer.deviceInfo.buildNumber}] ${I18n.t("contact_message")} `,
+            };
+            Linking.openURL(`mailto:${Config.DEVELOPER_CONTACT_MAIL}?subject=${mail.subject}&body=${mail.body}`);
+        },
+        tac: () => {
+            // Terms and conditions
+            Linking.openURL(Config.APP_TAC_URL);
         }
-    }
-
-    const _navigateToContact = () => {
-        //props.navigation.navigate('ContactScreen'); `string text ${expression} string text`
-        console.log("MAILTO: ", Config.DEVELOPER_CONTACT_MAIL);
-        const mail = {
-            subject: `Topla Support`,
-            body: `[${props.reducer.deviceInfo.uuid},${props.reducer.deviceInfo.buildNumber}] ${I18n.t("contact_message")} `,
-        };
-        Linking.openURL(`mailto:${Config.DEVELOPER_CONTACT_MAIL}?subject=${mail.subject}&body=${mail.body}`);
     }
 
     const _refreshPremium = () => {
@@ -66,37 +69,57 @@ const OptionsScreen = props => {
             </View>
             <View style={{ ...style.content, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                 <View style={style.buttonsWrapper}>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _refreshPremium()}>
+
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
+                        onPress={() => _refreshPremium()}>
+
                         <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                             <FontAwesomeIcon icon={faSync} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
                         <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_refreshSubscription")}</Text>
                     </TouchableOpacity>
+
                     {/*<TouchableOpacity style={{ ...style.button, backgroundColor: "#fff" }}>
                         <View style={style.buttonIcon}>
                             <FontAwesomeIcon icon={faBell} size={16} color={"#000"} />
                         </View>
                         <Text style={style.buttonText}>Bildirimler</Text>
                     </TouchableOpacity>*/}
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToContact()}>
+
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
+                        onPress={() => _navigate.contact()}>
+
                         <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                             <FontAwesomeIcon icon={faEnvelope} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
                         <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_contact")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _navigateToPremium()}>
+
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
+                        onPress={() => _navigate.premium()}>
+
                         <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                             <FontAwesomeIcon icon={faCrown} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
                         <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_removeAds")}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={() => _darkMode()}>
+
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
+                        onPress={() => _darkMode()}>
+
                         <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                             <FontAwesomeIcon icon={faAdjust} size={16} color={Theme(props.settings.darkMode).textDefault} />
                         </View>
                         <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_darkMode")}</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
+                        onPress={() => _navigate.tac()}>
+                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <FontAwesomeIcon icon={faFileAlt} size={16} color={Theme(props.settings.darkMode).textDefault} />
+                        </View>
+                        <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("terms_and_conditions")}</Text>
+                    </TouchableOpacity>
 
                     <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={async () => {
                         await props.dispatch({

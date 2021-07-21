@@ -39,6 +39,7 @@ export default StyleSheet.create({
     infoBar: {
         width: "100%",
         height: 2,
+        opacity: 0.2,
         backgroundColor: "#000",
     },
     infoContent: {

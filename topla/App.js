@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
-import { LogBox } from 'react-native';
+import { LogBox, Platform } from 'react-native';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { Appearance, AppearanceProvider } from 'react-native-appearance';
@@ -11,7 +11,8 @@ import NetInfo from "@react-native-community/netinfo"; // #TODO: -> switch to re
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import Config from 'react-native-config';
-import * as RNIap from 'react-native-iap'; // IAP
+import * as RNIap from 'react-native-iap';
+
 // Firebase
 //import crashlytics from "@react-native-firebase/crashlytics";
 import analytics from '@react-native-firebase/analytics';
@@ -38,7 +39,6 @@ const App = () => {
       const { buildNumber } = store.getState().mainReducer.deviceInfo;
       const { softUpdateVer, hardUpdateVer } = store.getState().API.APP;
       if (buildNumber < hardUpdateVer) {
-        console.log("UPDATE NEEDED FOR HARDUPDATE | VERSION HAVE: ", buildNumber, " neededHard: ", hardUpdateVer);
         store.dispatch({ type: "SET_MODAL", payload: { hardUpdate: true } })
       } else if (buildNumber >= hardUpdateVer) {
         if (store.getState().API.DATA.banned) {
@@ -53,12 +53,11 @@ const App = () => {
 
           store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
           if (buildNumber < softUpdateVer) {
-            console.log("UPDATE NEEDED FOR SOFTUPDATE | VERSION HAVE: ", buildNumber, " neededSoft: ", softUpdateVer);
             store.dispatch({ type: "SET_MODAL", payload: { softUpdate: true } })
             store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
-          } else {
+          } /*else {
             console.log("app is up to date!! got: ", buildNumber, " needSoft: ", softUpdateVer, " needHard: ", hardUpdateVer);
-          }
+          }*/
         }
       }
     } else {
@@ -110,6 +109,7 @@ const App = () => {
       if (store.getState().API.DATA.API_TOKEN) {
         console.log("GOT API_TOKEN, NO RETRIES: ", store.getState().API.DATA.API_TOKEN);
         _checkAppVersion();
+        _INITIALIZE.prepareIAP();
       } else {
         console.log("NO API TOKEN")
         console.log("API MAX RETRIES ENABLED: ", Config.API_MAX_RETRIES_ENABLED);
@@ -117,9 +117,10 @@ const App = () => {
           let retries = 0;
           connTimer = setInterval(async () => {
             if (store.getState().API.DATA.API_TOKEN) {
-              console.log("@API_TOKEN nnn: ", store.getState().API.API_TOKEN);
+              console.log("@API_TOKEN success: ", store.getState().API.API_TOKEN);
               clearInterval(connTimer);
               _checkAppVersion();
+              _INITIALIZE.prepareIAP();
             } else {
               await store.dispatch({
                 type: 'API_REGISTER',
@@ -144,15 +145,75 @@ const App = () => {
         }
       }
     },
+    prepareIAP: async () => {
+
+      console.log("Preparing IAP, products: ", store.getState().API.DATA.APP_PRODUCTS);
+
+      RNIap.initConnection()
+        .catch(() => {
+          console.log("store error on IAP");
+
+          RNIap.endConnection();
+        })
+        .then(async () => {
+
+          RNIap.getSubscriptions(store.getState().API.DATA.APP_PRODUCTS).then((products) => {
+            products.map((element, index) => {
+              store.dispatch({
+                type: 'API_PUSH_PRODUCTS',
+                payload: element
+              });
+            })
+          }).catch((error) => {
+            console.log("error IAP: ", error.message);
+          })
+
+          const subs = await RNIap.getPurchaseHistory();
+
+          //console.log("subs", subs);
+
+          var purchaseUpdateSubscription;
+          var purchaseErrorSubscription;
+          const loadIAPListeners = () => {
+            purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
+              async (purchase) => {
+                console.log('purchaseUpdatedListener', purchase);
+                let receipt = purchase.transactionReceipt;
+                if (receipt) {
+                  //apis.checkreceipt({ data: purchase, platform: Platform.OS }); // I personally don't care about callback
+                  store.dispatch({
+                    type: 'API_CHECK_RECEIPT',
+                    payload: {
+                      data: purchase,
+                      platform: Platform.OS
+                    }
+                  });
+                  RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
+                    RNIap.finishTransaction(purchase, true).catch(err => {
+                      console.log(err.code, err.message);
+                    });
+                  });
+                } else {
+                  // Retry / conclude the purchase is fraudulent, etc...
+                }
+              },
+            );
+            purchaseErrorSubscription = RNIap.purchaseErrorListener(error => {
+              console.log('purchaseErrorListener', error);
+            });
+          };
+          loadIAPListeners();
+
+        });
+    }
   }
 
   useEffect(async () => {
     _INITIALIZE.init();
 
-    RNIap.initConnection();
-
     if (!store.getState().settings.lastSelectedByHand) {
       store.dispatch({ type: 'DARK_MODE', payload: Appearance.getColorScheme() });
+      store.dispatch({ type: "LAST_DARKMODE_SELECTED_BYHAND", payload: false });
     }
 
     Appearance.addChangeListener(({ colorScheme }) => {
@@ -167,7 +228,6 @@ const App = () => {
     return () => {
       Appearance.removeChangeListener(); // Fixed memory leak
       NetInfo.removeEventListener();
-      RNIap.endConnection();
     };
   }, []);
 
@@ -197,17 +257,19 @@ const App = () => {
                 component={PremiumScreen}
               />
               {/*
-            <Stack.Screen
-              name="ContactScreen"
-              component={ContactScreen}
-            /> 
-            */}
+              
+              <Stack.Screen
+                name="ContactScreen"
+                component={ContactScreen}
+              /> 
+              */}
               {/*
-            <Stack.Screen
-              name="CreditsScreen"
-              component={CreditsScreen}
-            /> 
-            */}
+              <Stack.Screen
+                name="CreditsScreen"
+                component={CreditsScreen}
+              /> 
+
+              */}
               <Stack.Screen
                 name="QuestionScreen"
                 component={QuestionScreen}

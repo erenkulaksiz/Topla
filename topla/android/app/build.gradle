@@ -141,8 +141,8 @@ android {
         applicationId "com.erencode.topla"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 41
-        versionName "1.33"
+        versionCode 42
+        versionName "1.34"
         // react-native-iap: we only use the Google Play flavor
         missingDimensionStrategy 'store', 'play'
     }

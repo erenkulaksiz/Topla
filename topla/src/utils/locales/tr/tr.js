@@ -51,4 +51,6 @@ export default {
     modals_maintenance: "Uygulama şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
     contact_message: "Mesaj: ",
     subscription_renew: "Aboneliğiniz yenilendi.",
+    terms_and_conditions: "Şartlar ve Koşullar",
+    iap_monthly_title: "Topla Aylık Premium",
 };

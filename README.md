@@ -18,11 +18,13 @@
 - [Topla Node.js Application Backend](./topla-server)
 - [Compare UI design and real application](./design/ui/comparing_design)
 
-### Topla uygulaması sayesinde matematik işlemlerinde hızınızı arttırabilir, kendinize meydan okuyabilirsiniz.
+### Important notes for React Native part
 
-- React Native & React Redux bağlantısı
-- Modüler component sistemi ve basit prop kontrolü
-- Stillerin ayrılmasıyla modüler stiller
+- First, download all repos using 'npm'
+- Goto directory /node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobRewardedVideoAdModule.java
+- Comment out line 95, change "sendEvent(EVENT_VIDEO_COMPLETED, null);" to "// sendEvent(EVENT_VIDEO_COMPLETED, null);"
+
+### Topla uygulaması sayesinde matematik işlemlerinde hızınızı arttırabilir, kendinize meydan okuyabilirsiniz.
 
 ## Özellikler:
 
@@ -55,10 +57,26 @@
 
 - ToplaGold
 - ChildPlay
+- Ayarlar ve soru ayarlarındaki checkbox'lar iOS tarzı toggle ile değiştirilecek
+- Operator Challenge
+- Duo game / split screen
+
+- Tasarım sıfırdan yapılacak
 
 ---
 
 # Changelog
+
+> 16/07/2021
+> 18/07/2021
+> 19/07/2021
+> Topla (v1.34, 42)
+
+- Ayarlar kısmına şartlar ve koşullar eklendi
+- Ayarlar kısmında kod temizliği yapıldı
+- ⚡ React Native IAP sayesinde Google Play'in satın alma servisine başarıyla bağlanıldı
+- Reklamları kaldır sayfası karanlık mod'a entegre çalışıyor ve artık Google Play'deki ürünleri gösteriyor
+- Satın almak için ürüne basılınca satın alınıyor
 
 > 05/07/2021
 > 06/07/2021

@@ -65,7 +65,8 @@ const QuestionSettings = props => {
                     API_TOKEN: props.API.DATA.API_TOKEN,
                     ACTION_DESC: logSettings,
                 }
-            });*/
+            });
+            */
 
             props.navigation.navigate('QuestionScreen', { question: question });
             console.log("Should navigate now !!!");

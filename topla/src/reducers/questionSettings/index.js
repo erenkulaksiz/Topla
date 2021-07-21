@@ -26,7 +26,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction"],
             questionCount: 7,
             optionCount: 3,
-            questionTime: 5000,
+            questionTime: 3500,
         },
         {
             id: 3,

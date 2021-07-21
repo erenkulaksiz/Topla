@@ -51,4 +51,6 @@ export default {
     modals_maintenance: "App is currently under maintenance. Please check back again later.",
     contact_message: "Message: ",
     subscription_renew: "Subscription has been renewed.",
+    terms_and_conditions: "Terms and Conditions",
+    iap_monthly_title: "Topla Premium Monthly",
 };

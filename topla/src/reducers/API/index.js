@@ -20,7 +20,8 @@ const INITIAL_STATE = {
     APP: {
         // Sunucudan çekilecek son uygulama ile ilgili bilgiler burada olacak
         latestVersion: 0,
-    }
+    },
+    products: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -61,6 +62,8 @@ export default (state = INITIAL_STATE, action) => {
                         state.APP.latestVersion = data.APP_LATEST_VERSION;
                         state.APP.softUpdateVer = data.APP_SOFT_UPDATE_VER;
                         state.APP.hardUpdateVer = data.APP_HARD_UPDATE_VER;
+                        state.APP.products = data.APP_PRODUCTS;
+                        console.log("Got products: ", data.APP_PRODUCTS)
                     } else {
                         console.log("@API_REGISTER ERROR");
                     }
@@ -150,6 +153,46 @@ export default (state = INITIAL_STATE, action) => {
             }
 
             premium().catch(err => {
+                console.log("[ERROR]: ", err);
+            });
+
+            return state
+
+        case 'API_PUSH_PRODUCTS':
+            console.log("@API_SET_PRODUCTS");
+
+            state.products.push(action.payload);
+            console.log("PRODUCTS: ", state.products);
+
+            return state
+
+        case 'API_CHECK_RECEIPT':
+            console.log("@API_CHECK_RECEIPT");
+
+            const receipt = async () => {
+                const response = await fetch(API_URL + '/receipt', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        data: action.payload.data,
+                        platform: action.payload.platform,
+                    }),
+                }).then(response => {
+                    console.log("response status ", response.status);
+                    response.json().then(data => {
+                        console.log("@api response: ", data);
+
+                    })
+                }).catch(function (error) {
+                    throw error;
+                });
+                return response
+            }
+
+            receipt().catch(err => {
                 console.log("[ERROR]: ", err);
             });
 

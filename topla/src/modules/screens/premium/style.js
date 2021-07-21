@@ -27,7 +27,48 @@ export default StyleSheet.create({
     },
     premiumWrapper: {
         width: "100%",
+        paddingLeft: 18,
+        paddingRight: 18,
         padding: 12,
         borderRadius: 12,
+    },
+    iconWrapper: {
+        width: "100%",
+    },
+    titleWrapper: {
+        marginTop: 8,
+        width: "100%",
+        flexDirection: "row",
+    },
+    title: {
+        flex: 1,
+        justifyContent: "center",
+    },
+    price: {
+        textAlign: "right",
+        alignItems: "flex-end",
+        justifyContent: "center",
+        alignContent: "center",
+    },
+    titleText: {
+        fontSize: 20,
+
+    },
+    priceText: {
+        fontSize: 24,
+        fontWeight: "bold",
+    },
+    productBar: {
+        marginTop: 8,
+        width: "100%",
+        height: 2,
+        backgroundColor: "#000",
+        opacity: 0.2,
+    },
+    productDescWrapper: {
+        marginTop: 8,
+    },
+    productDesc: {
+        fontSize: 16,
     }
 });

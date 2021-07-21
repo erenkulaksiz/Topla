@@ -160,6 +160,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                                         APP_SOFT_UPDATE_VER: cfx.softUpdateVer,
                                         APP_HARD_UPDATE_VER: cfx.hardUpdateVer,
                                         APP_MAINTENANCE: cfx.maintenance,
+                                        APP_PRODUCTS: cfx.products,
                                     }
                                     console.log("RESULT: ", _RESPONSE);
                                     return res.json(_RESPONSE);
@@ -173,11 +174,13 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                     configCollection.findOne()
                         .then(cfx => {
 
+                            /* Dont log login for now.
                             log({
                                 action: "login",
                                 app_version: req.body.app_version,
                                 uuid: results.uuid
                             });
+                            */
 
                             const _RESPONSE = {
                                 uuid: results.uuid,
@@ -190,6 +193,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                                 APP_SOFT_UPDATE_VER: cfx.softUpdateVer,
                                 APP_HARD_UPDATE_VER: cfx.hardUpdateVer,
                                 APP_MAINTENANCE: cfx.maintenance,
+                                APP_PRODUCTS: cfx.products,
                             }
                             console.log("LOGIN / " + new Date().toUTCString() + " RESULT: ", _RESPONSE);
                             return res.json(_RESPONSE);
@@ -270,8 +274,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
         console.log("IP: ", req.ip);
 
-        if (!req.body.uuid
-        ) {
+        if (!req.body.uuid) {
             console.log("Invalid params, request denied");
             res.status(404);
             return res.send(JSON.stringify({
@@ -324,5 +327,36 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                 }
             })
             .catch(error => console.error(error))
+    })
+
+    app.post('/receipt', (req, res) => {
+        console.log("________________________")
+        console.log("Got request, /receipt ! ", req.body);
+        console.log("________________________");
+
+        // first, check if request is fine
+
+        console.log("IP: ", req.ip);
+
+        if (!req.body.data || !req.body.platform) {
+            console.log("Invalid params, request denied");
+            res.status(404);
+            return res.send(JSON.stringify({
+                reason: "Invalid Request",
+                success: false,
+            }));
+        }
+
+        // check receipt here
+
+        console.log("Data: ", req.body.data);
+        console.log("Platform: ", req.body.platform);
+
+        res.status(200);
+        return res.send(JSON.stringify({
+            reason: "got your request pal",
+            success: true,
+        }));
+
     })
 })

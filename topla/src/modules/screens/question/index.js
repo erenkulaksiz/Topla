@@ -59,7 +59,7 @@ const QuestionScreen = props => {
         if (timerStarted) {
             timeout = setTimeout(() => {
                 if ((timer - thisQuestionTime) >= props.questionSettings.perQuestionTime) {
-                    setTimerStarted(false); // -> Soru süresi aşılırsa
+                    _timer.pause(false); // -> Soru süresi aşılırsa
                     page._questionEmpty(props.currentQuestion.currentStep);
                 }
                 setTimer(timer + 100);
@@ -100,9 +100,8 @@ const QuestionScreen = props => {
             }
             props.currentQuestion.questionResults.map((element, index) => {
                 if (element.questionAnswerCorrect) results.correct += 1;
+                else if (element.questionEmpty) results.empty += 1;
                 else results.wrong += 1;
-
-                if (element.questionEmpty) results.empty += 1;
             })
             console.log(`TOTAL CORRECT: ${results.correct} | TOTAL WRONG: ${results.wrong} | TOTAL EMPTY: ${results.wrong}`);
             props.dispatch({
@@ -304,9 +303,7 @@ const QuestionScreen = props => {
                 }
             });
 
-            questions.map(question => {
-                question.questionOptions.sort(() => Math.random() - 0.5);
-            })
+            questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5))
 
             props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
             console.log("set all questions: ", questions);
@@ -347,6 +344,7 @@ const QuestionScreen = props => {
                     <Text style={{ color: Theme(props.settings.darkMode).textDefault }}> /{props.questionSettings.questionCount}</Text>
                 </View>
             </View>
+
             {
                 props.currentQuestion.isQuestionsLoaded && <>
                     <View style={style.barsWrapper}>
