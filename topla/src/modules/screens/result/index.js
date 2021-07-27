@@ -12,13 +12,20 @@ import Theme from "../../../themes";
 
 const ResultScreen = props => {
 
+    const _preventGoingBack = e => {
+        e.preventDefault();
+
+    };
+
     useEffect(() => {
         //console.log("PERFORMANCE ON QUESTION END: ", (performance.now() - props.reducer.PERFORMANCE.questionEnd_StartPerf))
         props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_EndPerf: performance.now() } });
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
+        props.navigation.addListener('beforeRemove', (e) => _preventGoingBack(e));
     }, []);
 
-    const _navigateToHome = () => {
+    const _navigateToHome = async () => {
+        await props.navigation.removeListener('beforeRemove');
         props.navigation.navigate('Home');
         console.log("@results back to home");
         props.dispatch({ type: "RESET_QUESTION_RESULTS" });

@@ -30,7 +30,7 @@ const INITIAL_STATE = {
         banned: false,
         checkConnection: false,
         maintenance: false,
-        premiumGiven: false,
+        selectKeys: false,
     },
     PERFORMANCE: {
         questions: {
@@ -81,7 +81,9 @@ const mainReducer = (state = INITIAL_STATE, action) => {
                 AdMobInterstitial.requestAd().then(() => {
                     state.ads.ready = true
                     console.log("!!! AD LOADED")
+                    return { ...state }
                 });
+                return { ...state }
             } catch (err) {
                 console.log("HATA!!! ", err);
             }

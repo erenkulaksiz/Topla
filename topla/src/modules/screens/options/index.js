@@ -3,12 +3,8 @@ import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faSync, /*faBell,*/ faEnvelope, faCrown, faAdjust, faIdCard, faHeart, faFileAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSync, /*faBell,*/ faEnvelope, /*faCrown,*/ faAdjust, faIdCard, faHeart, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import Config from 'react-native-config';
-import {
-    AdMobBanner,
-    //AdMobInterstitial,
-} from 'react-native-admob'
 
 import I18n from "../../../utils/i18n.js";
 import Theme from '../../../themes'
@@ -95,14 +91,18 @@ const OptionsScreen = props => {
                         <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_contact")}</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
-                        onPress={() => _navigate.premium()}>
-
-                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
-                            <FontAwesomeIcon icon={faCrown} size={16} color={Theme(props.settings.darkMode).textDefault} />
-                        </View>
-                        <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_removeAds")}</Text>
-                    </TouchableOpacity>
+                    {
+                        /*
+                            <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
+                                onPress={() => _navigate.premium()}>
+    
+                                <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                                    <FontAwesomeIcon icon={faCrown} size={16} color={Theme(props.settings.darkMode).textDefault} />
+                                </View>
+                                <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("settings_removeAds")}</Text>
+                            </TouchableOpacity>
+                        */
+                    }
 
                     <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}
                         onPress={() => _darkMode()}>
@@ -120,22 +120,6 @@ const OptionsScreen = props => {
                         </View>
                         <Text style={{ ...style.buttonText, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("terms_and_conditions")}</Text>
                     </TouchableOpacity>
-
-                    <TouchableOpacity style={{ ...style.button, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }} onPress={async () => {
-                        await props.dispatch({
-                            type: 'API_PREMIUM',
-                            payload: {
-                                uuid: props.reducer.deviceInfo.uuid,
-                            }
-                        });
-                        await props.dispatch({ type: "SET_MODAL", payload: { premiumGiven: true } });
-                    }}>
-                        <View style={{ ...style.buttonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
-                            <Text>Debug</Text>
-                        </View>
-                        <Text style={style.buttonText}>givePremium</Text>
-                    </TouchableOpacity>
-
                 </View>
                 <View style={style.altContent}>
                     <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uuid); alert("UID Kopyalandı") }}>
@@ -151,19 +135,6 @@ const OptionsScreen = props => {
                 </View>
             </View>
             <AwesomeAlert
-                show={props.reducer.modals.premiumGiven}
-                showProgress={false}
-                title={"hasPremium: " + props.API.DATA.hasPremium}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={true}
-                showConfirmButton={true}
-                confirmText={I18n.t("modals_okay")}
-                confirmButtonColor="#0f7cbb"
-                onConfirmPressed={() => {
-                    props.dispatch({ type: "SET_MODAL", payload: { premiumGiven: false } })
-                }}
-            />
-            <AwesomeAlert
                 show={props.reducer.modals.checkConnection}
                 showProgress={false}
                 title={"İnternet bağlantınızı kontrol ediniz"}
@@ -176,16 +147,6 @@ const OptionsScreen = props => {
                     props.dispatch({ type: "SET_MODAL", payload: { checkConnection: false } })
                 }}
             />
-            {
-                props.API.DATA.hasPremium || <View style={{ width: "100%" }}>
-                    <AdMobBanner
-                        adSize="smartBanner"
-                        adUnitID={Config.ADMOB_BANNER_OPTIONS}
-                        testDevices={[AdMobBanner.simulatorId]}
-                        onAdFailedToLoad={error => console.error(error)}
-                    />
-                </View>
-            }
         </SafeAreaView>
     );
 }

@@ -18,14 +18,16 @@ const QuestionSlot = props => {
             }}>
                 <Image
                     style={style.elementLogo}
-                    source={require('../../tc.png')}
-                />
+                    source={require('../../tc.png')} />
                 <Text style={{ ...style.elementHardness, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_hardnessLevel")} <Text style={{ color: props.question.titleColor, fontWeight: "bold" }}>{props.question.name}</Text></Text>
                 <View style={style.elementBar} />
                 <Text style={{ ...style.elementContent, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_content")} <Text style={{ flex: 1, fontSize: 12 }}>{props.question.content}</Text></Text>
                 <Text style={{ ...style.elementBasamak, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_digit")} <Text style={{ flex: 1 }}>{props.question.digit}</Text></Text>
             </View>
-            <TouchableOpacity style={style.play} activeOpacity={0.7} onPress={() => { props.onPlay() }}>
+            <TouchableOpacity
+                style={style.play}
+                activeOpacity={0.7}
+                onPress={() => props.onPlay()}>
                 <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />
             </TouchableOpacity>
         </View>

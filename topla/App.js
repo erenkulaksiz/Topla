@@ -89,7 +89,7 @@ const App = () => {
     init: async () => {
       console.log("API Dev Mode: ", Config.DEV_MODE);
       console.log("API URL: ", Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL);
-      //LogBox.ignoreAllLogs();
+      LogBox.ignoreAllLogs(); // Ignore all logs
       await _setDeviceInfo.set();
       await store.dispatch({
         type: 'API_REGISTER',
@@ -99,9 +99,9 @@ const App = () => {
           model: store.getState().mainReducer.deviceInfo.model,
         }
       });
-      setTimeout(async () => {
-        await _INITIALIZE.connection();
-      }, 2000)
+      //setTimeout(async () => {
+      await _INITIALIZE.connection();
+      //}, 2000)
       const appInstanceId = await analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);
     },
@@ -109,18 +109,17 @@ const App = () => {
       if (store.getState().API.DATA.API_TOKEN) {
         console.log("GOT API_TOKEN, NO RETRIES: ", store.getState().API.DATA.API_TOKEN);
         _checkAppVersion();
-        _INITIALIZE.prepareIAP();
+        _IAP.init();
       } else {
-        console.log("NO API TOKEN")
-        console.log("API MAX RETRIES ENABLED: ", Config.API_MAX_RETRIES_ENABLED);
+        console.log("NO API TOKEN | API MAX RETRIES ENABLED: ", Config.API_MAX_RETRIES_ENABLED);
         if (Config.API_REGISTER_RETRIES) {
-          let retries = 0;
+          store.dispatch({ type: "API_RESET_RETRIES" });
           connTimer = setInterval(async () => {
             if (store.getState().API.DATA.API_TOKEN) {
               console.log("@API_TOKEN success: ", store.getState().API.API_TOKEN);
               clearInterval(connTimer);
               _checkAppVersion();
-              _INITIALIZE.prepareIAP();
+              _IAP.init();
             } else {
               await store.dispatch({
                 type: 'API_REGISTER',
@@ -131,24 +130,26 @@ const App = () => {
                 }
               });
             }
-            if (!Config.API_MAX_RETRIES_ENABLED) {
-              retries++;
-              if (retries >= Config.API_MAX_RETRIES) {
+            await store.dispatch({ type: "API_RETRY" });
+            if (Config.API_MAX_RETRIES_ENABLED == 'true') {
+              if (store.getState().API.retries >= Number(Config.API_MAX_RETRIES)) {
                 console.log(`API TIMEOUT AFTER ${Config.API_MAX_RETRIES} RETRIES`);
                 clearInterval(connTimer);
               }
-              console.log(`${retries} RETRIES`)
             }
           }, Number(Config.API_RETRY_INTERVAL))
         } else {
           console.log("config retries closed")
         }
       }
-    },
-    prepareIAP: async () => {
+    }
+  }
 
-      console.log("Preparing IAP, products: ", store.getState().API.DATA.APP_PRODUCTS);
-
+  let _IAP = {
+    purchaseUpdateSubscription: undefined,
+    purchaseErrorSubscription: undefined,
+    init: () => {
+      console.log("IAP INIT");
       RNIap.initConnection()
         .catch(() => {
           console.log("store error on IAP");
@@ -168,41 +169,44 @@ const App = () => {
             console.log("error IAP: ", error.message);
           })
 
-          const subs = await RNIap.getPurchaseHistory();
+          RNIap.getPurchaseHistory().catch((err) => { }).then((res) => {
+            try {
+              const receipt = res[res.length - 1].transactionReceipt;
+              if (receipt) {
+                console.log("receipt INIT: ", receipt);
+              }
+            } catch (error) {
 
-          //console.log("subs", subs);
+            }
+          });
 
-          var purchaseUpdateSubscription;
-          var purchaseErrorSubscription;
-          const loadIAPListeners = () => {
-            purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
-              async (purchase) => {
-                console.log('purchaseUpdatedListener', purchase);
-                let receipt = purchase.transactionReceipt;
-                if (receipt) {
-                  //apis.checkreceipt({ data: purchase, platform: Platform.OS }); // I personally don't care about callback
-                  store.dispatch({
-                    type: 'API_CHECK_RECEIPT',
-                    payload: {
-                      data: purchase,
-                      platform: Platform.OS
-                    }
+
+          purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
+            async (purchase) => {
+              console.log('purchaseUpdatedListener', purchase);
+              let receipt = purchase.transactionReceipt;
+              if (receipt) {
+                //apis.checkreceipt({ data: purchase, platform: Platform.OS }); // I personally don't care about callback
+                store.dispatch({
+                  type: 'API_CHECK_RECEIPT',
+                  payload: {
+                    data: purchase,
+                    platform: Platform.OS
+                  }
+                });
+                RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
+                  RNIap.finishTransaction(purchase, true).catch(err => {
+                    console.log(err.code, err.message);
                   });
-                  RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
-                    RNIap.finishTransaction(purchase, true).catch(err => {
-                      console.log(err.code, err.message);
-                    });
-                  });
-                } else {
-                  // Retry / conclude the purchase is fraudulent, etc...
-                }
-              },
-            );
-            purchaseErrorSubscription = RNIap.purchaseErrorListener(error => {
-              console.log('purchaseErrorListener', error);
-            });
-          };
-          loadIAPListeners();
+                });
+              } else {
+                // Retry / conclude the purchase is fraudulent, etc...
+              }
+            },
+          );
+          purchaseErrorSubscription = RNIap.purchaseErrorListener(error => {
+            console.log('purchaseErrorListener', error);
+          });
 
         });
     }
@@ -225,9 +229,29 @@ const App = () => {
       store.dispatch({ type: 'SET_DEVICE_CONNECTION', payload: { connectionType: state.type, isConnected: state.isConnected } });
     });
 
+    console.log("API AAAAA KEY: ", store.getState().API.DATA.API_KEY)
+
     return () => {
       Appearance.removeChangeListener(); // Fixed memory leak
       NetInfo.removeEventListener();
+
+      try {
+        _IAP.purchaseUpdateSubscription.remove();
+      } catch (error) {
+        console.log("Error with purchaseUpdateSubscription.remove()", error);
+      }
+
+      try {
+        _IAP.purchaseErrorSubscription.remove();
+      } catch (error) {
+        console.log("Error with purchaseErrorSubscription.remove()", error);
+      }
+
+      try {
+        RNIap.endConnection();
+      } catch (error) {
+        console.log("Error with RNIap.endConnection()", error);
+      }
     };
   }, []);
 

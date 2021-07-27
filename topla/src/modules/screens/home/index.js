@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, ScrollView, SafeAreaView } from "react-native";
 import { connect } from 'react-redux';
-import Config from 'react-native-config';
+//import Config from 'react-native-config';
 
 import style from './style';
 import I18n from "../../../utils/i18n.js";
@@ -9,10 +9,12 @@ import QuestionSlot from "../../questionslot";
 import Header from "../../header";
 import Theme from '../../../themes'
 
+/*
 import {
     AdMobBanner,
     //AdMobInterstitial,
 } from 'react-native-admob'
+*/
 
 const HomeScreen = props => {
 
@@ -39,16 +41,6 @@ const HomeScreen = props => {
                     />)
                 })}
             </ScrollView>
-            {
-                props.API.DATA.hasPremium || <View style={{ width: "100%" }}>
-                    <AdMobBanner
-                        adSize="smartBanner"
-                        adUnitID={Config.ADMOB_BANNER}
-                        testDevices={[AdMobBanner.simulatorId]}
-                        onAdFailedToLoad={error => console.error(error)}
-                    />
-                </View>
-            }
         </SafeAreaView>
     );
 }

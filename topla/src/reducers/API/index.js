@@ -22,6 +22,7 @@ const INITIAL_STATE = {
         latestVersion: 0,
     },
     products: [],
+    retries: 0,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -195,6 +196,18 @@ export default (state = INITIAL_STATE, action) => {
             receipt().catch(err => {
                 console.log("[ERROR]: ", err);
             });
+
+            return state
+
+        case 'API_RETRY':
+            state.retries += 1;
+            console.log("RETRIES: ", state.retries);
+
+            return state
+
+        case 'API_RETRY_RESET':
+            console.log("RETRIES RESET");
+            state.retries = 0;
 
             return state
 

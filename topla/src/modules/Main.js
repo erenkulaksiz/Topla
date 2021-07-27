@@ -1,7 +1,7 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, Linking } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faHome, /*faCrown,*/ faCog } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faCrown, faCog } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -12,6 +12,7 @@ import Theme from '../themes'
 // Components 
 import HomeScreen from './screens/home'
 import OptionsScreen from './screens/options';
+import PremiumScreen from './screens/premium';
 import Config from 'react-native-config';
 
 const Tab = createBottomTabNavigator();
@@ -37,13 +38,13 @@ const Home = (props) => {
                             <FontAwesomeIcon icon={faHome} size={size} color={color} />
                         ),
                     }} />
-                {/*<Tab.Screen name="Premium" component={PremiumScreen}
-                options={{
-                    tabBarLabel: 'Premium',
-                    tabBarIcon: ({ color, size }) => (
-                        <FontAwesomeIcon icon={faCrown} size={size} color={color} />
-                    ),
-                }} />*/}
+                <Tab.Screen name="Premium" component={PremiumScreen}
+                    options={{
+                        tabBarLabel: 'Premium',
+                        tabBarIcon: ({ color, size }) => (
+                            <FontAwesomeIcon icon={faCrown} size={size} color={color} />
+                        ),
+                    }} />
                 <Tab.Screen name="Options" component={OptionsScreen}
                     options={{
                         tabBarLabel: I18n.t("settings"),
@@ -52,6 +53,29 @@ const Home = (props) => {
                         ),
                     }} />
             </Tab.Navigator>
+            <AwesomeAlert
+                show={props.reducer.modals.selectKeys}
+                showProgress={false}
+                title={I18n.t("modals_select_keys")}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={true}
+                showConfirmButton={true}
+                confirmText={I18n.t("modals_okay")}
+                confirmButtonColor="#1bb524"
+                onConfirmPressed={() => {
+                    props.dispatch({ type: "SET_MODAL", payload: { selectKeys: false } })
+                }}
+            />
+            <AwesomeAlert
+                show={props.reducer.modals.maintenance}
+                showProgress={false}
+                title={I18n.t("modals_maintenance")}
+                closeOnTouchOutside={false}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={false}
+                titleStyle={{ fontSize: 16 }}
+            />
             <AwesomeAlert
                 show={props.reducer.modals.maintenance}
                 showProgress={false}
@@ -105,7 +129,10 @@ const Home = (props) => {
                     props.dispatch({ type: "SET_MODAL", payload: { softUpdate: false } })
                 }}
                 onConfirmPressed={() => {
-                    // Navigate to google play market
+                    const PLAY_STORE_LINK = 'market://details?id=' + props.reducer.deviceInfo.bundleId + '&rnd=' + Math.random();
+                    Linking.openURL(PLAY_STORE_LINK).catch(err =>
+                        console.error("An error occurred with linking to gplay market", err)
+                    );
                 }}
             />
             <AwesomeAlert
@@ -121,7 +148,10 @@ const Home = (props) => {
                 confirmText={I18n.t("modals_update_update")}
                 confirmButtonColor="#1bb524"
                 onConfirmPressed={() => {
-                    // Navigate to google play market
+                    const PLAY_STORE_LINK = 'market://details?id=' + props.reducer.deviceInfo.bundleId + '&rnd=' + Math.random();
+                    Linking.openURL(PLAY_STORE_LINK).catch(err =>
+                        console.error("An error occurred with linking to gplay market", err)
+                    );
                 }}
             />
         </>

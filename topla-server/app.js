@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
 const saltedSha256 = require('salted-sha256');
+const { google } = require('googleapis');
 
 const keys = require('../keys.js');
 
@@ -265,71 +266,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         })
     })
 
-    app.post('/premium', (req, res) => {
-        console.log("________________________")
-        console.log("Got request, /premium ! ", req.body);
-        console.log("________________________");
-
-        // first, check if request is fine
-
-        console.log("IP: ", req.ip);
-
-        if (!req.body.uuid) {
-            console.log("Invalid params, request denied");
-            res.status(404);
-            return res.send(JSON.stringify({
-                reason: "Invalid Request",
-                success: false,
-            }));
-        }
-
-        devicesCollection.findOne({ uuid: req.body.uuid })
-            .then(result => {
-                if (result) {
-                    // UUID Match
-
-                    console.log("uuid ", result.uuid, " premium: ", result.hasPremium)
-
-                    if (result.hasPremium) {
-                        devicesCollection.updateOne
-                            (
-                                {
-                                    uuid: result.uuid
-                                },
-                                {
-                                    $set:
-                                    {
-                                        hasPremium: false,
-                                    }
-                                }
-                            )
-                        console.log("hasPremium: false for uuid: ", req.body.uuid);
-                        return res.send(JSON.stringify({
-                            success: true,
-                            hasPremium: false,
-                        }));
-                    } else {
-                        devicesCollection.updateOne({ uuid: result.uuid }, { $set: { hasPremium: true, } })
-                        console.log("hasPremium: true for uuid: ", req.body.uuid);
-                        return res.send(JSON.stringify({
-                            success: true,
-                            hasPremium: true,
-                        }));
-                    }
-
-                } else {
-                    console.log("Invalid uuid, request denied");
-                    res.status(404);
-                    return res.send(JSON.stringify({
-                        reason: "Invalid Request",
-                        success: false,
-                    }));
-                }
-            })
-            .catch(error => console.error(error))
-    })
-
-    app.post('/receipt', (req, res) => {
+    app.post('/receipt', async (req, res) => {
         console.log("________________________")
         console.log("Got request, /receipt ! ", req.body);
         console.log("________________________");
@@ -351,6 +288,26 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
         console.log("Data: ", req.body.data);
         console.log("Platform: ", req.body.platform);
+
+        const auth = new google.auth.GoogleAuth({
+            keyFile: "pc-api-6316387851500029020-650-5e56ea940a0a.json",
+            scopes: ["https://www.googleapis.com/auth/androidpublisher"]
+        })
+
+        try {
+            const res = await google.androidpublisher("v3").purchases.subscriptions.get({
+                packageName: "com.erencode.topla",
+                subscriptionId: req.body.data.productId,
+                token: req.body.data.purchaseToken,
+                auth: auth,
+            })
+            if (res.status == 200) {
+                console.log("GOOGLE API RES: ", res.data);
+            }
+        } catch (error) {
+            console.log("ERROR WITH GOOGLE API: ", error);
+
+        }
 
         res.status(200);
         return res.send(JSON.stringify({

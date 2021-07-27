@@ -54,9 +54,9 @@ const PremiumScreen = props => {
 
     return (
         <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
-            <Header backShown onBack={() => { props.navigation.goBack() }} />
+            <Header /*backShown onBack={() => { props.navigation.goBack() }}*/ />
             <View style={style.headerContainer}>
-                <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("settings_removeAds")}</Text>
+                <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("settings_premium")}</Text>
                 <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             </View>
             <View style={style.content}>

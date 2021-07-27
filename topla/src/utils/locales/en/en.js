@@ -6,6 +6,7 @@ export default {
     settings_refreshSubscription: "Refresh Subscription",
     settings_contact: "Contact",
     settings_removeAds: "Remove Ads",
+    settings_premium: "Buy Premium",
     settings_darkMode: "Dark Mode",
     question_hardnessLevel: "Hardness:",
     question_content: "Content:",
@@ -49,8 +50,10 @@ export default {
     modals_loading: "Loading...",
     modals_okay: "Okay",
     modals_maintenance: "App is currently under maintenance. Please check back again later.",
+    modals_select_keys: "Please select atleast one operation.",
     contact_message: "Message: ",
     subscription_renew: "Subscription has been renewed.",
     terms_and_conditions: "Terms and Conditions",
     iap_monthly_title: "Topla Premium Monthly",
+    iap_weekly_title: "Topla Premium Weekly",
 };

@@ -6,6 +6,7 @@ export default {
     settings_refreshSubscription: "Aboneliği Geri Yükle",
     settings_contact: "İletişim",
     settings_removeAds: "Reklamları Kaldır",
+    settings_premium: "Premium Satın Al",
     settings_darkMode: "Karanlık Mod",
     question_hardnessLevel: "Zorluk:",
     question_content: "İçerik:",
@@ -49,8 +50,10 @@ export default {
     modals_loading: "Yükleniyor...",
     modals_okay: "Tamam",
     modals_maintenance: "Uygulama şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
+    modals_select_keys: "Lütfen en az bir işlem seçiniz.",
     contact_message: "Mesaj: ",
     subscription_renew: "Aboneliğiniz yenilendi.",
     terms_and_conditions: "Şartlar ve Koşullar",
     iap_monthly_title: "Topla Aylık Premium",
+    iap_weekly_title: "Topla Haftalık Premium",
 };

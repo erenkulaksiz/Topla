@@ -115,7 +115,7 @@ const QuestionScreen = props => {
             });
             console.log("SORU ÇÖZÜMÜ BİTTİ (QUESTIONRESULTS): ", props.currentQuestion.questionResults);
             props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } })
-            props.navigation.removeListener('beforeRemove')
+            await props.navigation.removeListener('beforeRemove')
 
             console.log("@finish question solving");
             _timer.pause();
