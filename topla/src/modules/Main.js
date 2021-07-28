@@ -54,6 +54,24 @@ const Home = (props) => {
                     }} />
             </Tab.Navigator>
             <AwesomeAlert
+                show={props.reducer.modals.announcements}
+                showProgress={false}
+                title={I18n.t("modals_announcements")}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={true}
+                showConfirmButton={true}
+                confirmText={I18n.t("modals_okay")}
+                confirmButtonColor="#1bb524"
+                customView={<>
+                    {props.API.DATA.APP_ANNOUNCEMENTS && props.API.DATA.APP_ANNOUNCEMENTS.map((el, indx) => {
+                        return <Text>{indx + 1}. {el}</Text>
+                    })}
+                </>}
+                onConfirmPressed={() => {
+                    props.dispatch({ type: "SET_MODAL", payload: { announcements: false } })
+                }}
+            />
+            <AwesomeAlert
                 show={props.reducer.modals.selectKeys}
                 showProgress={false}
                 title={I18n.t("modals_select_keys")}
@@ -95,6 +113,7 @@ const Home = (props) => {
                 customView={<>
                     <Text>{Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL}</Text>
                     <Text>{JSON.stringify(props.reducer.deviceInfo.uuid)}</Text>
+                    <Text>{JSON.stringify(props.reducer.deviceInfo.buildNumber)}</Text>
                 </>}
                 closeOnTouchOutside={false}
                 closeOnHardwareBackPress={false}

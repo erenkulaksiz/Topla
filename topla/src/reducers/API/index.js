@@ -170,6 +170,8 @@ export default (state = INITIAL_STATE, action) => {
         case 'API_CHECK_RECEIPT':
             console.log("@API_CHECK_RECEIPT");
 
+            console.log("Sending: ", action.payload.data);
+
             const receipt = async () => {
                 const response = await fetch(API_URL + '/receipt', {
                     method: 'POST',

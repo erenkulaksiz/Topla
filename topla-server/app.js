@@ -162,6 +162,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                                         APP_HARD_UPDATE_VER: cfx.hardUpdateVer,
                                         APP_MAINTENANCE: cfx.maintenance,
                                         APP_PRODUCTS: cfx.products,
+                                        APP_ANNOUNCEMENTS: cfx.announcements,
                                     }
                                     console.log("RESULT: ", _RESPONSE);
                                     return res.json(_RESPONSE);
@@ -195,6 +196,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                                 APP_HARD_UPDATE_VER: cfx.hardUpdateVer,
                                 APP_MAINTENANCE: cfx.maintenance,
                                 APP_PRODUCTS: cfx.products,
+                                APP_ANNOUNCEMENTS: cfx.announcements,
                             }
                             console.log("LOGIN / " + new Date().toUTCString() + " RESULT: ", _RESPONSE);
                             return res.json(_RESPONSE);
@@ -266,12 +268,11 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         })
     })
 
+
     app.post('/receipt', async (req, res) => {
         console.log("________________________")
         console.log("Got request, /receipt ! ", req.body);
         console.log("________________________");
-
-        // first, check if request is fine
 
         console.log("IP: ", req.ip);
 
@@ -283,8 +284,6 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
                 success: false,
             }));
         }
-
-        // check receipt here
 
         console.log("Data: ", req.body.data);
         console.log("Platform: ", req.body.platform);
@@ -316,4 +315,54 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         }));
 
     })
+
+    /*
+
+    app.post('/validateReceipt', async (req, res) => {
+        console.log("________________________")
+        console.log("Got request, /validateReceipt ! ", req.body);
+        console.log("________________________");
+
+        console.log("IP: ", req.ip);
+
+        if (!req.body.data || !req.body.platform) {
+            console.log("Invalid params, request denied");
+            res.status(404);
+            return res.send(JSON.stringify({
+                reason: "Invalid Request",
+                success: false,
+            }));
+        }
+
+        console.log("Data: ", req.body.data);
+        console.log("Platform: ", req.body.platform);
+
+        const auth = new google.auth.GoogleAuth({
+            keyFile: "pc-api-6316387851500029020-650-5e56ea940a0a.json",
+            scopes: ["https://www.googleapis.com/auth/androidpublisher"]
+        })
+
+        try {
+            const res = await google.androidpublisher("v3").purchases.subscriptions.get({
+                packageName: "com.erencode.topla",
+                subscriptionId: req.body.data.productId,
+                token: req.body.data.purchaseToken,
+                auth: auth,
+            })
+            if (res.status == 200) {
+                console.log("GOOGLE API RES: ", res.data);
+            }
+        } catch (error) {
+            console.log("ERROR WITH GOOGLE API: ", error);
+
+        }
+
+        res.status(200);
+        return res.send(JSON.stringify({
+            reason: "got your request pal",
+            success: true,
+        }));
+
+    })
+    */
 })

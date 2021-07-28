@@ -51,6 +51,7 @@ export default {
     modals_okay: "Okay",
     modals_maintenance: "App is currently under maintenance. Please check back again later.",
     modals_select_keys: "Please select atleast one operation.",
+    modals_announcements: "Announcements",
     contact_message: "Message: ",
     subscription_renew: "Subscription has been renewed.",
     terms_and_conditions: "Terms and Conditions",

@@ -157,18 +157,10 @@ export default (state = INITIAL_STATE, action) => {
 
         case 'SET_MAX_RANGE':
             console.log("NEW VALUE FOR MAX RANGE: ", action.payload);
-            if (Number.isInteger(action.payload)) {
-                if (action.payload > 0) {
-                    state.maxRange = action.payload;
-                } else {
-                    if (action.payload < 10) {
-                        state.maxRange = 10
-                    } else {
-                        state.maxRange = parseInt(state.maxRange) + action.payload;
-                    }
-                }
+            if (action.payload > 0) {
+                state.maxRange = action.payload;
             } else {
-                state.maxRange = 10;
+                state.maxRange = parseInt(state.maxRange) + action.payload;
             }
             return { ...state }
 

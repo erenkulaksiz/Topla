@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, TouchableOpacity, ScrollView, Image, TextInput, SafeAreaView } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Image, TextInput, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 //import CheckBox from '@react-native-community/checkbox';
 import ToggleSwitch from 'toggle-switch-react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -228,67 +228,111 @@ const QuestionSettings = props => {
         props.dispatch({ type: "DECREMENT_QUESTION_TIME" });
     }
 
-    const _renderToggles = () => {
-        return (
-            <>
-                <TouchableOpacity
-                    style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                    onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: !props.questionSettings.operations.addition } })}
-                    activeOpacity={0.7}>
-                    <ToggleSwitch
-                        isOn={props.questionSettings.operations.addition}
-                        style={{ marginLeft: 12, marginRight: 12 }}
-                        onColor="green"
-                        offColor="red"
-                        size="small"
-                        onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: isOn } })}
-                        animationSpeed={100} />
-                    <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>+ {I18n.t("question_add")}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                    onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: !props.questionSettings.operations.subtraction } })}
-                    activeOpacity={0.7}>
-                    <ToggleSwitch
-                        isOn={props.questionSettings.operations.subtraction}
-                        style={{ marginLeft: 12, marginRight: 12 }}
-                        onColor="green"
-                        offColor="red"
-                        size="small"
-                        onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: isOn } })}
-                        animationSpeed={100} />
-                    <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>- {I18n.t("question_sub")}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                    onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: !props.questionSettings.operations.multiplication } })}
-                    activeOpacity={0.7}>
-                    <ToggleSwitch
-                        isOn={props.questionSettings.operations.multiplication}
-                        style={{ marginLeft: 12, marginRight: 12 }}
-                        onColor="green"
-                        offColor="red"
-                        size="small"
-                        onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: isOn } })}
-                        animationSpeed={100} />
-                    <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>x {I18n.t("question_mul")}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                    onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: !props.questionSettings.operations.division } })}
-                    activeOpacity={0.7}>
-                    <ToggleSwitch
-                        isOn={props.questionSettings.operations.division}
-                        style={{ marginLeft: 12, marginRight: 12 }}
-                        onColor="green"
-                        offColor="red"
-                        size="small"
-                        onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: isOn } })}
-                        animationSpeed={100} />
-                    <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>÷ {I18n.t("question_div")}</Text>
-                </TouchableOpacity>
-            </>
-        )
+    const _render = {
+        toggles: () => {
+            return (
+                <>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: !props.questionSettings.operations.addition } })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.operations.addition}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: isOn } })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>+ {I18n.t("question_add")}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: !props.questionSettings.operations.subtraction } })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.operations.subtraction}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: isOn } })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>- {I18n.t("question_sub")}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: !props.questionSettings.operations.multiplication } })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.operations.multiplication}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: isOn } })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>x {I18n.t("question_mul")}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: !props.questionSettings.operations.division } })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.operations.division}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: isOn } })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>÷ {I18n.t("question_div")}</Text>
+                    </TouchableOpacity>
+                </>
+            )
+        },
+        incrementals: (props) => {
+            const { onDecrementPress,
+                onIncrementPress,
+                value = 0,
+                isEditable = false,
+                isSeconds = false,
+                onInputChange,
+                inputValue,
+                incrementalValue = 0,
+                decrementalValue = 0,
+                darkMode = false,
+            } = props;
+            return (
+                <View style={style.setting_incrementWrapper}>
+                    <View style={style.setting_increment}>
+                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(darkMode).textDefault }} onPress={() => onDecrementPress()}>
+                            <Text style={{ fontSize: 18, color: Theme(darkMode).textDefault }}>-{decrementalValue != 0 && decrementalValue}</Text>
+                        </TouchableOpacity>
+                        {
+                            isEditable ? <KeyboardAvoidingView style={{ ...style.incrementCenter_field, borderColor: Theme(darkMode).textDefault }} behavior="padding" enabled>
+                                <TextInput
+                                    style={{ ...style.inputfield, color: Theme(darkMode).textDefault }}
+                                    onChangeText={text => onInputChange(text)}
+                                    value={inputValue.toString()}
+                                    placeholder="0"
+                                    keyboardType="numeric"
+                                    onSubmitEditing={() => {
+                                        console.log("Submit MAXRANGE")
+                                    }}
+                                /></KeyboardAvoidingView > : <View style={{ ...style.incrementCenter, borderColor: Theme(darkMode).textDefault }}>
+                                <Text style={{ fontSize: 16, color: Theme(darkMode).textDefault }}>
+                                    {isSeconds ? prettyMs(value) : value}
+                                </Text>
+                            </View>
+                        }
+                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(darkMode).textDefault }} onPress={() => onIncrementPress()}>
+                            <Text style={{ fontSize: 18, color: Theme(darkMode).textDefault }}>+{incrementalValue != 0 && incrementalValue}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
     }
 
     return (
@@ -316,87 +360,61 @@ const QuestionSettings = props => {
                         <View style={style.setting}>
                             <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_numberRange")}: </Text>
                             <View style={style.settingWrapper}>
-                                <View style={style.setting_incrementWrapper}>
-                                    <View style={style.setting_increment}>
-                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _decrementMaxRange()}>
-                                            <Text style={{ fontSize: 14, color: Theme(props.settings.darkMode).textDefault }}>-{props.questionSettings.rangeDecremental}</Text>
-                                        </TouchableOpacity>
-                                        <View style={{ ...style.incrementCenter_field, borderColor: Theme(props.settings.darkMode).textDefault }}>
-                                            <TextInput
-                                                style={{ ...style.inputfield, color: Theme(props.settings.darkMode).textDefault }}
-                                                onChangeText={text => {
-                                                    _setMaxRange(text);
-                                                }}
-                                                value={props.questionSettings.maxRange.toString()}
-                                                placeholder="0"
-                                                keyboardType="numeric"
-                                                onSubmitEditing={() => {
-                                                    console.log("Submit MAXRANGE")
-                                                }}
-                                            />
-                                        </View>
-                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _incrementMaxRange()}>
-                                            <Text style={{ fontSize: 14, color: Theme(props.settings.darkMode).textDefault }}>+{props.questionSettings.rangeIncremental}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
+
+                                {_render.incrementals({
+                                    onDecrementPress: () => _decrementMaxRange(),
+                                    onIncrementPress: () => _incrementMaxRange(),
+                                    isEditable: true,
+                                    onInputChange: (text) => _setMaxRange(text),
+                                    inputValue: props.questionSettings.maxRange.toString(),
+                                    decrementalValue: props.questionSettings.rangeDecremental,
+                                    incrementalValue: props.questionSettings.rangeIncremental,
+                                    darkMode: props.settings.darkMode,
+                                })}
+
                             </View>
                         </View>
                         <View style={style.setting}>
                             <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_count")}: </Text>
                             <View style={style.settingWrapper}>
-                                <View style={style.setting_incrementWrapper}>
-                                    <View style={style.setting_increment}>
-                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _decrementQuestionCount()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>-</Text>
-                                        </TouchableOpacity>
-                                        <View style={{ ...style.incrementCenter, borderColor: Theme(props.settings.darkMode).textDefault }}>
-                                            <Text style={{ fontSize: 16, color: Theme(props.settings.darkMode).textDefault }}>{props.questionSettings.questionCount}</Text>
-                                        </View>
-                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _incrementQuestionCount()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>+</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
+
+                                {_render.incrementals({
+                                    onDecrementPress: () => _decrementQuestionCount(),
+                                    onIncrementPress: () => _incrementQuestionCount(),
+                                    value: props.questionSettings.questionCount,
+                                    darkMode: props.settings.darkMode,
+                                })}
+
                             </View>
                         </View>
                         <View style={style.setting}>
                             <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_optionCount")}: </Text>
                             <View style={style.settingWrapper}>
-                                <View style={style.setting_incrementWrapper}>
-                                    <View style={style.setting_increment}>
-                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _decrementOptions()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>-</Text>
-                                        </TouchableOpacity>
-                                        <View style={{ ...style.incrementCenter, borderColor: Theme(props.settings.darkMode).textDefault }}>
-                                            <Text style={{ fontSize: 16, color: Theme(props.settings.darkMode).textDefault }}>{props.questionSettings.optionCount}</Text>
-                                        </View>
-                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _incrementOptions()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>+</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
+
+                                {_render.incrementals({
+                                    onDecrementPress: () => _decrementOptions(),
+                                    onIncrementPress: () => _incrementOptions(),
+                                    value: props.questionSettings.optionCount,
+                                    darkMode: props.settings.darkMode,
+                                })}
+
                             </View>
                         </View>
                         <View style={style.setting}>
                             <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>Soru Süresi: </Text>
                             <View style={style.settingWrapper}>
-                                <View style={style.setting_incrementWrapper}>
-                                    <View style={style.setting_increment}>
-                                        <TouchableOpacity style={{ ...style.decrement, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _decrementQuestionTime()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>-</Text>
-                                        </TouchableOpacity>
-                                        <View style={{ ...style.incrementCenter, borderColor: Theme(props.settings.darkMode).textDefault }}>
-                                            <Text style={{ fontSize: 16, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(props.questionSettings.perQuestionTime)}</Text>
-                                        </View>
-                                        <TouchableOpacity style={{ ...style.increment, borderColor: Theme(props.settings.darkMode).textDefault }} onPress={() => _incrementQuestionTime()}>
-                                            <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>+</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
+
+                                {_render.incrementals({
+                                    onDecrementPress: () => _decrementQuestionTime(),
+                                    onIncrementPress: () => _incrementQuestionTime(),
+                                    value: props.questionSettings.perQuestionTime,
+                                    isSeconds: true,
+                                    darkMode: props.settings.darkMode,
+                                })}
+
                             </View>
                         </View>
-                        {_renderToggles()}
+                        {_render.toggles()}
                     </View>
                 </View>
             </ScrollView>

@@ -84,6 +84,16 @@ const App = () => {
     },
   }
 
+  const _checkAnnouncements = () => {
+    console.log("Checking announcements...");
+    setTimeout(() => {
+      if (store.getState().API.DATA.API_TOKEN && store.getState().API.DATA.APP_ANNOUNCEMENTS.length > 0) {
+        store.dispatch({ type: "SET_MODAL", payload: { announcements: true } })
+        console.log("Theres announcements");
+      }
+    }, 3000)
+  }
+
   const _INITIALIZE = {
     connTimer: null,
     init: async () => {
@@ -108,7 +118,8 @@ const App = () => {
     connection: async () => {
       if (store.getState().API.DATA.API_TOKEN) {
         console.log("GOT API_TOKEN, NO RETRIES: ", store.getState().API.DATA.API_TOKEN);
-        _checkAppVersion();
+        await _checkAppVersion();
+        _checkAnnouncements();
         _IAP.init();
       } else {
         console.log("NO API TOKEN | API MAX RETRIES ENABLED: ", Config.API_MAX_RETRIES_ENABLED);
@@ -118,7 +129,8 @@ const App = () => {
             if (store.getState().API.DATA.API_TOKEN) {
               console.log("@API_TOKEN success: ", store.getState().API.API_TOKEN);
               clearInterval(connTimer);
-              _checkAppVersion();
+              await _checkAppVersion();
+              _checkAnnouncements();
               _IAP.init();
             } else {
               await store.dispatch({
@@ -157,7 +169,6 @@ const App = () => {
           RNIap.endConnection();
         })
         .then(async () => {
-
           RNIap.getSubscriptions(store.getState().API.DATA.APP_PRODUCTS).then((products) => {
             products.map((element, index) => {
               store.dispatch({
@@ -173,13 +184,18 @@ const App = () => {
             try {
               const receipt = res[res.length - 1].transactionReceipt;
               if (receipt) {
-                console.log("receipt INIT: ", receipt);
+                store.dispatch({
+                  type: 'API_CHECK_RECEIPT',
+                  payload: {
+                    data: JSON.parse(receipt),
+                    platform: Platform.OS
+                  }
+                });
               }
             } catch (error) {
 
             }
           });
-
 
           purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
             async (purchase) => {
@@ -195,8 +211,11 @@ const App = () => {
                   }
                 });
                 RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
-                  RNIap.finishTransaction(purchase, true).catch(err => {
+                  console.log("Finishing transaction android")
+                  RNIap.finishTransaction(purchase, false).catch(err => {
                     console.log(err.code, err.message);
+                  }).then(() => {
+                    console.log("finished transaction");
                   });
                 });
               } else {

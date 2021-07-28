@@ -31,6 +31,7 @@ const INITIAL_STATE = {
         checkConnection: false,
         maintenance: false,
         selectKeys: false,
+        announcements: false,
     },
     PERFORMANCE: {
         questions: {

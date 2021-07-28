@@ -51,6 +51,7 @@ export default {
     modals_okay: "Tamam",
     modals_maintenance: "Uygulama şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
     modals_select_keys: "Lütfen en az bir işlem seçiniz.",
+    modals_announcements: "Duyurular",
     contact_message: "Mesaj: ",
     subscription_renew: "Aboneliğiniz yenilendi.",
     terms_and_conditions: "Şartlar ve Koşullar",
