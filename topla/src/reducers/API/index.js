@@ -15,14 +15,16 @@ const deviceLanguage =
 
 const INITIAL_STATE = {
     apiError: "",
-    DATA: {},
     apiStatus: 200,
+    DATA: {},
     APP: {
         // Sunucudan çekilecek son uygulama ile ilgili bilgiler burada olacak
         latestVersion: 0,
     },
     products: [],
     retries: 0,
+    iapInitData: {},
+    iapPurchases: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -59,12 +61,14 @@ export default (state = INITIAL_STATE, action) => {
                     console.log("@api response: ", data);
                     if (data.success) {
                         console.log("@API_REGISTER SUCCESSFUL");
-                        state.DATA = data;
-                        state.APP.latestVersion = data.APP_LATEST_VERSION;
-                        state.APP.softUpdateVer = data.APP_SOFT_UPDATE_VER;
-                        state.APP.hardUpdateVer = data.APP_HARD_UPDATE_VER;
-                        state.APP.products = data.APP_PRODUCTS;
                         console.log("Got products: ", data.APP_PRODUCTS)
+                        state.DATA = data;
+                        state.APP = {
+                            latestVersion: data.APP_LATEST_VERSION,
+                            softUpdateVer: data.APP_SOFT_UPDATE_VER,
+                            hardUpdateVer: data.APP_HARD_UPDATE_VER,
+                            products: data.APP_PRODUCTS,
+                        }
                     } else {
                         console.log("@API_REGISTER ERROR");
                     }
@@ -73,9 +77,12 @@ export default (state = INITIAL_STATE, action) => {
                     }
                 })
             }).catch(err => {
-                console.log("[ERROR]: ", err);
-                state.apiError = err[0];
-                state.apiStatus = err[1];
+                console.log("[ERROR on REDUCER]: ", err);
+                state = {
+                    ...state,
+                    apiError: err[0],
+                    apiStatus: err[1],
+                }
             });
 
             return state
@@ -125,45 +132,9 @@ export default (state = INITIAL_STATE, action) => {
 
             return state
 
-        case 'API_PREMIUM':
-            console.log("@API_premium w/ URL: ", API_URL);
-
-            const premium = async () => {
-                const response = await fetch(API_URL + '/premium', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        uuid: action.payload.uuid,
-                    }),
-                }).then(response => {
-                    console.log("response status ", response.status);
-                    response.json().then((data) => {
-                        console.log("API_SEND_PREMIUM RESULT: ", data);
-                        state.DATA.hasPremium = data.hasPremium;
-                        if (response.status == 404) {
-                            throw [data, response.status];
-                        }
-                    })
-                }).catch(function (error) {
-                    throw error;
-                });
-                return response
-            }
-
-            premium().catch(err => {
-                console.log("[ERROR]: ", err);
-            });
-
-            return state
-
-        case 'API_PUSH_PRODUCTS':
+        case 'API_SET_PRODUCTS':
             console.log("@API_SET_PRODUCTS");
-
-            state.products.push(action.payload);
-            console.log("PRODUCTS: ", state.products);
+            state.products = action.payload;
 
             return state
 
@@ -182,11 +153,18 @@ export default (state = INITIAL_STATE, action) => {
                     body: JSON.stringify({
                         data: action.payload.data,
                         platform: action.payload.platform,
+                        uuid: action.payload.uuid,
+                        API_TOKEN: action.payload.API_TOKEN,
                     }),
                 }).then(response => {
                     console.log("response status ", response.status);
                     response.json().then(data => {
-                        console.log("@api response: ", data);
+                        console.log("@api check receipt response: ", data);
+
+                        if (data.purchaseStatus == "success" && data.success == true) {
+                            console.log(data.reason);
+
+                        }
 
                     })
                 }).catch(function (error) {
@@ -201,6 +179,48 @@ export default (state = INITIAL_STATE, action) => {
 
             return state
 
+        case 'API_IAP_INIT':
+            console.log("@API_IAP_INIT");
+
+            const init = async () => {
+                const response = await fetch(API_URL + '/iapinit', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        data: action.payload.data,
+                        platform: action.payload.platform,
+                        uuid: action.payload.uuid,
+                        API_TOKEN: action.payload.API_TOKEN,
+                    }),
+                }).then(response => {
+                    console.log("response status ", response.status);
+                    response.json().then(data => {
+                        console.log("@api iap init response: ", data);
+
+                        state.iapInitData = data;
+
+                        if (data.success) {
+                            console.log("User has subscription, API_IAP_INIT");
+                        } else if (data.success == false) {
+                            console.log("Error with subscription, reason: ", data.reason);
+                        }
+
+                    })
+                }).catch(function (error) {
+                    throw error;
+                });
+                return response
+            }
+
+            init().catch(err => {
+                console.log("[ERROR]: ", err);
+            });
+
+            return state
+
         case 'API_RETRY':
             state.retries += 1;
             console.log("RETRIES: ", state.retries);
@@ -210,6 +230,12 @@ export default (state = INITIAL_STATE, action) => {
         case 'API_RETRY_RESET':
             console.log("RETRIES RESET");
             state.retries = 0;
+
+            return state
+
+        case 'IAP_PURCHASES':
+            state.iapPurchases = action.payload;
+            console.log("purchases: ", state.iapPurchases);
 
             return state
 

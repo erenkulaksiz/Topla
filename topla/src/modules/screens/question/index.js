@@ -368,6 +368,7 @@ const QuestionScreen = props => {
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
                 showConfirmButton={true}
+                useNativeDriver={true}
                 cancelText={I18n.t("question_solving_back_cancel")}
                 confirmText={I18n.t("question_solving_back_back")}
                 confirmButtonColor="#DD6B55"

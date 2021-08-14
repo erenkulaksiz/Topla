@@ -38,6 +38,12 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
     const devicesCollection = db.collection('devices');
     const configCollection = db.collection('config');
     const logsCollection = db.collection('logs');
+    const purchasesCollection = db.collection('purchases');
+
+    const auth = new google.auth.GoogleAuth({
+        keyFile: "pc-api-6316387851500029020-650-5e56ea940a0a.json",
+        scopes: ["https://www.googleapis.com/auth/androidpublisher"]
+    }) // Cache auth
 
     const log = ({ ...log }) => {
         const logColl = {
@@ -268,7 +274,6 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         })
     })
 
-
     app.post('/receipt', async (req, res) => {
         console.log("________________________")
         console.log("Got request, /receipt ! ", req.body);
@@ -276,7 +281,10 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
         console.log("IP: ", req.ip);
 
-        if (!req.body.data || !req.body.platform) {
+        if (!req.body.data
+            || !req.body.platform
+            || !req.body.uuid
+            || !req.body.API_TOKEN) {
             console.log("Invalid params, request denied");
             res.status(404);
             return res.send(JSON.stringify({
@@ -288,32 +296,171 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         console.log("Data: ", req.body.data);
         console.log("Platform: ", req.body.platform);
 
-        const auth = new google.auth.GoogleAuth({
-            keyFile: "pc-api-6316387851500029020-650-5e56ea940a0a.json",
-            scopes: ["https://www.googleapis.com/auth/androidpublisher"]
-        })
+        const currDevice = await devicesCollection.findOne({ uuid: req.body.uuid });
+        if (currDevice) {
+            if (currDevice.API_TOKEN == req.body.API_TOKEN) {
+                console.log("API TOKEN UUID MATCHED");
 
-        try {
-            const res = await google.androidpublisher("v3").purchases.subscriptions.get({
-                packageName: "com.erencode.topla",
-                subscriptionId: req.body.data.productId,
-                token: req.body.data.purchaseToken,
-                auth: auth,
-            })
-            if (res.status == 200) {
-                console.log("GOOGLE API RES: ", res.data);
+                try {
+                    const response = await google.androidpublisher("v3").purchases.subscriptions.get({
+                        packageName: "com.erencode.topla",
+                        subscriptionId: req.body.data.productId,
+                        token: req.body.data.purchaseToken,
+                        auth: auth,
+                    })
+                    if (response.status == 200) {
+                        console.log("GOOGLE API RES: ", response.data);
+                        if (response.data.paymentState === 1) {
+                            // Valid subscription!
+
+                            purchasesCollection.insertOne({
+                                uuid: req.body.uuid,
+                                platform: req.body.platform,
+                                packageName: "com.erencode.topla",
+                                subscriptionId: req.body.data.productId,
+                                token: req.body.data.purchaseToken,
+                                timestamp: Date.now(),
+                                date: new Date().toUTCString(),
+                            })
+
+                            await devicesCollection.updateOne({ uuid: req.body.uuid }, { $set: { hasPremium: true, } })
+
+                            res.status(200);
+                            return res.send(JSON.stringify({
+                                reason: "You have been subscribed successfully!",
+                                success: true,
+                                purchaseStatus: "success",
+                            }));
+
+                        } else {
+                            res.status(404);
+                            return res.send(JSON.stringify({
+                                reason: "Purchase failed.",
+                                success: false,
+                                purchaseStatus: "failed",
+                            }));
+                        }
+                    }
+                } catch (err) {
+                    res.status(404);
+                    return res.send(JSON.stringify({
+                        reason: err,
+                        success: false,
+                        purchaseStatus: "failed",
+                    }));
+                }
+            } else {
+                res.status(404);
+                return res.send(JSON.stringify({
+                    reason: "Invalid Request",
+                    success: false,
+                    purchaseStatus: "failed",
+                }));
             }
-        } catch (error) {
-            console.log("ERROR WITH GOOGLE API: ", error);
-
+        } else {
+            res.status(404);
+            return res.send(JSON.stringify({
+                reason: "Invalid Request",
+                success: false,
+                purchaseStatus: "failed",
+            }));
         }
 
-        res.status(200);
-        return res.send(JSON.stringify({
-            reason: "got your request pal",
-            success: true,
-        }));
+    })
 
+    app.post('/iapinit', async (req, res) => {
+        console.log("________________________")
+        console.log("Got request, /iapinit ! ", req.body);
+        console.log("________________________");
+
+        console.log("IP: ", req.ip);
+
+        if (!req.body.data
+            || !req.body.platform
+            || !req.body.uuid
+            || !req.body.API_TOKEN) {
+            console.log("Invalid params, request denied");
+            res.status(404);
+            return res.send(JSON.stringify({
+                reason: "Invalid Request",
+                success: false,
+            }));
+        }
+
+        console.log("Data: ", req.body.data);
+        console.log("Platform: ", req.body.platform);
+
+        console.log("Data length: ", req.body.data.length);
+
+        if (req.body.data.length > 0) {
+            req.body.data.map(async (element) => {
+                try {
+                    const response = await google.androidpublisher("v3").purchases.subscriptions.get({
+                        packageName: "com.erencode.topla",
+                        subscriptionId: element.productId,
+                        token: element.purchaseToken,
+                        auth: auth,
+                    })
+
+                    console.log("init response", response.data);
+
+                    if (response.data.paymentState == 1) {
+                        const expiry = response.data.expiryTimeMillis - Date.now();
+                        console.log("Expiry: ", expiry);
+
+                        if (expiry <= 0) {
+                            await devicesCollection.updateOne({ uuid: req.body.uuid }, { $set: { hasPremium: false } })
+
+                            res.status(200);
+                            return res.send(JSON.stringify({
+                                success: false,
+                                reason: "This subscription has been expired.",
+                                hasPremium: false,
+                            }));
+                        } else {
+                            // #TODO: If user has premium already, dont change it
+                            await devicesCollection.updateOne({ uuid: req.body.uuid }, { $set: { hasPremium: true } })
+
+                            res.status(200);
+                            return res.send(JSON.stringify({
+                                success: true,
+                                hasPremium: true,
+                                expiryTime: expiry,
+                            }));
+                        }
+                    } else {
+
+                        await devicesCollection.updateOne({ uuid: req.body.uuid }, { $set: { hasPremium: false } })
+
+                        res.status(200);
+                        return res.send(JSON.stringify({
+                            success: false,
+                            reason: "paymentState is " + response.data.paymentState,
+                            hasPremium: false,
+                        }));
+                    }
+
+                } catch (error) {
+                    console.log("ERROR WITH GOOGLE API: ", error);
+
+                    res.status(200);
+                    return res.send(JSON.stringify({
+                        reason: error,
+                        success: false,
+                    }));
+                }
+            })
+        } else {
+            console.log("set hasPremium to false for uuid: ", req.body.uuid);
+            await devicesCollection.updateOne({ uuid: req.body.uuid }, { $set: { hasPremium: false } })
+
+            res.status(200);
+            return res.send(JSON.stringify({
+                reason: "User doesn't have a subscription.",
+                success: false,
+                hasPremium: false,
+            }));
+        }
     })
 
     /*

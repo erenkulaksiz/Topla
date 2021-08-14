@@ -36,10 +36,11 @@ const HomeScreen = props => {
                 {props.questionSettings.questionInitials.map((question, index) => {
                     return (<QuestionSlot
                         key={index}
-                        onPlay={() => { _questionPlay(question) }}
+                        onPlay={() => _questionPlay(question)}
                         question={question}
                     />)
                 })}
+                <Text>{JSON.stringify(props.API.DATA)}</Text>
             </ScrollView>
         </SafeAreaView>
     );

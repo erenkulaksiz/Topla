@@ -5,6 +5,7 @@ import { faHome, faCrown, faCog } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Config from 'react-native-config';
 
 import I18n from "../utils/i18n.js";
 import Theme from '../themes'
@@ -13,7 +14,6 @@ import Theme from '../themes'
 import HomeScreen from './screens/home'
 import OptionsScreen from './screens/options';
 import PremiumScreen from './screens/premium';
-import Config from 'react-native-config';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,13 +38,17 @@ const Home = (props) => {
                             <FontAwesomeIcon icon={faHome} size={size} color={color} />
                         ),
                     }} />
-                <Tab.Screen name="Premium" component={PremiumScreen}
-                    options={{
-                        tabBarLabel: 'Premium',
-                        tabBarIcon: ({ color, size }) => (
-                            <FontAwesomeIcon icon={faCrown} size={size} color={color} />
-                        ),
-                    }} />
+
+                {
+                    props.API.DATA.hasPremium == false && <Tab.Screen name="Premium" component={PremiumScreen}
+                        options={{
+                            tabBarLabel: 'Premium',
+                            tabBarIcon: ({ color, size }) => (
+                                <FontAwesomeIcon icon={faCrown} size={size} color={color} />
+                            ),
+                        }} />
+                }
+
                 <Tab.Screen name="Options" component={OptionsScreen}
                     options={{
                         tabBarLabel: I18n.t("settings"),
@@ -60,6 +64,7 @@ const Home = (props) => {
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={true}
                 showConfirmButton={true}
+                useNativeDriver={true}
                 confirmText={I18n.t("modals_okay")}
                 confirmButtonColor="#1bb524"
                 customView={<>
@@ -77,6 +82,7 @@ const Home = (props) => {
                 title={I18n.t("modals_select_keys")}
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={true}
+                useNativeDriver={true}
                 showConfirmButton={true}
                 confirmText={I18n.t("modals_okay")}
                 confirmButtonColor="#1bb524"
@@ -91,22 +97,15 @@ const Home = (props) => {
                 closeOnTouchOutside={false}
                 closeOnHardwareBackPress={false}
                 showCancelButton={false}
-                showConfirmButton={false}
-                titleStyle={{ fontSize: 16 }}
-            />
-            <AwesomeAlert
-                show={props.reducer.modals.maintenance}
-                showProgress={false}
-                title={I18n.t("modals_maintenance")}
-                closeOnTouchOutside={false}
-                closeOnHardwareBackPress={false}
-                showCancelButton={false}
+                useNativeDriver={true}
                 showConfirmButton={false}
                 titleStyle={{ fontSize: 16 }}
             />
             <AwesomeAlert
                 show={props.reducer.modals.initialize}
                 showProgress={true}
+                useNativeDriver={true}
+                animatedValue={0}
                 progressColor={"#0f7cbb"}
                 progressSize={32}
                 title={I18n.t("modals_loading")}
@@ -119,8 +118,9 @@ const Home = (props) => {
                 closeOnHardwareBackPress={false}
                 showCancelButton={false}
                 showConfirmButton={false}
-                titleStyle={{ fontSize: 16 }}
+                titleStyle={{ fontSize: 18 }}
             />
+
             <AwesomeAlert
                 show={props.reducer.modals.banned}
                 showProgress={false}
@@ -129,6 +129,7 @@ const Home = (props) => {
                 closeOnHardwareBackPress={false}
                 showCancelButton={false}
                 showConfirmButton={false}
+                useNativeDriver={true}
                 contentContainerStyle={{ width: "90%" }}
                 titleStyle={{ fontSize: 16 }}
             />
@@ -141,6 +142,7 @@ const Home = (props) => {
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
                 showConfirmButton={true}
+                useNativeDriver={true}
                 cancelText={I18n.t("modals_update_cancel")}
                 confirmText={I18n.t("modals_update_update")}
                 confirmButtonColor="#1bb524"
@@ -163,6 +165,7 @@ const Home = (props) => {
                 closeOnHardwareBackPress={false}
                 showCancelButton={false}
                 showConfirmButton={true}
+                useNativeDriver={true}
                 cancelText={I18n.t("modals_update_cancel")}
                 confirmText={I18n.t("modals_update_update")}
                 confirmButtonColor="#1bb524"

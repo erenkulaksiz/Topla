@@ -99,21 +99,159 @@ const App = () => {
     }, 3000)
   }
 
-  const _INITIALIZE = {
+  let _INITIALIZE = {
+    purchaseUpdateSubscription: undefined,
+    purchaseErrorSubscription: undefined,
     connTimer: null,
     init: async () => {
       console.log("API Dev Mode: ", Config.DEV_MODE);
       console.log("API URL: ", Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL);
       LogBox.ignoreAllLogs(); // Ignore all logs
       await _setDeviceInfo.set();
+
+      console.log("IAP INIT");
+      RNIap.initConnection()
+        .catch(() => {
+          console.log("store error on IAP");
+
+          RNIap.endConnection();
+        })
+        .then(async () => {
+
+          const availablePurchases = await RNIap.getAvailablePurchases();
+          console.log("Available Purchases: ", availablePurchases);
+
+          await store.dispatch({
+            type: 'IAP_PURCHASES',
+            payload: availablePurchases
+          });
+
+          await store.dispatch({
+            type: 'API_REGISTER',
+            payload: {
+              uuid: store.getState().mainReducer.deviceInfo.uuid,
+              bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+              model: store.getState().mainReducer.deviceInfo.model,
+              //availablePurchases: availablePurchases,
+            }
+          });
+
+          /*
+          await store.dispatch({
+            type: 'API_IAP_INIT',
+            payload: {
+              data: availablePurchases,
+              platform: Platform.OS,
+              uuid: store.getState().mainReducer.deviceInfo.uuid,
+              API_TOKEN: store.getState().API.DATA.API_TOKEN,
+            }
+          });
+          */
+
+          setTimeout(() => {
+            RNIap.getSubscriptions(store.getState().API.DATA.APP_PRODUCTS).then(async (products) => {
+
+              store.dispatch({
+                type: 'API_SET_PRODUCTS',
+                payload: products
+              });
+
+              _checkAppVersion();
+            }).catch((error) => {
+              console.log("error IAP: ", error.message);
+            })
+          }, 500)
+
+          /*
+          setTimeout(async () => {
+            if (!(store.getState().API.iapInitData.hasPremium == store.getState().API.DATA.hasPremium)) {
+              console.log("Api state and database doesn't match, refreshing register");
+              await store.dispatch({
+                type: 'API_REGISTER',
+                payload: {
+                  uuid: store.getState().mainReducer.deviceInfo.uuid,
+                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                  model: store.getState().mainReducer.deviceInfo.model,
+                }
+              });
+            }
+          }, 3000)
+          */
+
+          /*
+          if (store.getState().API.iapInitData.success) {
+            alert("user has premium dude");
+            if (store.getState().API.DATA.hasPremium == false) {
+              // Doesn't match with api and iap init
+              await store.dispatch({
+                type: 'API_REGISTER',
+                payload: {
+                  uuid: store.getState().mainReducer.deviceInfo.uuid,
+                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                  model: store.getState().mainReducer.deviceInfo.model,
+                }
+              });
+            }
+          }
+          */
+
+          _INITIALIZE.purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(async (purchase) => {
+            console.log('purchaseUpdatedListener', purchase);
+            const receipt = purchase.transactionReceipt;
+            if (receipt) {
+              await store.dispatch({
+                type: 'API_CHECK_RECEIPT',
+                payload: {
+                  data: purchase,
+                  platform: Platform.OS,
+                  uuid: store.getState().mainReducer.deviceInfo.uuid,
+                  API_TOKEN: store.getState().API.DATA.API_TOKEN,
+                }
+              });
+              RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
+                console.log("finishing transaction")
+                RNIap.finishTransaction(purchase, false).catch(err => {
+                  console.log(err.code, err.message);
+                }).then(async () => {
+                  console.log("finished transaction");
+                  alert("You have been subscribed successfully!");
+
+                  // Reload
+                  await store.dispatch({
+                    type: 'API_REGISTER',
+                    payload: {
+                      uuid: store.getState().mainReducer.deviceInfo.uuid,
+                      bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                      model: store.getState().mainReducer.deviceInfo.model,
+                      //availablePurchases: store.getState().API.iapPurchases,
+                    }
+                  });
+                });
+              });
+            } else {
+              // Retry 
+            }
+          });
+
+          _INITIALIZE.purchaseErrorSubscription = RNIap.purchaseErrorListener(error => {
+            console.log('purchaseErrorListener', error);
+            if (error.code != "E_ALREADY_OWNED") {
+              alert(error.message);
+            }
+          });
+
+        });
+
       await store.dispatch({
         type: 'API_REGISTER',
         payload: {
           uuid: store.getState().mainReducer.deviceInfo.uuid,
           bundleId: store.getState().mainReducer.deviceInfo.bundleId,
           model: store.getState().mainReducer.deviceInfo.model,
+          //availablePurchases: store.getState().API.iapPurchases,
         }
       });
+
       //setTimeout(async () => {
       await _INITIALIZE.connection();
       //}, 2000)
@@ -135,13 +273,13 @@ const App = () => {
               _checkAnnouncements();
               _IAP.init();
             } else {
-              console.log("API_STATE: ", store.getState().API);
               await store.dispatch({
                 type: 'API_REGISTER',
                 payload: {
                   uuid: store.getState().mainReducer.deviceInfo.uuid,
                   bundleId: store.getState().mainReducer.deviceInfo.bundleId,
                   model: store.getState().mainReducer.deviceInfo.model,
+                  //availablePurchases: store.getState().API.iapPurchases,
                 }
               });
             }
@@ -160,125 +298,15 @@ const App = () => {
     }
   }
 
+  /*
   let _IAP = {
     purchaseUpdateSubscription: undefined,
     purchaseErrorSubscription: undefined,
     init: async () => {
-      console.log("IAP INIT");
-      RNIap.initConnection()
-        .catch(() => {
-          console.log("store error on IAP");
 
-          RNIap.endConnection();
-        })
-        .then(async () => {
-
-          const availablePurchases = await RNIap.getAvailablePurchases();
-          console.log("Available Purchases: ", availablePurchases);
-          await store.dispatch({
-            type: 'API_IAP_INIT',
-            payload: {
-              data: availablePurchases,
-              platform: Platform.OS,
-              uuid: store.getState().mainReducer.deviceInfo.uuid,
-              API_TOKEN: store.getState().API.DATA.API_TOKEN,
-            }
-          });
-
-          RNIap.getSubscriptions(store.getState().API.DATA.APP_PRODUCTS).then((products) => {
-            store.dispatch({
-              type: 'API_SET_PRODUCTS',
-              payload: products
-            });
-            _checkAppVersion();
-          }).catch((error) => {
-            console.log("error IAP: ", error.message);
-          })
-
-          setTimeout(async () => {
-            console.log("iapInitData.hasPremium: ", store.getState().API.iapInitData.hasPremium, " data.hasPremium: ", store.getState().API.DATA.hasPremium)
-
-            if (!(store.getState().API.iapInitData.hasPremium == store.getState().API.DATA.hasPremium)) {
-              console.log("Api state and database doesn't match, refreshing register");
-              await store.dispatch({
-                type: 'API_REGISTER',
-                payload: {
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                  model: store.getState().mainReducer.deviceInfo.model,
-                }
-              });
-            } else {
-              console.log("API and iapInit hasPremium matches");
-            }
-          }, 4000)
-
-          /*
-          if (store.getState().API.iapInitData.success) {
-            alert("user has premium dude");
-            if (store.getState().API.DATA.hasPremium == false) {
-              // Doesn't match with api and iap init
-              await store.dispatch({
-                type: 'API_REGISTER',
-                payload: {
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                  model: store.getState().mainReducer.deviceInfo.model,
-                }
-              });
-            }
-          }
-          */
-
-          purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(async (purchase) => {
-            console.log('purchaseUpdatedListener', purchase);
-            const receipt = purchase.transactionReceipt;
-            if (receipt) {
-              await store.dispatch({
-                type: 'API_CHECK_RECEIPT',
-                payload: {
-                  data: purchase,
-                  platform: Platform.OS,
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  API_TOKEN: store.getState().API.DATA.API_TOKEN,
-                }
-              });
-              RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
-                console.log("finishing transaction")
-                RNIap.finishTransaction(purchase, false).catch(err => {
-                  console.log(err.code, err.message);
-                }).then(async () => {
-                  console.log("finished transaction");
-                  alert("You have been subscribed successfully!");
-
-                  setTimeout(async () => {
-                    // Reload
-                    await store.dispatch({
-                      type: 'API_REGISTER',
-                      payload: {
-                        uuid: store.getState().mainReducer.deviceInfo.uuid,
-                        bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                        model: store.getState().mainReducer.deviceInfo.model,
-                      }
-                    });
-                  }, 2000);
-                });
-              });
-            } else {
-              // Retry 
-            }
-          });
-
-          purchaseErrorSubscription = RNIap.purchaseErrorListener(error => {
-            console.log('purchaseErrorListener', error);
-            if (error.code != "E_ALREADY_OWNED") {
-              alert(error.message);
-            }
-          });
-
-        });
     }
   }
+  */
 
   useEffect(async () => {
     _INITIALIZE.init();
@@ -302,13 +330,13 @@ const App = () => {
       NetInfo.removeEventListener();
 
       try {
-        _IAP.purchaseUpdateSubscription.remove();
+        _INITIALIZE.purchaseUpdateSubscription.remove();
       } catch (error) {
         console.log("Error with purchaseUpdateSubscription.remove()", error);
       }
 
       try {
-        _IAP.purchaseErrorSubscription.remove();
+        _INITIALIZE.purchaseErrorSubscription.remove();
       } catch (error) {
         console.log("Error with purchaseErrorSubscription.remove()", error);
       }
