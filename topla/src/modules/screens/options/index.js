@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text, View, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faSync, /*faBell,*/ faEnvelope, /*faCrown,*/ faAdjust, faIdCard, faHeart, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import Config from 'react-native-config';
+import * as RNIap from 'react-native-iap';
 
 import I18n from "../../../utils/i18n.js";
 import Theme from '../../../themes'
@@ -40,16 +41,67 @@ const OptionsScreen = props => {
     }
 
     const _refreshPremium = () => {
-        props.dispatch({
-            type: 'API_REGISTER',
-            payload: {
-                uuid: props.reducer.deviceInfo.uuid,
-                bundleId: props.reducer.deviceInfo.bundleId,
-                model: props.reducer.deviceInfo.model,
-            }
-        });
-        alert(I18n.t("subscription_renew")); // Abonelik yenilendi .<-
+        if (props.settings.cooldown.refreshStatus > 0) {
+            RNIap.initConnection()
+                .catch(() => {
+                    console.log("store error on IAP");
+
+                    RNIap.endConnection();
+                })
+                .then(async () => {
+
+                    const availablePurchases = await RNIap.getAvailablePurchases();
+                    console.log("@OPTIONS Available Purchases: ", availablePurchases);
+                    await props.dispatch({
+                        type: 'API_IAP_INIT',
+                        payload: {
+                            data: availablePurchases,
+                            platform: Platform.OS,
+                            uuid: props.reducer.deviceInfo.uuid,
+                            API_TOKEN: props.API.DATA.API_TOKEN,
+                        }
+                    });
+
+                    setTimeout(async () => {
+                        console.log("iapInitData.hasPremium: ", props.API.iapInitData.hasPremium, " data.hasPremium: ", props.API.DATA.hasPremium)
+
+                        if (!(props.API.iapInitData.hasPremium == props.API.DATA.hasPremium)) {
+                            console.log("Api state and database doesn't match, refreshing register");
+                            await props.dispatch({
+                                type: 'API_REGISTER',
+                                payload: {
+                                    uuid: props.reducer.deviceInfo.uuid,
+                                    bundleId: props.reducer.deviceInfo.bundleId,
+                                    model: props.reducer.deviceInfo.model,
+                                }
+                            });
+                        } else {
+                            console.log("API and iapInit hasPremium matches");
+                        }
+                    }, 4000)
+
+                    RNIap.endConnection();
+
+                    props.dispatch({ type: "USE_REFRESH_STATUS", payload: Date.now() });
+
+                    alert(I18n.t("subscription_renew")); // Abonelik yenilendi .<-
+
+                });
+        } else {
+            alert("You are refreshing too much! Wait 24 hours and check back later.");
+        }
     }
+
+    useEffect(() => {
+
+        return () => {
+            try {
+                RNIap.endConnection();
+            } catch (error) {
+                console.log("Error with RNIap.endConnection() @ options", error);
+            }
+        };
+    }, [])
 
     const _darkMode = () => {
         props.dispatch({ type: "DARK_MODE", payload: props.settings.darkMode == 'dark' ? "light" : "dark" });

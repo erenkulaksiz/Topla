@@ -22,7 +22,7 @@ export default {
     question_sub: "Subtraction",
     question_mul: "Multiplication",
     question_div: "Division",
-    question_settings: "Question Settings",
+    question_settings: "Settings", // #TODO: Eski hali: "Question Settings"
     question_numberRange: "Maximum Range",
     question_count: "Question Count",
     question_optionCount: "Option Count",
@@ -57,4 +57,6 @@ export default {
     terms_and_conditions: "Terms and Conditions",
     iap_monthly_title: "Topla Premium Monthly",
     iap_weekly_title: "Topla Premium Weekly",
+    buy_premium_title_qsettings: "You can customize question settings by buying Topla Premium!",
+    buy_premium_desc_qsettings: "Touch here for more information",
 };

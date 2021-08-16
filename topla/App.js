@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
-import { LogBox, Platform } from 'react-native';
+import { LogBox, Platform, Text } from 'react-native';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { Appearance, AppearanceProvider } from 'react-native-appearance';
@@ -34,6 +34,7 @@ const Stack = createStackNavigator();
 const App = () => {
 
   const _checkAppVersion = async () => {
+    console.log("Checking app version...");
     if (store.getState().API.DATA.API_TOKEN) {
       // Theres a api token present
       const { buildNumber } = store.getState().mainReducer.deviceInfo;
@@ -51,12 +52,12 @@ const App = () => {
           }
           await store.getState().API.DATA.hasPremium || store.dispatch({ type: 'LOAD_ADS' });
 
-          await store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
           if (buildNumber < softUpdateVer) {
             await store.dispatch({ type: "SET_MODAL", payload: { softUpdate: true, initialize: false } })
-          } /*else {
+          } else {
             console.log("app is up to date!! got: ", buildNumber, " needSoft: ", softUpdateVer, " needHard: ", hardUpdateVer);
-          }*/
+            await store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
+          }
         }
       }
     } else {
@@ -104,7 +105,7 @@ const App = () => {
     init: async () => {
       console.log("API Dev Mode: ", Config.DEV_MODE);
       console.log("API URL: ", Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL);
-      LogBox.ignoreAllLogs(); // Ignore all logs
+      LogBox.ignoreAllLogs();
       await _setDeviceInfo.set();
       await store.dispatch({
         type: 'API_REGISTER',
@@ -114,16 +115,15 @@ const App = () => {
           model: store.getState().mainReducer.deviceInfo.model,
         }
       });
-      //setTimeout(async () => {
       await _INITIALIZE.connection();
-      //}, 2000)
       const appInstanceId = await analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);
     },
     connection: async () => {
       if (store.getState().API.DATA.API_TOKEN) {
         console.log("GOT API_TOKEN, NO RETRIES: ", store.getState().API.DATA.API_TOKEN);
-        _checkAnnouncements();
+        await _checkAnnouncements();
+        setTimeout(() => _checkAppVersion(), 2000);
         _IAP.init();
       } else {
         console.log("NO API TOKEN | API MAX RETRIES ENABLED: ", Config.API_MAX_RETRIES_ENABLED);
@@ -132,7 +132,8 @@ const App = () => {
           connTimer = setInterval(async () => {
             if (store.getState().API.DATA.API_TOKEN) {
               clearInterval(connTimer);
-              _checkAnnouncements();
+              await _checkAnnouncements();
+              setTimeout(() => _checkAppVersion(), 2000);
               _IAP.init();
             } else {
               console.log("API_STATE: ", store.getState().API);
@@ -190,7 +191,6 @@ const App = () => {
               type: 'API_SET_PRODUCTS',
               payload: products
             });
-            _checkAppVersion();
           }).catch((error) => {
             console.log("error IAP: ", error.message);
           })
@@ -212,23 +212,6 @@ const App = () => {
               console.log("API and iapInit hasPremium matches");
             }
           }, 4000)
-
-          /*
-          if (store.getState().API.iapInitData.success) {
-            alert("user has premium dude");
-            if (store.getState().API.DATA.hasPremium == false) {
-              // Doesn't match with api and iap init
-              await store.dispatch({
-                type: 'API_REGISTER',
-                payload: {
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                  model: store.getState().mainReducer.deviceInfo.model,
-                }
-              });
-            }
-          }
-          */
 
           purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(async (purchase) => {
             console.log('purchaseUpdatedListener', purchase);
@@ -283,6 +266,26 @@ const App = () => {
   useEffect(async () => {
     _INITIALIZE.init();
 
+    setTimeout(() => {
+      console.log("Checking SUB refreshes, Remaining: ", store.getState().settings.cooldown.refreshStatus);
+      console.log("Sub refresh time: ", (Date.now() - store.getState().settings.cooldown.lastRefreshed));
+      if (store.getState().settings.cooldown.refreshStatus < 1) {
+        if ((Date.now() - store.getState().settings.cooldown.lastRefreshed) >= 86400000) {
+          store.dispatch({ type: "RESET_REFRESH_STATUS" });
+        } else {
+          console.log("Cannot reset SUB refresh, remaining millis: ", (86400000 - (Date.now() - store.getState().settings.cooldown.lastRefreshed)));
+        }
+      } else {
+        if (store.getState().settings.cooldown.refreshStatus < 5) {
+          if ((Date.now() - store.getState().settings.cooldown.lastRefreshed) >= 86400000) {
+            console.log("Had ", store.getState().settings.cooldown.refreshStatus, " subs and resetted it");
+            store.dispatch({ type: "RESET_REFRESH_STATUS" });
+          }
+        }
+        console.log("Remaining SUB refreshes: ", store.getState().settings.cooldown.refreshStatus, " Last used: ", store.getState().settings.cooldown.lastRefreshed)
+      }
+    }, 3000);
+
     if (!store.getState().settings.lastSelectedByHand) {
       store.dispatch({ type: 'DARK_MODE', payload: Appearance.getColorScheme() });
       store.dispatch({ type: "LAST_DARKMODE_SELECTED_BYHAND", payload: false });
@@ -324,7 +327,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<Text>Loading PersistGate</Text>} persistor={persistor}>
         <AppearanceProvider>
           <NavigationContainer>
             <Stack.Navigator

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, View, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCrown } from '@fortawesome/free-solid-svg-icons'
 import * as RNIap from 'react-native-iap';
@@ -59,9 +59,9 @@ const PremiumScreen = props => {
                 <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("settings_premium")}</Text>
                 <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             </View>
-            <View style={style.content}>
+            <ScrollView style={style.content}>
                 {_renderPremiumSlots(props.API.products)}
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }

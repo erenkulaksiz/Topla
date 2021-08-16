@@ -133,4 +133,42 @@ export default StyleSheet.create({
         padding: 0,
         color: "black",
     },
+    premiumWrapper: {
+        position: "absolute",
+        left: 0,
+        top: 0,
+        height: "100%",
+        width: "100%",
+        backgroundColor: "#000",
+        borderRadius: 8,
+        zIndex: 2,
+        opacity: 0.37,
+    },
+    premiumTextWrapper: {
+        position: "absolute",
+        flexDirection: "row",
+        width: "100%",
+        height: 54,
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        zIndex: 3
+    },
+    premiumSegmentLeft: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 23
+    },
+    premiumSegmentMid: {
+        justifyContent: "center",
+        flex: 100,
+    },
+    premiumSegmentRight: {
+        flex: 23
+
+    },
+    premiumSegmentIconWrapper: {
+        padding: 8,
+        backgroundColor: "#E5E5E5",
+        borderRadius: 32,
+    }
 });

@@ -101,38 +101,7 @@ const Home = (props) => {
                 showConfirmButton={false}
                 titleStyle={{ fontSize: 16 }}
             />
-            <AwesomeAlert
-                show={props.reducer.modals.initialize}
-                showProgress={true}
-                useNativeDriver={true}
-                animatedValue={0}
-                progressColor={"#0f7cbb"}
-                progressSize={32}
-                title={I18n.t("modals_loading")}
-                customView={<>
-                    <Text>{Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL}</Text>
-                    <Text>{JSON.stringify(props.reducer.deviceInfo.uuid)}</Text>
-                    <Text>{JSON.stringify(props.reducer.deviceInfo.buildNumber)}</Text>
-                </>}
-                closeOnTouchOutside={false}
-                closeOnHardwareBackPress={false}
-                showCancelButton={false}
-                showConfirmButton={false}
-                titleStyle={{ fontSize: 18 }}
-            />
 
-            <AwesomeAlert
-                show={props.reducer.modals.banned}
-                showProgress={false}
-                title={I18n.t("modals_banned_title")}
-                closeOnTouchOutside={false}
-                closeOnHardwareBackPress={false}
-                showCancelButton={false}
-                showConfirmButton={false}
-                useNativeDriver={true}
-                contentContainerStyle={{ width: "90%" }}
-                titleStyle={{ fontSize: 16 }}
-            />
             <AwesomeAlert
                 show={props.reducer.modals.softUpdate}
                 showProgress={false}
@@ -175,6 +144,38 @@ const Home = (props) => {
                         console.error("An error occurred with linking to gplay market", err)
                     );
                 }}
+            />
+            <AwesomeAlert
+                show={props.reducer.modals.initialize}
+                showProgress={true}
+                useNativeDriver={true}
+                animatedValue={0}
+                progressColor={"#0f7cbb"}
+                progressSize={32}
+                title={I18n.t("modals_loading")}
+                customView={<>
+                    <Text>{Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL}</Text>
+                    <Text>{JSON.stringify(props.reducer.deviceInfo.uuid)}</Text>
+                    <Text>{JSON.stringify(props.reducer.deviceInfo.buildNumber)}</Text>
+                </>}
+                closeOnTouchOutside={false}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={false}
+                titleStyle={{ fontSize: 18 }}
+            />
+
+            <AwesomeAlert
+                show={props.reducer.modals.banned}
+                showProgress={false}
+                title={I18n.t("modals_banned_title")}
+                closeOnTouchOutside={false}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={false}
+                useNativeDriver={true}
+                contentContainerStyle={{ width: "90%" }}
+                titleStyle={{ fontSize: 16 }}
             />
         </>
     );

@@ -57,4 +57,6 @@ export default {
     terms_and_conditions: "Şartlar ve Koşullar",
     iap_monthly_title: "Topla Aylık Premium",
     iap_weekly_title: "Topla Haftalık Premium",
+    buy_premium_title_qsettings: "Soru ayarlarını Topla Premium alarak değiştirebilirsiniz!",
+    buy_premium_desc_qsettings: "Buraya dokunarak daha fazla bilgi alabilirsiniz",
 };

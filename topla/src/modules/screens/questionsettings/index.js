@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, TouchableOpacity, ScrollView, Image, TextInput, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Image, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacityBase } from 'react-native';
 //import CheckBox from '@react-native-community/checkbox';
 import ToggleSwitch from 'toggle-switch-react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faCrown } from '@fortawesome/free-solid-svg-icons'
 import prettyMs from 'pretty-ms';
 //import Config from 'react-native-config';
 import {
@@ -167,6 +167,11 @@ const QuestionSettings = props => {
         }
     }
 
+    const _navigateToPremium = () => {
+        console.log("Should navigate to Premium from questionSettings");
+        props.navigation.navigate('Premium', { ref: "questionSettings" });
+    }
+
     //
 
     const _incrementOptions = () => {
@@ -231,7 +236,7 @@ const QuestionSettings = props => {
     const _render = {
         toggles: () => {
             return (
-                <>
+                <View>
                     <TouchableOpacity
                         style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
                         onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: !props.questionSettings.operations.addition } })}
@@ -288,7 +293,7 @@ const QuestionSettings = props => {
                             animationSpeed={100} />
                         <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>÷ {I18n.t("question_div")}</Text>
                     </TouchableOpacity>
-                </>
+                </View>
             )
         },
         incrementals: (props) => {
@@ -343,11 +348,43 @@ const QuestionSettings = props => {
                     <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("question_settings")}</Text>
                 </View>
                 <View style={style.headerTextWrapperRight}>
-                    <Text style={{ ...style.headerTextQuestionSettings, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_defaults")} - {props.route.params.question.name}</Text>
+                    <Text style={{
+                        ...style.headerTextQuestionSettings,
+                        color: Theme(props.settings.darkMode).textDefault,
+                        fontWeight: "bold"
+                    }}>{I18n.t("question_defaults")} - <Text style={{ color: props.route.params.question.titleColor }}>
+                            {props.route.params.question.name}
+                        </Text>
+                    </Text>
                 </View>
             </View>
             <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             <ScrollView style={style.content}>
+                {
+                    props.API.DATA.hasPremium || <>
+                        <TouchableOpacity style={style.premiumWrapper} onPress={() => _navigateToPremium()} activeOpacity={0.36} />
+                        <TouchableOpacity style={style.premiumTextWrapper} activeOpacity={0.7} onPress={() => _navigateToPremium()}>
+                            <View style={style.premiumSegmentLeft}>
+                                <View style={style.premiumSegmentIconWrapper}>
+                                    <FontAwesomeIcon icon={faCrown} size={14} color={"#000"} />
+                                </View>
+                            </View>
+                            <View style={style.premiumSegmentMid}>
+                                <Text style={{ fontSize: 10, fontWeight: "bold" }}>{I18n.t("buy_premium_title_qsettings")}</Text>
+                                <Text style={{ fontSize: 12 }}>{I18n.t("buy_premium_desc_qsettings")}</Text>
+                            </View>
+                            {
+                                /*
+                                    <View style={style.premiumSegmentRight}>
+
+                                    </View>
+                                */
+                            }
+
+                        </TouchableOpacity>
+                    </>
+                }
+
                 <View style={{ ...style.questionSettingsWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                     <View style={style.elementLogoWrapper}>
                         <Image

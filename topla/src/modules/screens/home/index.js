@@ -40,7 +40,9 @@ const HomeScreen = props => {
                         question={question}
                     />)
                 })}
-                <Text>{JSON.stringify(props.API.DATA)}</Text>
+                {
+                    //<Text>{JSON.stringify(props.API.DATA)}</Text>
+                }
             </ScrollView>
         </SafeAreaView>
     );
