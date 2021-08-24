@@ -4,10 +4,10 @@ import { persistCombineReducers } from 'redux-persist';
 import { AdMobInterstitial } from 'react-native-admob'
 import Config from 'react-native-config';
 
-import API from './API'
-import questionSettings from './questionSettings'
-import currentQuestion from './currentQuestion'
-import settings from './settings'
+import API from './API';
+import questionSettings from './questionSettings';
+import currentQuestion from './currentQuestion';
+import settings from './settings';
 
 const persistConfig = {
     key: 'root',

@@ -46,6 +46,7 @@ const ResultScreen = props => {
                     {props.currentQuestion.stats.totalCorrect == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Doğru Sayısı: {props.currentQuestion.stats.totalCorrect}</Text>}
                     {props.currentQuestion.stats.totalWrong == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Yanlış Sayısı: {props.currentQuestion.stats.totalWrong}</Text>}
                     {props.currentQuestion.stats.totalEmpty == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Boş Sayısı: {props.currentQuestion.stats.totalEmpty}</Text>}
+                    <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Toplam Soru: {props.questionSettings.questionCount}</Text>
                 </View>
             </View>
             <ScrollView style={style.content}>
@@ -73,8 +74,6 @@ const ResultScreen = props => {
                             {
                                 element.questionEmpty || (element.questionAnswerCorrect || <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>)
                             }
-
-                            <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Toplam Soru: {props.questionSettings.questionCount}</Text>
 
                             <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>Süre: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
                         </View>

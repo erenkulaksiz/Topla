@@ -32,60 +32,16 @@ export default (state = INITIAL_STATE, action) => {
         case 'API_REGISTER':
             console.log("@API_REGISTER w/ URL: ", API_URL);
 
-            const registerDevice = async () => {
-                return await fetch(API_URL + '/device', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        uuid: action.payload.uuid,
-                        bundle_id: action.payload.bundleId,
-                        platform: Platform.OS,
-                        language_code: deviceLanguage,
-                        app_version: getBuildNumber(),
-                        country_code: RNLocalize.getCountry(),
-                        timezone: RNLocalize.getTimeZone(),
-                        model: action.payload.model,
-                    }),
-                }).catch(function (error) {
-                    throw error;
-                });
-            }
-
-            //if (state.connection) {
-            registerDevice().then(response => {
-                console.log("response status ", response.status);
-                response.json().then((data) => {
-                    console.log("@api response: ", data);
-                    if (data.success) {
-                        console.log("@API_REGISTER SUCCESSFUL");
-                        console.log("Got products: ", data.APP_PRODUCTS)
-                        state.DATA = data;
-                        state.APP = {
-                            latestVersion: data.APP_LATEST_VERSION,
-                            softUpdateVer: data.APP_SOFT_UPDATE_VER,
-                            hardUpdateVer: data.APP_HARD_UPDATE_VER,
-                            products: data.APP_PRODUCTS,
-                        }
-                    } else {
-                        console.log("@API_REGISTER ERROR");
-                    }
-                    if (response.status == 404) {
-                        throw [data, response.status];
-                    }
-                })
-            }).catch(err => {
-                console.log("[ERROR on REDUCER]: ", err);
-                state = {
-                    ...state,
-                    apiError: err[0],
-                    apiStatus: err[1],
+            return {
+                ...state,
+                DATA: action.payload.data,
+                APP: {
+                    latestVersion: action.payload.data.APP_LATEST_VERSION,
+                    softUpdateVer: action.payload.data.APP_SOFT_UPDATE_VER,
+                    hardUpdateVer: action.payload.data.APP_HARD_UPDATE_VER,
+                    products: action.payload.data.APP_PRODUCTS,
                 }
-            });
-
-            return state
+            }
 
         case 'API_LOG':
             console.log("@API_LOG w/ URL: ", API_URL);

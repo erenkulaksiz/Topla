@@ -71,7 +71,20 @@ const QuestionSettings = props => {
             });
             */
 
+            // Check if this is a versus setting
+
+            /*
+
+            if (props.route.params.question.isVersusMode) {
+                props.navigation.navigate('VersusScreen', { question: question });
+            } else {
+                props.navigation.navigate('QuestionScreen', { question: question });
+            }
+
+            */
+
             props.navigation.navigate('QuestionScreen', { question: question });
+
             console.log("Should navigate now !!!");
             //store.dispatch({ type: 'SET_AD_READY', payload: false });
             //store.dispatch({ type: 'LOAD_ADS' });
@@ -130,7 +143,13 @@ const QuestionSettings = props => {
         } else {
             if (props.API.DATA.API_TOKEN) {
                 if (props.API.DATA.hasPremium) {
-                    props.navigation.navigate('QuestionScreen', { question: question })
+
+
+                    if (props.route.params.question.isVersusMode) {
+                        props.navigation.navigate('VersusScreen', { question: question });
+                    } else {
+                        props.navigation.navigate('QuestionScreen', { question: question });
+                    }
 
                     /*
 
@@ -296,18 +315,7 @@ const QuestionSettings = props => {
                 </View>
             )
         },
-        incrementals: (props) => {
-            const { onDecrementPress,
-                onIncrementPress,
-                value = 0,
-                isEditable = false,
-                isSeconds = false,
-                onInputChange,
-                inputValue,
-                incrementalValue = 0,
-                decrementalValue = 0,
-                darkMode = false,
-            } = props;
+        incrementals: ({ onDecrementPress, onIncrementPress, value = 0, isEditable = false, isSeconds = false, onInputChange, inputValue, incrementalValue = 0, decrementalValue = 0, darkMode = false }) => {
             return (
                 <View style={style.setting_incrementWrapper}>
                     <View style={style.setting_increment}>
@@ -345,18 +353,22 @@ const QuestionSettings = props => {
             <Header backShown onBack={() => props.navigation.goBack()} />
             <View style={style.headerContainer}>
                 <View>
-                    <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("question_settings")}</Text>
-                </View>
-                <View style={style.headerTextWrapperRight}>
-                    <Text style={{
-                        ...style.headerTextQuestionSettings,
-                        color: Theme(props.settings.darkMode).textDefault,
-                        fontWeight: "bold"
-                    }}>{I18n.t("question_defaults")} - <Text style={{ color: props.route.params.question.titleColor }}>
-                            {props.route.params.question.name}
-                        </Text>
+                    <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>
+                        {props.route.params.question.isVersusMode ? "Karşılıklı Hız Yarışı" : I18n.t("question_settings")}
                     </Text>
                 </View>
+                {
+                    props.route.params.question.isVersusMode || <View style={style.headerTextWrapperRight}>
+                        <Text style={{
+                            ...style.headerTextQuestionSettings,
+                            color: Theme(props.settings.darkMode).textDefault,
+                            fontWeight: "bold"
+                        }}>{I18n.t("question_defaults")} - <Text style={{ color: props.route.params.question.titleColor }}>
+                                {props.route.params.question.name}
+                            </Text>
+                        </Text>
+                    </View>
+                }
             </View>
             <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
             <ScrollView style={style.content}>
@@ -373,14 +385,6 @@ const QuestionSettings = props => {
                                 <Text style={{ fontSize: 10, fontWeight: "bold" }}>{I18n.t("buy_premium_title_qsettings")}</Text>
                                 <Text style={{ fontSize: 12 }}>{I18n.t("buy_premium_desc_qsettings")}</Text>
                             </View>
-                            {
-                                /*
-                                    <View style={style.premiumSegmentRight}>
-
-                                    </View>
-                                */
-                            }
-
                         </TouchableOpacity>
                     </>
                 }

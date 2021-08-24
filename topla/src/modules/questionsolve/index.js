@@ -15,13 +15,18 @@ const QuestionSolve = props => {
 
     return (
         <View style={style.container}>
-            <View style={{ ...style.questionTitleWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+            <View style={{
+                ...style.questionTitleWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground,
+                paddingTop: props.versusMode ? 12 : 32,
+                paddingBottom: props.versusMode ? 12 : 32,
+            }}>
+
                 <Text style={{ ...style.questionTitle, color: Theme(props.settings.darkMode).textDefault }}>
-                    {props.currentQuestion.questions[props.currentQuestion.currentStep].question}
+                    {props.versusMode ? (props.player == 1 ? props.currentQuestion.questions[props.currentQuestion.versusStats.p1.currentStep].question : props.currentQuestion.questions[props.currentQuestion.versusStats.p2.currentStep].question) : props.currentQuestion.questions[props.currentQuestion.currentStep].question}
                 </Text>
             </View>
             <View style={style.buttonsWrapper}>
-                {props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions.map((element, index) => {
+                {props.currentQuestion.questions[(props.versusMode ? (props.player == 1 ? props.currentQuestion.versusStats.p1.currentStep : props.currentQuestion.versusStats.p2.currentStep) : props.currentQuestion.currentStep)].questionOptions.map((element, index) => {
                     return _renderButton(element, index);
                 })}
             </View>

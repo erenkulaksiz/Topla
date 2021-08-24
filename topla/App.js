@@ -12,6 +12,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import Config from 'react-native-config';
 import * as RNIap from 'react-native-iap';
+import Api from './src/utils/classes/api.js';
 
 // Firebase
 //import crashlytics from "@react-native-firebase/crashlytics";
@@ -21,10 +22,11 @@ import analytics from '@react-native-firebase/analytics';
 import Main from './src/modules/Main';
 import QuestionSettings from './src/modules/screens/questionsettings';
 import PremiumScreen from './src/modules/screens/premium';
-//import ContactScreen from './src/modules/screens/contact';
 import QuestionScreen from './src/modules/screens/question';
+import QuestionSlotScreen from './src/modules/screens/questionslot';
 import ResultScreen from './src/modules/screens/result';
-//import CreditsScreen from './src/modules/screens/credits';
+//import VersusScreen from './src/modules/screens/versus';
+//import VersusResults from './src/modules/screens/versusresults';
 
 import store from './src/store';
 
@@ -107,14 +109,28 @@ const App = () => {
       console.log("API URL: ", Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL);
       LogBox.ignoreAllLogs();
       await _setDeviceInfo.set();
-      await store.dispatch({
-        type: 'API_REGISTER',
-        payload: {
-          uuid: store.getState().mainReducer.deviceInfo.uuid,
-          bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-          model: store.getState().mainReducer.deviceInfo.model,
-        }
-      });
+
+      await Api.registerDevice({
+        uuid: store.getState().mainReducer.deviceInfo.uuid,
+        bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+        model: store.getState().mainReducer.deviceInfo.model,
+      })
+        .then(response => response.json())
+        .then(json => {
+          if (json.success) {
+            console.log("API HANDLER response -> ", json);
+            store.dispatch({
+              type: 'API_REGISTER',
+              payload: {
+                data: json
+              }
+            });
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
       await _INITIALIZE.connection();
       const appInstanceId = await analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);
@@ -136,15 +152,26 @@ const App = () => {
               setTimeout(() => _checkAppVersion(), 2000);
               _IAP.init();
             } else {
+              await Api.registerDevice({
+                uuid: store.getState().mainReducer.deviceInfo.uuid,
+                bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                model: store.getState().mainReducer.deviceInfo.model,
+              })
+                .then(response => response.json())
+                .then(json => {
+                  if (json.success) {
+                    console.log("API HANDLER response -> ", json);
+                    store.dispatch({
+                      type: 'API_REGISTER',
+                      payload: { data: json }
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+
               console.log("API_STATE: ", store.getState().API);
-              await store.dispatch({
-                type: 'API_REGISTER',
-                payload: {
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                  model: store.getState().mainReducer.deviceInfo.model,
-                }
-              });
             }
             await store.dispatch({ type: "API_RETRY" });
             if (Config.API_MAX_RETRIES_ENABLED == 'true') {
@@ -170,9 +197,13 @@ const App = () => {
         .catch(() => {
           console.log("store error on IAP");
 
+          alert("Couldn't connect to RNIAP");
+
           RNIap.endConnection();
         })
         .then(async () => {
+
+          //alert("Connected to RNIAP");
 
           const availablePurchases = await RNIap.getAvailablePurchases();
           console.log("Available Purchases: ", availablePurchases);
@@ -200,14 +231,26 @@ const App = () => {
 
             if (!(store.getState().API.iapInitData.hasPremium == store.getState().API.DATA.hasPremium)) {
               console.log("Api state and database doesn't match, refreshing register");
-              await store.dispatch({
-                type: 'API_REGISTER',
-                payload: {
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                  model: store.getState().mainReducer.deviceInfo.model,
-                }
-              });
+              await Api.registerDevice({
+                uuid: store.getState().mainReducer.deviceInfo.uuid,
+                bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                model: store.getState().mainReducer.deviceInfo.model,
+              })
+                .then(response => response.json())
+                .then(json => {
+                  if (json.success) {
+                    console.log("API HANDLER response -> ", json);
+                    store.dispatch({
+                      type: 'API_REGISTER',
+                      payload: {
+                        data: json
+                      }
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.error(error);
+                });
             } else {
               console.log("API and iapInit hasPremium matches");
             }
@@ -236,14 +279,26 @@ const App = () => {
 
                   setTimeout(async () => {
                     // Reload
-                    await store.dispatch({
-                      type: 'API_REGISTER',
-                      payload: {
-                        uuid: store.getState().mainReducer.deviceInfo.uuid,
-                        bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                        model: store.getState().mainReducer.deviceInfo.model,
-                      }
-                    });
+                    await Api.registerDevice({
+                      uuid: store.getState().mainReducer.deviceInfo.uuid,
+                      bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                      model: store.getState().mainReducer.deviceInfo.model,
+                    })
+                      .then(response => response.json())
+                      .then(json => {
+                        if (json.success) {
+                          console.log("API HANDLER response -> ", json);
+                          store.dispatch({
+                            type: 'API_REGISTER',
+                            payload: {
+                              data: json
+                            }
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        console.error(error);
+                      });
                   }, 2000);
                 });
               });
@@ -349,20 +404,6 @@ const App = () => {
                 name="PremiumScreen"
                 component={PremiumScreen}
               />
-              {/*
-              
-              <Stack.Screen
-                name="ContactScreen"
-                component={ContactScreen}
-              /> 
-              */}
-              {/*
-              <Stack.Screen
-                name="CreditsScreen"
-                component={CreditsScreen}
-              /> 
-
-              */}
               <Stack.Screen
                 name="QuestionScreen"
                 component={QuestionScreen}
@@ -376,6 +417,10 @@ const App = () => {
                 options={{
                   gestureEnabled: false,
                 }}
+              />
+              <Stack.Screen
+                name="QuestionSlotScreen"
+                component={QuestionSlotScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>

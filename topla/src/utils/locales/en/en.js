@@ -2,6 +2,14 @@ import Config from 'react-native-config';
 
 export default {
     home: "Home",
+    home_speedTest: "SPEED TEST",
+    home_speedTestTitle: "Speed Test",
+    home_childPlay: "CHILD PLAY",
+    home_childPlayTitle: "Child Play",
+    home_learn: "LEARN",
+    home_learnTitle: "Learn",
+    home_games: "GAMES",
+    home_gamesTitle: "Games",
     settings: "Settings",
     settings_refreshSubscription: "Refresh Subscription",
     settings_contact: "Contact",
@@ -59,4 +67,9 @@ export default {
     iap_weekly_title: "Topla Premium Weekly",
     buy_premium_title_qsettings: "You can customize question settings by buying Topla Premium!",
     buy_premium_desc_qsettings: "Touch here for more information",
+    questionPlay_speed_title: "Maths Speed Test",
+    questionPlay_speed_desc: "You can test your own mathematics speed and see the results",
+    questionPlay_versus_title: "Maths Race",
+    questionPlay_versus_desc: "You can make a race with your friend by splitting the screen to half",
+    childplay_title_adition: "Additive Operations",
 };

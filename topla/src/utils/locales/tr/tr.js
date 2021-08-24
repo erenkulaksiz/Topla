@@ -2,7 +2,15 @@ import Config from 'react-native-config';
 
 export default {
     home: "Ana Sayfa",
+    home_speedTest: "HIZ TESTI",
+    home_speedTestTitle: "Hız Testi",
+    home_childPlay: "ÇOCUK",
+    home_childPlayTitle: "Çocuk",
+    home_learn: "ÖĞREN",
+    home_learnTitle: "Öğren",
     settings: "Ayarlar",
+    home_games: "OYUNLAR",
+    home_gamesTitle: "Oyunlar",
     settings_refreshSubscription: "Aboneliği Geri Yükle",
     settings_contact: "İletişim",
     settings_removeAds: "Reklamları Kaldır",
@@ -59,4 +67,9 @@ export default {
     iap_weekly_title: "Topla Haftalık Premium",
     buy_premium_title_qsettings: "Soru ayarlarını Topla Premium alarak değiştirebilirsiniz!",
     buy_premium_desc_qsettings: "Buraya dokunarak daha fazla bilgi alabilirsiniz",
+    questionPlay_speed_title: "Matematik Hız Testi",
+    questionPlay_speed_desc: "Kendi hızınızı test edebilir & sonuçları görüntüleyebilirsiniz",
+    questionPlay_versus_title: "Karşılıklı Matematik Yarışı",
+    questionPlay_versus_desc: "Ekran ikiye bölünür ve arkadaşınızla karşılıklı matematik hızınızı yarıştırabilirsiniz",
+    childplay_title_adition: "Toplama İşlemleri",
 };

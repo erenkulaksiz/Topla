@@ -10,27 +10,26 @@ import Theme from '../../themes'
 
 const QuestionSlot = props => {
     return (
-        <View style={style.container}>
+        <TouchableOpacity style={{ ...style.container, shadowColor: props.settings.darkMode ? "#FFF" : "#919191" }}
+            activeOpacity={0.7}
+            onPress={() => props.onPlay()}>
             <View style={{
                 ...style.element,
-                backgroundColor: Theme(props.settings.darkMode).questionSlotBackground,
-                shadowColor: props.settings.darkMode ? "#FFF" : "#919191"
+                backgroundColor: Theme(props.settings.darkMode).questionSlotBackground
             }}>
-                <Image
-                    style={style.elementLogo}
-                    source={require('../../tc.png')} />
+                <Image style={style.elementLogo} source={require('../../tc.png')} />
+                { // #TODO: make a proper requires premium alert
+                    (props.question.requiresPremium && props.API.DATA.hasPremium == false) && <Text>You need to buy premium to reach this type of question.</Text>
+                }
                 <Text style={{ ...style.elementHardness, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_hardnessLevel")} <Text style={{ color: props.question.titleColor, fontWeight: "bold" }}>{props.question.name}</Text></Text>
                 <View style={style.elementBar} />
                 <Text style={{ ...style.elementContent, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_content")} <Text style={{ flex: 1, fontSize: 12 }}>{props.question.content}</Text></Text>
                 <Text style={{ ...style.elementBasamak, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_digit")} <Text style={{ flex: 1 }}>{props.question.digit}</Text></Text>
             </View>
-            <TouchableOpacity
-                style={style.play}
-                activeOpacity={0.7}
-                onPress={() => props.onPlay()}>
+            <View style={style.play}>
                 <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />
-            </TouchableOpacity>
-        </View>
+            </View>
+        </TouchableOpacity>
     );
 }
 
@@ -38,6 +37,7 @@ const mapStateToProps = (state) => {
     return {
         reducer: state.mainReducer,
         settings: state.settings,
+        API: state.API,
     }
 };
 

@@ -67,14 +67,27 @@ const OptionsScreen = props => {
 
                         if (!(props.API.iapInitData.hasPremium == props.API.DATA.hasPremium)) {
                             console.log("Api state and database doesn't match, refreshing register");
-                            await props.dispatch({
-                                type: 'API_REGISTER',
-                                payload: {
-                                    uuid: props.reducer.deviceInfo.uuid,
-                                    bundleId: props.reducer.deviceInfo.bundleId,
-                                    model: props.reducer.deviceInfo.model,
-                                }
-                            });
+
+                            await Api.registerDevice({
+                                uuid: props.reducer.deviceInfo.uuid,
+                                bundleId: props.reducer.deviceInfo.bundleId,
+                                model: props.reducer.deviceInfo.model,
+                            })
+                                .then(response => response.json())
+                                .then(json => {
+                                    if (json.success) {
+                                        console.log("API HANDLER response -> ", json);
+                                        store.dispatch({
+                                            type: 'API_REGISTER',
+                                            payload: {
+                                                data: json
+                                            }
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
                         } else {
                             console.log("API and iapInit hasPremium matches");
                         }
