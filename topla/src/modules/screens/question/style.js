@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
     container: {
@@ -91,7 +91,7 @@ export default StyleSheet.create({
     },
     buttonText: {
         fontSize: 16,
-        color: "#fff"
+        color: "#fff",
     },
     modalSeperator: {
         width: "100%",
@@ -103,5 +103,151 @@ export default StyleSheet.create({
     modalTitle: {
         fontSize: 20,
         color: "#0F7CBB",
+    },
+    versusContainer: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        zIndex: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    versusBox: {
+        height: "90%",
+        width: "90%",
+        overflow: "hidden",
+        elevation: 14,
+        backgroundColor: "#fff",
+        borderRadius: 14,
+    },
+    overlayReadyWrapper: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        zIndex: 99,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    overlayReady: {
+        width: "90%",
+        height: "90%",
+        elevation: 16,
+        backgroundColor: "#fff",
+        borderRadius: 24,
+        overflow: "hidden",
+    },
+    bottomButton: {
+        position: "absolute",
+        width: "90%",
+        height: 46,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0F7CBB",
+        borderRadius: 32,
+        flexDirection: "row",
+    },
+    playerReadyTitleWrapper: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    playerReadyTitle: {
+        fontSize: 32,
+        fontWeight: "bold",
+        marginTop: 8,
+        marginBottom: 8,
+    },
+    playerReadyIcon: {
+        flex: 70,
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    playerReadyButtonWrapper: {
+        flex: 30,
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    playerReadyButtonText: {
+        fontSize: 15,
+        color: "#fff",
+        marginLeft: 8,
+    },
+    pageWinnerContainer: {
+        flex: 1,
+        alignItems: "center",
+    },
+    pageWinnerTextWrapper: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    pageWinnerTitle: {
+        fontSize: 32,
+        marginTop: 8,
+    },
+    pageTimeTextWrapper: {
+        width: "100%",
+        marginTop: 4,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    pageTimeText: {
+        fontSize: 22,
+        color: "#000",
+    },
+    pageWinnerCorrects: {
+        width: "100%",
+        marginTop: 4,
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+    },
+    pageWinnerProgressWrapper: {
+        width: "80%",
+        marginTop: 16
+    },
+    pageWinnerResultText: {
+        fontSize: 20
+    },
+    pageWinnerButtonsWrapper: {
+        flex: 1,
+        flexDirection: "row",
+    },
+    buttonWrapper: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    pageWinnerButton: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    pageWinnerButtonIcon: {
+        width: 64,
+        height: 64,
+        padding: 8,
+        backgroundColor: "#0F7CBB",
+        borderRadius: 64,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    pageWinnerButtonText: {
+        color: "#0F7CBB",
+        fontSize: 16,
+        marginTop: 8,
+    },
+    playerFinishedWrapper: {
+        flex: 1,
+        backgroundColor: "#eee",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    playerReadyDesc: {
+        width: "100%",
+        height: "12%",
+        justifyContent: "center",
+        alignItems: "center",
     }
 });

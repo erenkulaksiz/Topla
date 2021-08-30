@@ -25,8 +25,6 @@ import PremiumScreen from './src/modules/screens/premium';
 import QuestionScreen from './src/modules/screens/question';
 import QuestionSlotScreen from './src/modules/screens/questionslot';
 import ResultScreen from './src/modules/screens/result';
-//import VersusScreen from './src/modules/screens/versus';
-//import VersusResults from './src/modules/screens/versusresults';
 
 import store from './src/store';
 
@@ -68,7 +66,7 @@ const App = () => {
   }
 
   const _setDeviceInfo = {
-    deviceInfo: () => {
+    deviceInfo() {
       return {
         uuid: getUniqueId(),
         id: getDeviceId(),
@@ -78,8 +76,8 @@ const App = () => {
         version: getVersion(),
       }
     },
-    set: async () => {
-      await getLastUpdateTime().then((lastUpdateTime) => {
+    set() {
+      getLastUpdateTime().then((lastUpdateTime) => {
         const deviceInfo = { ..._setDeviceInfo.deviceInfo(), lastUpdated: lastUpdateTime };
         store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
       });

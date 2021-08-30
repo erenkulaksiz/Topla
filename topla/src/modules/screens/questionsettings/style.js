@@ -44,7 +44,6 @@ export default StyleSheet.create({
         bottom: 16,
     },
     bottomButton: {
-        position: "absolute",
         width: "90%",
         height: 46,
         alignItems: "center",

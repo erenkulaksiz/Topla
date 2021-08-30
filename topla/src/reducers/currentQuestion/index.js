@@ -11,6 +11,9 @@ const INITIAL_STATE = {
         totalWrong: 0,
     },
     versusStats: {
+        gameFinished: false,
+        gameStarted: false,
+        winner: 0,
         p1: {
             finished: false,
             currentStep: 0,
@@ -19,6 +22,7 @@ const INITIAL_STATE = {
             totalCorrect: 0,
             totalEmpty: 0,
             totalWrong: 0,
+            ready: false,
         },
         p2: {
             finished: false,
@@ -28,6 +32,7 @@ const INITIAL_STATE = {
             totalCorrect: 0,
             totalEmpty: 0,
             totalWrong: 0,
+            ready: false,
         },
     }
 };
@@ -37,6 +42,18 @@ export default (state = INITIAL_STATE, action) => {
         case 'SET_ACTIVE_QUESTION_SOLVING':
             console.log("set active question to " + action.payload);
             state.currentStep = action.payload;
+            return { ...state }
+
+        case 'SET_PLAYER1_READY':
+            state.versusStats.p1.ready = action.payload;
+            return { ...state }
+
+        case 'SET_PLAYER2_READY':
+            state.versusStats.p2.ready = action.payload;
+            return { ...state }
+
+        case 'SET_GAME_STARTED':
+            state.versusStats.gameStarted = action.payload;
             return { ...state }
 
         case 'GOTO_NEXT_QUESTION':
@@ -73,7 +90,8 @@ export default (state = INITIAL_STATE, action) => {
                 totalCorrect: 0,
                 totalEmpty: 0,
                 totalWrong: 0,
-            }
+            };
+            state.versusStats.winner = 0;
             state.versusStats.p2 = {
                 finished: false,
                 currentStep: 0,
@@ -82,7 +100,7 @@ export default (state = INITIAL_STATE, action) => {
                 totalCorrect: 0,
                 totalEmpty: 0,
                 totalWrong: 0,
-            }
+            };
             state.versusStats.p1 = {
                 finished: false,
                 currentStep: 0,
@@ -91,7 +109,7 @@ export default (state = INITIAL_STATE, action) => {
                 totalCorrect: 0,
                 totalEmpty: 0,
                 totalWrong: 0,
-            }
+            };
             return { ...state }
 
         case 'SET_STATS':
@@ -146,6 +164,11 @@ export default (state = INITIAL_STATE, action) => {
             console.log("NEW VALUE FOR STATS: ", action.payload);
             state.stats = action.payload;
             return { ...state }
+
+        case 'SET_VERSUS_GAME_FINISHED':
+            console.log("NEW VALUE FOR GAME FINISHED: ", action.payload);
+            state.versusStats.gameFinished = action.payload;
+            return { ...state }
         /*
                 case 'RESET_VERSUS_STATS':
                     console.log("VERSUS STATS: ", state.versusStats);
@@ -187,7 +210,29 @@ export default (state = INITIAL_STATE, action) => {
 
         case 'SET_PLAYER2_FINISHED_SOLVING':
             console.log("FINISHED SOLVING, PLAYER 2: ", action.payload);
-            return { ...state, versusStats: { ...state.versusStats, p2: { ...state.versusStats.p1, finished: action.payload } } }
+            return { ...state, versusStats: { ...state.versusStats, p2: { ...state.versusStats.p2, finished: action.payload } } }
+
+        case 'SET_VERSUS_PLAYER_STATS':
+            console.log("VERSUS PLAYERS STAT SET: ", action.payload);
+            state.versusStats = {
+                ...state.versusStats,
+                winner: action.payload.results.winner,
+                p1: {
+                    ...state.versusStats.p1,
+                    finalTime: action.payload.results.p1.finalTime,
+                    totalCorrect: action.payload.results.p1.totalCorrect,
+                    totalEmpty: action.payload.results.p1.totalEmpty,
+                    totalWrong: action.payload.results.p1.totalWrong,
+                },
+                p2: {
+                    ...state.versusStats.p2,
+                    finalTime: action.payload.results.p2.finalTime,
+                    totalCorrect: action.payload.results.p2.totalCorrect,
+                    totalEmpty: action.payload.results.p2.totalEmpty,
+                    totalWrong: action.payload.results.p2.totalWrong,
+                },
+            }
+            return { ...state }
 
         default:
             return state

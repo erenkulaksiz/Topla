@@ -71,21 +71,8 @@ const QuestionSettings = props => {
             });
             */
 
-            // Check if this is a versus setting
-
-            /*
-
-            if (props.route.params.question.isVersusMode) {
-                props.navigation.navigate('VersusScreen', { question: question });
-            } else {
-                props.navigation.navigate('QuestionScreen', { question: question });
-            }
-
-            */
-
             props.navigation.navigate('QuestionScreen', { question: question });
 
-            console.log("Should navigate now !!!");
             //store.dispatch({ type: 'SET_AD_READY', payload: false });
             //store.dispatch({ type: 'LOAD_ADS' });
         }
@@ -144,12 +131,7 @@ const QuestionSettings = props => {
             if (props.API.DATA.API_TOKEN) {
                 if (props.API.DATA.hasPremium) {
 
-
-                    if (props.route.params.question.isVersusMode) {
-                        props.navigation.navigate('VersusScreen', { question: question });
-                    } else {
-                        props.navigation.navigate('QuestionScreen', { question: question });
-                    }
+                    props.navigation.navigate('QuestionScreen', { question: question });
 
                     /*
 
@@ -354,7 +336,7 @@ const QuestionSettings = props => {
             <View style={style.headerContainer}>
                 <View>
                     <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>
-                        {props.route.params.question.isVersusMode ? "Karşılıklı Hız Yarışı" : I18n.t("question_settings")}
+                        {props.route.params.question.isVersusMode ? I18n.t("questionPlay_versus_title") : I18n.t("question_settings")}
                     </Text>
                 </View>
                 {
@@ -428,19 +410,21 @@ const QuestionSettings = props => {
 
                             </View>
                         </View>
-                        <View style={style.setting}>
-                            <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_optionCount")}: </Text>
-                            <View style={style.settingWrapper}>
+                        {
+                            props.route.params.question.isVersusMode || <View style={style.setting}>
+                                <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_optionCount")}: </Text>
+                                <View style={style.settingWrapper}>
 
-                                {_render.incrementals({
-                                    onDecrementPress: () => _decrementOptions(),
-                                    onIncrementPress: () => _incrementOptions(),
-                                    value: props.questionSettings.optionCount,
-                                    darkMode: props.settings.darkMode,
-                                })}
+                                    {_render.incrementals({
+                                        onDecrementPress: () => _decrementOptions(),
+                                        onIncrementPress: () => _incrementOptions(),
+                                        value: props.questionSettings.optionCount,
+                                        darkMode: props.settings.darkMode,
+                                    })}
 
+                                </View>
                             </View>
-                        </View>
+                        }
                         <View style={style.setting}>
                             <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>Soru Süresi: </Text>
                             <View style={style.settingWrapper}>

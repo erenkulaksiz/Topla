@@ -30,7 +30,7 @@ export default {
     question_sub: "Subtraction",
     question_mul: "Multiplication",
     question_div: "Division",
-    question_settings: "Settings", // #TODO: Eski hali: "Question Settings"
+    question_settings: "Settings", // Eski hali: "Question Settings"
     question_numberRange: "Maximum Range",
     question_count: "Question Count",
     question_optionCount: "Option Count",
@@ -72,4 +72,12 @@ export default {
     questionPlay_versus_title: "Maths Race",
     questionPlay_versus_desc: "You can make a race with your friend by splitting the screen to half",
     childplay_title_adition: "Additive Operations",
+    versus_ready_player_title: "PLAYER",
+    versus_ready: "READY",
+    versus_not_ready: "NOT READY",
+    versus_you_finished: "Waiting for other player to finish...",
+    versus_winner: "You Win",
+    versus_loser: "You Lost",
+    versus_question: "question",
+    versus_ready_desc: "Press 'READY' to start the game",
 };

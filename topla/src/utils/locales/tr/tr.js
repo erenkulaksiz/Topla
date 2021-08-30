@@ -72,4 +72,12 @@ export default {
     questionPlay_versus_title: "Karşılıklı Matematik Yarışı",
     questionPlay_versus_desc: "Ekran ikiye bölünür ve arkadaşınızla karşılıklı matematik hızınızı yarıştırabilirsiniz",
     childplay_title_adition: "Toplama İşlemleri",
+    versus_ready_player_title: "OYUNCU",
+    versus_ready: "HAZIR",
+    versus_not_ready: "HAZIR DEĞİL",
+    versus_you_finished: "Diğer oyuncunun bitirmesi bekleniyor...",
+    versus_winner: "Kazandın",
+    versus_loser: "Kaybettin",
+    versus_question: "soru",
+    versus_ready_desc: "Oyuna başlamak için \"HAZIR\" tuşuna basın.",
 };

@@ -35,7 +35,7 @@ const QuestionSlotScreen = props => {
             //snapToInterval={190}
             >
                 {props.questionSettings.questionInitials.map((question, index) => {
-                    return question.isVersusMode ? null : <QuestionSlot
+                    return question.isVersusMode || question.isChildPlay || question.isDragDrop ? null : <QuestionSlot
                         key={index}
                         onPlay={() => _questionPlay(question)}
                         question={question}
