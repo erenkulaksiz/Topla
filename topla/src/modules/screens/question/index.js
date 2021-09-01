@@ -404,23 +404,15 @@ const QuestionScreen = props => {
             const expBuilderKeys = {};
 
             for (let i = 0; i < props.questionSettings.digitLength; i++) {
-                expBuilder.map((element, index) => {
+                expBuilder.map((element) => {
                     if (element == expElements[i]) {
-                        props.currentQuestion.dragDropInput.map((element, index) => {
+                        props.currentQuestion.dragDropInput.map((element) => {
                             if (element.draggedTo == i) {
                                 expBuilderKeys[expElements[i]] = element.opt;
                             }
                         })
                         if (!expBuilderKeys[expElements[i]]) {
-                            let theresMult = false;
-                            props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation.map(el => {
-                                if (el == values[2]) theresMult = true;
-                            });
-                            if (theresMult) {
-                                expBuilderKeys[expElements[i]] = 1;
-                            } else {
-                                expBuilderKeys[expElements[i]] = 0;
-                            }
+                            expBuilderKeys[expElements[i]] = 0;
                         }
                     }
                 });
