@@ -116,6 +116,7 @@ const INITIAL_STATE = {
     questionCount: 5,
     optionCount: 4,
     digitLength: 3, // For Drag&Drop Gamemode
+    displayResultDragDrop: false, // For Drag&Drop Gamemode
     perQuestionTime: 5000,
     operations: {
         addition: true,

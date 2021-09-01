@@ -121,6 +121,7 @@ const QuestionScreen = props => {
             props.dispatch({ type: "RESET_QUESTION_RESULTS" });
             props.dispatch({ type: "SET_PLAYER1_READY", payload: false });
             props.dispatch({ type: "SET_PLAYER2_READY", payload: false });
+            props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
             _timer.pause();
             _timer.clear();
             props.navigation.removeListener('beforeRemove');
@@ -338,6 +339,126 @@ const QuestionScreen = props => {
             e.preventDefault();
             _timer.pause();
             props.dispatch({ type: "SET_MODAL", payload: { backQuestion: true } });
+        },
+        _onDragAnswerFinish({ element }) {
+
+            console.log("OnDragAnswerFinish element: ", element);
+
+            const isFullTrue = false;
+
+            props.dispatch({
+                type: "SET_DRAG_DROP_CURRENT_RESULT",
+                payload: Number(page._dragCalcResult())
+            });
+
+            props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: true });
+
+            /*
+            props.dispatch({
+                type: "PUSH_TO_QUESTION_RESULT",
+                payload: {
+                    question: props.currentQuestion.questions[props.currentQuestion.currentStep],
+                    questionStep: props.currentQuestion.currentStep,
+                    questionAnswerCorrect: element,
+                    questionAnswer: props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer,
+                    questionSolveTime: timer,
+                    questionTime: timer - thisQuestionTime
+                }
+            });
+
+            props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
+
+            if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
+                page._nextQuestion();
+            } else {
+                page._finishQuestionSolving();
+            }
+            */
+        },
+        _dragCalcResult() {
+            const expBuilder = [];
+            const expElements = ["x", "y", "z", "e", "a", "f", "k"];
+
+            const values = [
+                "addition",
+                "subtraction",
+                "multiplication",
+                "division"
+            ];
+
+            for (let i = 0; i < props.questionSettings.digitLength; i++) {
+                expBuilder.push(expElements[i]);
+                if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[i]) {
+                    if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[i] == values[0]) {
+                        expBuilder.push("+");
+                    } else if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[i] == values[1]) {
+                        expBuilder.push("-");
+                    } else if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[i] == values[2]) {
+                        expBuilder.push("*");
+                    }
+                }
+            }
+
+            const expBuilderStr = expBuilder.join("");
+
+            const expBuilderKeys = {};
+
+            for (let i = 0; i < props.questionSettings.digitLength; i++) {
+                expBuilder.map((element, index) => {
+                    if (element == expElements[i]) {
+                        props.currentQuestion.dragDropInput.map((element, index) => {
+                            if (element.draggedTo == i) {
+                                expBuilderKeys[expElements[i]] = element.opt;
+                            }
+                        })
+                        if (!expBuilderKeys[expElements[i]]) {
+                            let theresMult = false;
+                            props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation.map(el => {
+                                if (el == values[2]) theresMult = true;
+                            });
+                            if (theresMult) {
+                                expBuilderKeys[expElements[i]] = 1;
+                            } else {
+                                expBuilderKeys[expElements[i]] = 0;
+                            }
+                        }
+                    }
+                });
+            }
+
+            const result = Parser.evaluate(expBuilderStr, expBuilderKeys);
+            console.log("Expbuilder Keys: ", expBuilderKeys);
+            console.log("Expbuilder: ", expBuilderStr);
+            console.log("ExpbuilderResult: ", result);
+
+            return result
+        },
+        _onDragInput() {
+
+            // Calculate current result.
+
+            console.log("Current question: ", props.currentQuestion.questions[props.currentQuestion.currentStep].question);
+            console.log("Current drag ONDRAGINPUT inputs: ", props.currentQuestion.dragDropInput);
+            props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: false });
+
+            if (props.currentQuestion.dragDropInput.length == 0) {
+                props.dispatch({
+                    type: "SET_DRAG_DROP_CURRENT_RESULT",
+                    payload: 0
+                });
+            } else if (props.currentQuestion.dragDropInput.length == 1) {
+                props.dispatch({
+                    type: "SET_DRAG_DROP_CURRENT_RESULT",
+                    payload: Number(props.currentQuestion.dragDropInput[0].opt)
+                });
+            } else {
+
+                //const sortedDragDropInput = _.sortBy(props.currentQuestion.dragDropInput, 'draggedTo');
+                props.dispatch({
+                    type: "SET_DRAG_DROP_CURRENT_RESULT",
+                    payload: Number(page._dragCalcResult())
+                });
+            }
         },
         _gotoNextQuestion({ element, index, player = 0 } = {}) {
 
@@ -573,15 +694,34 @@ const QuestionScreen = props => {
                     }
                 }
 
-                questions.map((element, index) => {
-                    for (let i = 1; i <= props.questionSettings.digitLength * 2; i++) {
-                        element.questionOptions.push(i);
+                questions.map((element) => {
+                    element.questionArguments.map((el) => {
+                        element.questionOptions.push(el);
+                    });
+
+                    for (let i = 0; i < props.questionSettings.digitLength; i++) {
+                        const option = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
+
+                        if (option == element.questionOptions) a--;
+                        else element.questionOptions.push(option);
                     }
-                })
+                });
+                // All options generated now give them index
+                questions.map((element) => {
+                    const oldOptions = element.questionOptions;
+                    const newOptions = [];
+                    oldOptions.map((el, index) => {
+                        newOptions.push({ opt: el, index: index });
+                    })
+                    element.questionOptions = newOptions;
+                });
+                console.log("Options: ", questions[0].questionOptions);
+
+                //questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5));
 
                 props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
+                console.log("all questions: ", questions);
                 props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
-
             }
         },
         _render: {
@@ -731,6 +871,8 @@ const QuestionScreen = props => {
                             onAnswerPress={(element, index) => page._gotoNextQuestion({ element: element, index: index })}
                             isChildPlay={props.route.params.question.isChildPlay}
                             isDragDrop={props.route.params.question.isDragDrop}
+                            onDragAnswerFinish={(element) => page._onDragAnswerFinish({ element: element })}
+                            onDraggedInput={() => page._onDragInput()}
                         />
                     </View>
                 </>
@@ -950,6 +1092,7 @@ const QuestionScreen = props => {
         props.dispatch({ type: "SET_GAME_STARTED", payload: false });
         props.dispatch({ type: "SET_PLAYER1_READY", payload: false });
         props.dispatch({ type: "SET_PLAYER2_READY", payload: false });
+        props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
         _timer.pause();
         _timer.clear();
         props.navigation.removeListener('beforeRemove');
@@ -961,6 +1104,16 @@ const QuestionScreen = props => {
             {props.route.params.question.isVersusMode || <Header pauseShown onPause={() => page._pause()} />}
             {props.route.params.question.isVersusMode ? (props.currentQuestion.isQuestionsLoaded && page._render.versus()) : (props.currentQuestion.isQuestionsLoaded && page._render.questions())}
             {page._render.modals()}
+            {
+                props.currentQuestion.dragDropNextQuestion && <View style={{ position: "absolute", width: "100%", height: "100%", justifyContent: "flex-end" }}>
+                    <TouchableOpacity
+                        style={{ padding: 12, margin: 24, backgroundColor: "#eee", justifyContent: "center", alignItems: "center" }}
+                        onPress={() => { }}
+                    >
+                        <Text>Sonraki Soru</Text>
+                    </TouchableOpacity>
+                </View>
+            }
         </SafeAreaView>
     );
 }

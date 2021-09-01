@@ -4,6 +4,9 @@ const INITIAL_STATE = {
     isQuestionsLoaded: false,
     questions: [],
     questionResults: [],
+    dragDropInput: [],
+    dragDropCurrentResult: 0,
+    dragDropNextQuestion: false, // Controls alt button on question screen
     stats: {
         finalTime: 0,
         totalCorrect: 0,
@@ -232,6 +235,35 @@ export default (state = INITIAL_STATE, action) => {
                     totalWrong: action.payload.results.p2.totalWrong,
                 },
             }
+            return { ...state }
+
+        case 'PUSH_TO_DRAG_DROP_INPUT':
+            console.log("DRAG DROP PUSHED: ", action.payload);
+            state.dragDropInput = [...state.dragDropInput, action.payload];
+            return { ...state }
+
+        case 'REMOVE_FROM_DRAG_DROP_INPUT':
+            console.log("DRAG DROP REMOVE: ", action.payload);
+            state.dragDropInput.map((element, index) => {
+                if (element.draggedTo == action.payload) {
+                    state.dragDropInput.splice(index, 1);
+                }
+            })
+            return { ...state }
+
+        case 'RESET_DRAG_DROP_INPUT':
+            console.log("DRAG DROP INPUT RESET");
+            state.dragDropInput = [];
+            return { ...state }
+
+        case 'SET_DRAG_DROP_CURRENT_RESULT':
+            console.log("DRAG DROP CURRENT RESULT: ", action.payload);
+            state.dragDropCurrentResult = action.payload;
+            return { ...state }
+
+        case 'SET_DRAG_DROP_NEXT_BUTTON':
+            console.log("Set dragdrop next button: ", action.payload);
+            state.dragDropNextQuestion = action.payload;
             return { ...state }
 
         default:
