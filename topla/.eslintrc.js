@@ -12,6 +12,7 @@ module.exports = {
     'eslint:recommended',
   ],
   parserOptions: {
+    parser: "babel-eslint",
     ecmaFeatures: {
       jsx: true,
     },
@@ -22,7 +23,12 @@ module.exports = {
     'react', 'react-hooks'
   ],
   rules: {
-    "linebreak-style": 0
+    "linebreak-style": 0,
+    "indent": ["error", 4],
+    "quotes": 0,
+    "eol-last": 0,
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
+    "no-unexpected-multiline": "warn"
   },
   settings: {
     react: {
