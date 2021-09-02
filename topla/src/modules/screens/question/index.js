@@ -39,7 +39,7 @@ const QuestionScreen = props => {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
             } else {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
-                //_timer.startTimer();
+                _timer.startTimer();
             }
         }
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e));
@@ -112,20 +112,7 @@ const QuestionScreen = props => {
             props.navigation.goBack();
         },
         _returnToHome() {
-            props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
-            props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-            props.dispatch({ type: "SET_VERSUS_GAME_FINISHED", payload: false });
-            props.dispatch({ type: "SET_GAME_STARTED", payload: false });
-            props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-            //props.dispatch({ type: "RESET_VERSUS_STATS" });
-            props.dispatch({ type: "RESET_QUESTION_RESULTS" });
-            props.dispatch({ type: "SET_PLAYER1_READY", payload: false });
-            props.dispatch({ type: "SET_PLAYER2_READY", payload: false });
-            props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
-            _timer.pause();
-            _timer.clear();
-            props.navigation.removeListener('beforeRemove');
-            props.navigation.popToTop();
+            onBackSubmit();
         },
         _finishQuestionSolving({ player = 0 } = {}) {
             //props.dispatch({ type: 'LOAD_ADS' }); // Load ads first
@@ -211,7 +198,6 @@ const QuestionScreen = props => {
                     props.dispatch({ type: "SET_VERSUS_GAME_FINISHED", payload: true });
                     props.dispatch({ type: "SET_PLAYER1_READY", payload: false });
                     props.dispatch({ type: "SET_PLAYER2_READY", payload: false });
-
                 }
 
             } else {
@@ -250,12 +236,10 @@ const QuestionScreen = props => {
             if (player != 0) {
                 if (player == 1) {
                     props.dispatch({ type: "GOTO_NEXT_QUESTION_PLAYER1" });
-                    //setPlayerQTime({ ...thisPQTime, player1: timer });
                     setSplitPlayerQ1Time(timer);
                     console.log("qTime PLAYER1: ", timer);
                 } else if (player == 2) {
                     props.dispatch({ type: "GOTO_NEXT_QUESTION_PLAYER2" });
-                    //setPlayerQTime({ ...thisPQTime, player2: timer });
                     setSplitPlayerQ2Time(timer);
                     console.log("qTime PLAYER2: ", timer);
                 }
@@ -340,11 +324,42 @@ const QuestionScreen = props => {
             _timer.pause();
             props.dispatch({ type: "SET_MODAL", payload: { backQuestion: true } });
         },
+        _dragDropNextQuestion() {
+
+            props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: false });
+
+            const trueAnswer = Parser.evaluate(props.currentQuestion.questions[props.currentQuestion.currentStep].question);
+            const userAnswer = page._dragCalcResult();
+
+            props.dispatch({
+                type: "PUSH_TO_QUESTION_RESULT",
+                payload: {
+                    question: props.currentQuestion.questions[props.currentQuestion.currentStep],
+                    questionStep: props.currentQuestion.currentStep,
+                    questionAnswerCorrect: userAnswer == trueAnswer,
+                    questionAnswer: props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer,
+                    questionSolveTime: timer,
+                    questionTime: timer - thisQuestionTime,
+                    questionGivenArguments: props.currentQuestion.dragDropInput,
+                }
+            });
+
+            props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
+
+            props.dispatch({
+                type: "SET_DRAG_DROP_CURRENT_RESULT",
+                payload: 0
+            });
+
+            if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
+                page._nextQuestion();
+            } else {
+                page._finishQuestionSolving();
+            }
+        },
         _onDragAnswerFinish({ element }) {
 
             console.log("OnDragAnswerFinish element: ", element);
-
-            const isFullTrue = false;
 
             props.dispatch({
                 type: "SET_DRAG_DROP_CURRENT_RESULT",
@@ -352,28 +367,6 @@ const QuestionScreen = props => {
             });
 
             props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: true });
-
-            /*
-            props.dispatch({
-                type: "PUSH_TO_QUESTION_RESULT",
-                payload: {
-                    question: props.currentQuestion.questions[props.currentQuestion.currentStep],
-                    questionStep: props.currentQuestion.currentStep,
-                    questionAnswerCorrect: element,
-                    questionAnswer: props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer,
-                    questionSolveTime: timer,
-                    questionTime: timer - thisQuestionTime
-                }
-            });
-
-            props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
-
-            if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
-                page._nextQuestion();
-            } else {
-                page._finishQuestionSolving();
-            }
-            */
         },
         _dragCalcResult() {
             const expBuilder = [];
@@ -457,7 +450,6 @@ const QuestionScreen = props => {
             let questionAnswerCorrect = (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOptions[index] == props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer);
 
             if (player == 0) {
-
                 props.dispatch({
                     type: "PUSH_TO_QUESTION_RESULT",
                     payload: {
@@ -1084,7 +1076,12 @@ const QuestionScreen = props => {
         props.dispatch({ type: "SET_GAME_STARTED", payload: false });
         props.dispatch({ type: "SET_PLAYER1_READY", payload: false });
         props.dispatch({ type: "SET_PLAYER2_READY", payload: false });
+        props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: false });
         props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
+        props.dispatch({
+            type: "SET_DRAG_DROP_CURRENT_RESULT",
+            payload: 0
+        });
         _timer.pause();
         _timer.clear();
         props.navigation.removeListener('beforeRemove');
@@ -1097,12 +1094,12 @@ const QuestionScreen = props => {
             {props.route.params.question.isVersusMode ? (props.currentQuestion.isQuestionsLoaded && page._render.versus()) : (props.currentQuestion.isQuestionsLoaded && page._render.questions())}
             {page._render.modals()}
             {
-                props.currentQuestion.dragDropNextQuestion && <View style={{ position: "absolute", width: "100%", height: "100%", justifyContent: "flex-end" }}>
+                props.currentQuestion.dragDropNextQuestion && <View style={{ position: "absolute", width: "100%", height: "100%", justifyContent: "flex-end", alignItems: "center" }}>
                     <TouchableOpacity
-                        style={{ padding: 12, margin: 24, backgroundColor: "#eee", justifyContent: "center", alignItems: "center" }}
-                        onPress={() => { }}
+                        style={style.bottomButton}
+                        onPress={() => page._dragDropNextQuestion()}
                     >
-                        <Text>Sonraki Soru</Text>
+                        <Text style={{ color: "#fff", fontSize: 17 }}>Sonraki Soru</Text>
                     </TouchableOpacity>
                 </View>
             }

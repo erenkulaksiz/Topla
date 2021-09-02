@@ -59,6 +59,7 @@ const QuestionSolve = props => {
                                     borderWidth: 2,
                                     borderColor: "#7a7a7a",
                                     borderStyle: "dashed",
+                                    transform: [{ rotate: '4deg' }],
                                 }}>
                                 <Text style={{ fontSize: 24 }}>{ele.opt}</Text>
                             </DraxView>
@@ -130,12 +131,18 @@ const QuestionSolve = props => {
                     }}
                     payload={{ index: index, option: true }}
                     draggable={draggable}
+                    receivingStyle={{
+                        borderWidth: 2,
+                        borderColor: "#7a7a7a",
+                        borderStyle: "dashed",
+                    }}
                     hoverDraggingStyle={{
                         elevation: 24,
                         zIndex: 64,
                         borderWidth: 2,
                         borderColor: "#7a7a7a",
                         borderStyle: "dashed",
+                        transform: [{ rotate: '4deg' }],
                     }}>
                     <Text style={{ color: "#000", fontSize: 20 }}>{props.currentQuestion.dragDropInput.map((ele, ind) => {
                         if (ele.draggedTo == index) return <Text>{ele.opt}</Text>
@@ -158,10 +165,14 @@ const QuestionSolve = props => {
                 {elements}
             </View>
             <View style={{ width: "100%", marginTop: 24, marginLeft: 24, marginRight: 24, padding: 14, backgroundColor: "#eee", borderRadius: 12, flexDirection: "row" }}>
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text>Şu anki Sonuç</Text>
-                    <Text style={{ fontSize: 24, marginLeft: 12 }}>={props.currentQuestion.dragDropCurrentResult}</Text>
-                </View>
+
+                {
+                    props.questionSettings.displayResultDragDrop && <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                        <Text>Şu anki Sonuç</Text>
+                        <Text style={{ fontSize: 24, marginLeft: 12 }}>={props.currentQuestion.dragDropCurrentResult}</Text>
+                    </View>
+                }
+
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                     <Text>Cevap</Text>
                     <Text style={{ fontSize: 24, marginLeft: 12 }}>={props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer}</Text>
@@ -214,6 +225,7 @@ const QuestionSolve = props => {
 
 const mapStateToProps = (state) => {
     return {
+        questionSettings: state.questionSettings,
         currentQuestion: state.currentQuestion,
         settings: state.settings,
     }

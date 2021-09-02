@@ -249,6 +249,11 @@ export default (state = INITIAL_STATE, action) => {
             state.rangeDecremental = action.payload;
             return { ...state }
 
+        case 'SET_RESULT_DRAG_DROP':
+            console.log("NEW VALUE FOR displayResultDragDrop: ", action.payload);
+            state.displayResultDragDrop = action.payload;
+            return { ...state }
+
         default:
             return state
     }

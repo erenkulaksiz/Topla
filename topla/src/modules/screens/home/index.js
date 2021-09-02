@@ -32,6 +32,10 @@ const HomeScreen = props => {
 
     const _navigateToDragDrop = () => {
 
+        props.navigation.navigate('QuestionSettings', { question: props.questionSettings.questionInitials[7] });
+
+        /*
+
         const _setQuestionParams = question => {
             // setMaxRange
             props.dispatch({ type: "SET_MAX_RANGE", payload: question.maxRange });
@@ -54,6 +58,8 @@ const HomeScreen = props => {
         _setQuestionParams(props.questionSettings.questionInitials[7]);
         // First, change settings
         props.navigation.navigate('QuestionScreen', { question: props.questionSettings.questionInitials[7] });
+
+        */
     }
 
     const _render = {

@@ -145,6 +145,7 @@ export default StyleSheet.create({
         backgroundColor: "#0F7CBB",
         borderRadius: 32,
         flexDirection: "row",
+        bottom: 12,
     },
     playerReadyTitleWrapper: {
         width: "100%",

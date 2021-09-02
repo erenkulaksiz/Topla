@@ -240,6 +240,20 @@ const QuestionSettings = props => {
                 <View>
                     <TouchableOpacity
                         style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_RESULT_DRAG_DROP", payload: !props.questionSettings.displayResultDragDrop })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.displayResultDragDrop}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_RESULT_DRAG_DROP", payload: isOn })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>Anlık Sonucu Göster</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
                         onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: !props.questionSettings.operations.addition } })}
                         activeOpacity={0.7}>
                         <ToggleSwitch
@@ -340,7 +354,7 @@ const QuestionSettings = props => {
                     </Text>
                 </View>
                 {
-                    props.route.params.question.isVersusMode || <View style={style.headerTextWrapperRight}>
+                    props.route.params.question.isVersusMode || props.route.params.question.isDragDrop || <View style={style.headerTextWrapperRight}>
                         <Text style={{
                             ...style.headerTextQuestionSettings,
                             color: Theme(props.settings.darkMode).textDefault,
@@ -411,7 +425,7 @@ const QuestionSettings = props => {
                             </View>
                         </View>
                         {
-                            props.route.params.question.isVersusMode || <View style={style.setting}>
+                            props.route.params.question.isVersusMode || props.route.params.question.isDragDrop || <View style={style.setting}>
                                 <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_optionCount")}: </Text>
                                 <View style={style.settingWrapper}>
 
