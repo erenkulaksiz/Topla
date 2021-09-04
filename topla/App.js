@@ -19,12 +19,12 @@ import Api from './src/utils/classes/api.js';
 import analytics from '@react-native-firebase/analytics';
 
 // Components 
-import Main from './src/modules/Main';
-import QuestionSettings from './src/modules/screens/questionsettings';
-import PremiumScreen from './src/modules/screens/premium';
-import QuestionScreen from './src/modules/screens/question';
-import QuestionSlotScreen from './src/modules/screens/questionslot';
-import ResultScreen from './src/modules/screens/result';
+import Home from './src/screens/root';
+import QuestionSettings from './src/screens/questionsettings';
+import PremiumScreen from './src/screens/premium';
+import QuestionScreen from './src/screens/question';
+import QuestionSlotScreen from './src/screens/questionslot';
+import ResultScreen from './src/screens/result';
 
 import store from './src/store';
 
@@ -392,7 +392,7 @@ const App = () => {
               }}>
               <Stack.Screen
                 name="Home"
-                component={Main}
+                component={Home}
               />
               <Stack.Screen
                 name="QuestionSettings"

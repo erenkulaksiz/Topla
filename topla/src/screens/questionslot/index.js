@@ -5,10 +5,10 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 //import Config from 'react-native-config';
 
 import style from "./style";
-import I18n from "../../../utils/i18n.js";
-import Theme from "../../../themes";
-import Header from "../../header";
-import QuestionSlot from "../../questionslot";
+import I18n from "../../utils/i18n.js";
+import Theme from "../../themes";
+import Header from "../../modules/header";
+import QuestionSlot from "../../modules/questionslot";
 
 const QuestionSlotScreen = props => {
 

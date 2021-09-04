@@ -7,13 +7,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Config from 'react-native-config';
 
-import I18n from "../utils/i18n.js";
-import Theme from '../themes'
+import I18n from "../../utils/i18n.js";
+import Theme from "../../themes";
 
 // Components 
-import HomeScreen from './screens/home'
-import OptionsScreen from './screens/options';
-import PremiumScreen from './screens/premium';
+import HomeScreen from "../home";
+import OptionsScreen from "../options";
+import PremiumScreen from "../premium";
 
 const Tab = createBottomTabNavigator();
 

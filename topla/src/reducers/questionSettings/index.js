@@ -117,6 +117,7 @@ const INITIAL_STATE = {
     optionCount: 4,
     digitLength: 3, // For Drag&Drop Gamemode
     displayResultDragDrop: false, // For Drag&Drop Gamemode
+    selectedDragDropMode: "dragdrop", // For Drag&Drop Gamemode
     perQuestionTime: 5000,
     operations: {
         addition: true,
@@ -252,6 +253,11 @@ export default (state = INITIAL_STATE, action) => {
         case 'SET_RESULT_DRAG_DROP':
             console.log("NEW VALUE FOR displayResultDragDrop: ", action.payload);
             state.displayResultDragDrop = action.payload;
+            return { ...state }
+
+        case 'SET_DRAG_DROP_MODE':
+            console.log("NEW VALUE FOR selectedDragDropMode: ", action.payload);
+            state.selectedDragDropMode = action.payload;
             return { ...state }
 
         default:

@@ -7,11 +7,11 @@ import { faSync, /*faBell,*/ faEnvelope, /*faCrown,*/ faAdjust, faIdCard, faHear
 import Config from 'react-native-config';
 import * as RNIap from 'react-native-iap';
 
-import I18n from "../../../utils/i18n.js";
-import Theme from '../../../themes'
-import Header from "../../header";
-import style from './style';
-import AwesomeAlert from 'react-native-awesome-alerts';
+import I18n from "../../utils/i18n.js";
+import Theme from "../../themes";
+import Header from "../../modules/header";
+import style from "./style";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const OptionsScreen = props => {
 

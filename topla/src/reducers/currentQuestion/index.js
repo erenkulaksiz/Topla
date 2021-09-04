@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     dragDropInput: [],
     dragDropCurrentResult: 0,
     dragDropNextQuestion: false, // Controls alt button on question screen
+    dragDropCurrTarget: 0,
     stats: {
         finalTime: 0,
         totalCorrect: 0,
@@ -264,6 +265,21 @@ export default (state = INITIAL_STATE, action) => {
         case 'SET_DRAG_DROP_NEXT_BUTTON':
             console.log("Set dragdrop next button: ", action.payload);
             state.dragDropNextQuestion = action.payload;
+            return { ...state }
+
+        case 'DECREASE_DRAG_DROP_TARGET':
+            console.log("dragdrop target: ", (state.dragDropCurrTarget -= 1));
+            state.dragDropCurrTarget -= 1;
+            return { ...state }
+
+        case 'INCREASE_DRAG_DROP_TARGET':
+            console.log("dragdrop target: ", (state.dragDropCurrTarget += 1));
+            state.dragDropCurrTarget += 1;
+            return { ...state }
+
+        case 'RESET_DRAG_DROP_TARGET':
+            console.log("dragdrop target reset");
+            state.dragDropCurrTarget = 0;
             return { ...state }
 
         default:

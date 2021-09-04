@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, View, Button, TextInput } from 'react-native';
 import style from './style';
 
-import Header from "../../header";
+import Header from "../../modules/header";
 
 const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

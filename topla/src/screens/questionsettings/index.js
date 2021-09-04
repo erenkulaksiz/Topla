@@ -6,6 +6,7 @@ import ToggleSwitch from 'toggle-switch-react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay, faCrown } from '@fortawesome/free-solid-svg-icons'
 import prettyMs from 'pretty-ms';
+import DropDownPicker from 'react-native-dropdown-picker';
 //import Config from 'react-native-config';
 import {
     AdMobInterstitial,
@@ -18,13 +19,20 @@ import {
 } from 'react-native-admob'
 */
 
-import I18n from "../../../utils/i18n.js";
-import Header from "../../header";
-import Theme from '../../../themes'
-import style from './style';
-import store from '../../../store/index.js';
+import I18n from "../../utils/i18n.js";
+import Header from "../../modules/header";
+import Theme from "../../themes";
+import style from "./style";
+import store from "../../store";
 
 const QuestionSettings = props => {
+
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' }
+    ]);
 
     useEffect(() => {
         // setQuestionParams
@@ -238,76 +246,81 @@ const QuestionSettings = props => {
         toggles: () => {
             return (
                 <View>
-                    <TouchableOpacity
-                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                        onPress={() => props.dispatch({ type: "SET_RESULT_DRAG_DROP", payload: !props.questionSettings.displayResultDragDrop })}
-                        activeOpacity={0.7}>
-                        <ToggleSwitch
-                            isOn={props.questionSettings.displayResultDragDrop}
-                            style={{ marginLeft: 12, marginRight: 12 }}
-                            onColor="green"
-                            offColor="red"
-                            size="small"
-                            onToggle={isOn => props.dispatch({ type: "SET_RESULT_DRAG_DROP", payload: isOn })}
-                            animationSpeed={100} />
-                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>Anlık Sonucu Göster</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: !props.questionSettings.operations.addition } })}
-                        activeOpacity={0.7}>
-                        <ToggleSwitch
-                            isOn={props.questionSettings.operations.addition}
-                            style={{ marginLeft: 12, marginRight: 12 }}
-                            onColor="green"
-                            offColor="red"
-                            size="small"
-                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: isOn } })}
-                            animationSpeed={100} />
-                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>+ {I18n.t("question_add")}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: !props.questionSettings.operations.subtraction } })}
-                        activeOpacity={0.7}>
-                        <ToggleSwitch
-                            isOn={props.questionSettings.operations.subtraction}
-                            style={{ marginLeft: 12, marginRight: 12 }}
-                            onColor="green"
-                            offColor="red"
-                            size="small"
-                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: isOn } })}
-                            animationSpeed={100} />
-                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>- {I18n.t("question_sub")}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: !props.questionSettings.operations.multiplication } })}
-                        activeOpacity={0.7}>
-                        <ToggleSwitch
-                            isOn={props.questionSettings.operations.multiplication}
-                            style={{ marginLeft: 12, marginRight: 12 }}
-                            onColor="green"
-                            offColor="red"
-                            size="small"
-                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: isOn } })}
-                            animationSpeed={100} />
-                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>x {I18n.t("question_mul")}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                        onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: !props.questionSettings.operations.division } })}
-                        activeOpacity={0.7}>
-                        <ToggleSwitch
-                            isOn={props.questionSettings.operations.division}
-                            style={{ marginLeft: 12, marginRight: 12 }}
-                            onColor="green"
-                            offColor="red"
-                            size="small"
-                            onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: isOn } })}
-                            animationSpeed={100} />
-                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>÷ {I18n.t("question_div")}</Text>
-                    </TouchableOpacity>
+                    {
+                        props.route.params.question.isDragDrop ? <>
+                            <TouchableOpacity
+                                style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                                onPress={() => props.dispatch({ type: "SET_RESULT_DRAG_DROP", payload: !props.questionSettings.displayResultDragDrop })}
+                                activeOpacity={0.7}>
+                                <ToggleSwitch
+                                    isOn={props.questionSettings.displayResultDragDrop}
+                                    style={{ marginLeft: 12, marginRight: 12 }}
+                                    onColor="green"
+                                    offColor="red"
+                                    size="small"
+                                    onToggle={isOn => props.dispatch({ type: "SET_RESULT_DRAG_DROP", payload: isOn })}
+                                    animationSpeed={100} />
+                                <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>Anlık Sonucu Göster</Text>
+                            </TouchableOpacity>
+                        </> : <>
+                            <TouchableOpacity
+                                style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                                onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: !props.questionSettings.operations.addition } })}
+                                activeOpacity={0.7}>
+                                <ToggleSwitch
+                                    isOn={props.questionSettings.operations.addition}
+                                    style={{ marginLeft: 12, marginRight: 12 }}
+                                    onColor="green"
+                                    offColor="red"
+                                    size="small"
+                                    onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: isOn } })}
+                                    animationSpeed={100} />
+                                <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>+ {I18n.t("question_add")}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                                onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: !props.questionSettings.operations.subtraction } })}
+                                activeOpacity={0.7}>
+                                <ToggleSwitch
+                                    isOn={props.questionSettings.operations.subtraction}
+                                    style={{ marginLeft: 12, marginRight: 12 }}
+                                    onColor="green"
+                                    offColor="red"
+                                    size="small"
+                                    onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, subtraction: isOn } })}
+                                    animationSpeed={100} />
+                                <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>- {I18n.t("question_sub")}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                                onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: !props.questionSettings.operations.multiplication } })}
+                                activeOpacity={0.7}>
+                                <ToggleSwitch
+                                    isOn={props.questionSettings.operations.multiplication}
+                                    style={{ marginLeft: 12, marginRight: 12 }}
+                                    onColor="green"
+                                    offColor="red"
+                                    size="small"
+                                    onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, multiplication: isOn } })}
+                                    animationSpeed={100} />
+                                <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>x {I18n.t("question_mul")}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                                onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: !props.questionSettings.operations.division } })}
+                                activeOpacity={0.7}>
+                                <ToggleSwitch
+                                    isOn={props.questionSettings.operations.division}
+                                    style={{ marginLeft: 12, marginRight: 12 }}
+                                    onColor="green"
+                                    offColor="red"
+                                    size="small"
+                                    onToggle={isOn => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, division: isOn } })}
+                                    animationSpeed={100} />
+                                <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>÷ {I18n.t("question_div")}</Text>
+                            </TouchableOpacity>
+                        </>
+                    }
                 </View>
             )
         },
@@ -384,12 +397,11 @@ const QuestionSettings = props => {
                         </TouchableOpacity>
                     </>
                 }
-
                 <View style={{ ...style.questionSettingsWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                     <View style={style.elementLogoWrapper}>
                         <Image
                             style={style.elementLogo}
-                            source={require('../../../tc.png')}
+                            source={require('../../tc.png')}
                             resizeMode={'contain'}
                         />
                     </View>
@@ -457,6 +469,31 @@ const QuestionSettings = props => {
                     </View>
                 </View>
             </ScrollView>
+            <View style={{ flex: 1, padding: 16 }}>
+                {
+                    /*
+                    <Picker
+                        selectedValue={props.questionSettings.selectedDragDropMode}
+                        onValueChange={(itemValue, itemIndex) => {
+                            props.dispatch({ type: "SET_DRAG_DROP_MODE", payload: itemValue })
+                        }
+
+                        }>
+                        <Picker.Item label="Sürükleme Modu" value="dragdrop" />
+                        <Picker.Item label="Buton Modu" value="button" />
+                    </Picker>
+                    */
+                }
+
+                <DropDownPicker
+                    open={open}
+                    value={value}
+                    items={items}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setItems}
+                />
+            </View>
             <View style={style.bottomButtonWrapper}>
                 <TouchableOpacity style={style.bottomButton} activeOpacity={0.7} onPress={() => _navigateToQuestion(props.route.params.question)}>
                     <FontAwesomeIcon icon={faPlay} size={12} color={"#fff"} />

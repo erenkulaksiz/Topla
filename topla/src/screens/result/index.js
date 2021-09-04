@@ -5,10 +5,10 @@ import prettyMs from 'pretty-ms';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
-import I18n from "../../../utils/i18n.js";
+import I18n from "../../utils/i18n.js";
 import style from "./style";
-import Header from "../../header";
-import Theme from "../../../themes";
+import Header from "../../modules/header";
+import Theme from "../../themes";
 
 const ResultScreen = props => {
 

@@ -3,8 +3,8 @@ import { Text, View } from "react-native";
 import { connect } from 'react-redux';
 
 import style from "./style";
-import I18n from "../../../utils/i18n.js";
-import Theme from "../../../themes";
+import I18n from "../../utils/i18n.js";
+import Theme from "../../themes";
 
 const LearnScreen = props => {
     return (

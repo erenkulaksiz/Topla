@@ -33,7 +33,9 @@ export default StyleSheet.create({
     },
     content: {
         flex: 1,
-        padding: 16,
+        paddingTop: 16,
+        paddingLeft: 16,
+        paddingRight: 16,
     },
     bottomButtonWrapper: {
         position: "absolute",

@@ -10,17 +10,17 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import Sound from 'react-native-sound';
 import { Parser } from 'expr-eval';
 
-import Theme from "../../../themes";
-import I18n from "../../../utils/i18n.js";
+import Theme from "../../themes";
+import I18n from "../../utils/i18n.js";
 import style from "./style";
-import Header from "../../header";
-import QuestionSolve from "../../questionsolve";
-import ProgressBar from "../../progressbar";
-import { map } from "../../../utils";
+import Header from "../../modules/header";
+import QuestionSolve from "../../modules/questionsolve";
+import ProgressBar from "../../modules/progressbar";
+import { map } from "../../utils";
 
 const sounds = {
-    correct: require('../../../../src/sounds/correct_2.mp3'),
-    wrong: require('../../../../src/sounds/wrong.mp3'),
+    correct: require('../../sounds/correct_2.mp3'),
+    wrong: require('../../sounds/wrong.mp3'),
 }
 
 const QuestionScreen = props => {
@@ -701,7 +701,8 @@ const QuestionScreen = props => {
                 });
                 console.log("Options: ", questions[0].questionOptions);
 
-                //questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5));
+                questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5));
+                // Randomize questionOptions. #TODO Test!
 
                 props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
                 console.log("all questions: ", questions);

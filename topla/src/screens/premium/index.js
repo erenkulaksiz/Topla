@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCrown } from '@fortawesome/free-solid-svg-icons'
 import * as RNIap from 'react-native-iap';
 
-import style from './style';
-import Header from "../../header";
-import I18n from "../../../utils/i18n.js";
-import Theme from '../../../themes'
+import style from "./style";
+import Header from "../../modules/header";
+import I18n from "../../utils/i18n.js";
+import Theme from "../../themes";
 
 const PremiumScreen = props => {
 

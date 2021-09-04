@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faGamepad, faPlay, faTachometerAlt, faFistRaised } from '@fortawesome/free-solid-svg-icons'
 
 import style from "./style";
-import I18n from "../../../utils/i18n.js";
-import Header from "../../header";
-import Theme from "../../../themes";
+import I18n from "../../utils/i18n.js";
+import Header from "../../modules/header";
+import Theme from "../../themes";
 import ChildPlaySlotScreen from "../childplayslot";
 import LearnScreen from "../learn";
 
@@ -77,7 +77,7 @@ const HomeScreen = props => {
                     ...style.element,
                     backgroundColor: Theme(props.settings.darkMode).questionSlotBackground
                 }}>
-                    <Image style={style.elementLogo} source={require('../../../tc.png')} />
+                    <Image style={style.elementLogo} source={require('../../tc.png')} />
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
                         <View>
                             <FontAwesomeIcon icon={faGamepad} size={30} color={Theme(props.settings.darkMode).textDefault} style={{ marginRight: 8 }} />
@@ -107,7 +107,7 @@ const HomeScreen = props => {
                     ...style.element,
                     backgroundColor: Theme(props.settings.darkMode).questionSlotBackground,
                 }}>
-                    <Image style={style.elementLogo} source={require('../../../tc.png')} />
+                    <Image style={style.elementLogo} source={require('../../tc.png')} />
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
                         <View>
                             <FontAwesomeIcon icon={faTachometerAlt} size={30} color={Theme(props.settings.darkMode).textDefault} style={{ marginRight: 8 }} />
@@ -136,7 +136,7 @@ const HomeScreen = props => {
                     ...style.element,
                     backgroundColor: Theme(props.settings.darkMode).questionSlotBackground,
                 }}>
-                    <Image style={style.elementLogo} source={require('../../../tc.png')} />
+                    <Image style={style.elementLogo} source={require('../../tc.png')} />
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
                         <View>
                             <FontAwesomeIcon icon={faFistRaised} size={30} color={Theme(props.settings.darkMode).textDefault} style={{ marginRight: 8 }} />

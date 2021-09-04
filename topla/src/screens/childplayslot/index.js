@@ -6,10 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faStar, faPlay } from '@fortawesome/free-solid-svg-icons'
 
 import style from "./style";
-import I18n from "../../../utils/i18n.js";
-import Theme from "../../../themes";
-import ProgressBar from "../../progressbar";
-import { map } from '../../../utils';
+import I18n from "../../utils/i18n.js";
+import Theme from "../../themes";
+import ProgressBar from "../../modules/progressbar";
+import { map } from '../../utils';
 
 const ChildPlaySlotScreen = props => {
 
@@ -27,7 +27,7 @@ const ChildPlaySlotScreen = props => {
                     ...style.element,
                     backgroundColor: Theme(props.settings.darkMode).questionSlotBackground
                 }}>
-                    <Image style={style.elementLogo} source={require('../../../tc.png')} />
+                    <Image style={style.elementLogo} source={require('../../tc.png')} />
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
                         <Text style={{ ...style.elementTitle, color: Theme(props.settings.darkMode).textDefault, height: "100%" }}>
                             {I18n.t("childplay_title_adition")}
