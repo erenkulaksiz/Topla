@@ -23,15 +23,14 @@ import I18n from "../../utils/i18n.js";
 import Header from "../../modules/header";
 import Theme from "../../themes";
 import style from "./style";
-import store from "../../store";
 
 const QuestionSettings = props => {
 
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState('dragdrop');
     const [items, setItems] = useState([
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' }
+        { label: 'Sürükle&Bırak Modu', value: 'dragdrop' },
+        { label: 'Buton Modu', value: 'button' }
     ]);
 
     useEffect(() => {
@@ -93,19 +92,19 @@ const QuestionSettings = props => {
         } else {
             console.log("Ad not ready, navigating to question");
             _navToQuestion();
-            store.dispatch({ type: 'LOAD_ADS' });
+            props.dispatch({ type: 'LOAD_ADS' });
         }
 
         AdMobInterstitial.addEventListener("adClosed", () => {
             console.log("!!! Ad closed!!!");
             _navToQuestion();
-            store.dispatch({ type: 'SET_AD_READY', payload: false });
-            store.dispatch({ type: 'LOAD_ADS' });
+            props.dispatch({ type: 'SET_AD_READY', payload: false });
+            props.dispatch({ type: 'LOAD_ADS' });
         });
 
         AdMobInterstitial.addEventListener("adFailedToLoad", () => {
             console.log("Cannot load ads!")
-            store.dispatch({ type: 'SET_AD_READY', payload: false });
+            props.dispatch({ type: 'SET_AD_READY', payload: false });
             _navToQuestion();
         });
     }
@@ -143,7 +142,7 @@ const QuestionSettings = props => {
 
                     /*
 
-                    store.dispatch({
+                    props.dispatch({
                         type: 'API_LOG',
                         payload: {
                             uuid: props.reducer.deviceInfo.uuid,
@@ -469,31 +468,19 @@ const QuestionSettings = props => {
                     </View>
                 </View>
             </ScrollView>
-            <View style={{ flex: 1, padding: 16 }}>
-                {
-                    /*
-                    <Picker
-                        selectedValue={props.questionSettings.selectedDragDropMode}
-                        onValueChange={(itemValue, itemIndex) => {
-                            props.dispatch({ type: "SET_DRAG_DROP_MODE", payload: itemValue })
-                        }
-
-                        }>
-                        <Picker.Item label="Sürükleme Modu" value="dragdrop" />
-                        <Picker.Item label="Buton Modu" value="button" />
-                    </Picker>
-                    */
-                }
-
-                <DropDownPicker
-                    open={open}
-                    value={value}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setItems}
-                />
-            </View>
+            {
+                props.route.params.question.isDragDrop && <View style={{ flex: 1, padding: 16 }}>
+                    <DropDownPicker
+                        open={open}
+                        value={value}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={items}
+                        itemSeparator
+                    />
+                </View>
+            }
             <View style={style.bottomButtonWrapper}>
                 <TouchableOpacity style={style.bottomButton} activeOpacity={0.7} onPress={() => _navigateToQuestion(props.route.params.question)}>
                     <FontAwesomeIcon icon={faPlay} size={12} color={"#fff"} />

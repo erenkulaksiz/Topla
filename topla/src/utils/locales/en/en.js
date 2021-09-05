@@ -71,6 +71,8 @@ export default {
     questionPlay_speed_desc: "You can test your own mathematics speed and see the results",
     questionPlay_versus_title: "Maths Race",
     questionPlay_versus_desc: "You can make a race with your friend by splitting the screen to half",
+    questionPlay_drag_drop_title: "Drag&Drop",
+    questionPlay_drag_drop_desc: "Drag and drop corresponding answers to empty boxes to find the correct answer",
     childplay_title_adition: "Additive Operations",
     versus_ready_player_title: "PLAYER",
     versus_ready: "READY",

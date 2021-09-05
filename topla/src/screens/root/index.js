@@ -17,7 +17,7 @@ import PremiumScreen from "../premium";
 
 const Tab = createBottomTabNavigator();
 
-const Home = (props) => {
+const Home = props => {
 
     return (
         <>

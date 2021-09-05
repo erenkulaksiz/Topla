@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Image } from "react-native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux';
+import PropTypes from "prop-types";
 
 import I18n from "../../utils/i18n.js";
 import style from './style';
@@ -31,6 +32,11 @@ const QuestionSlot = props => {
             </View>
         </TouchableOpacity>
     );
+}
+
+QuestionSlot.propTypes = {
+    onPlay: PropTypes.func,
+    question: PropTypes.object,
 }
 
 const mapStateToProps = (state) => {

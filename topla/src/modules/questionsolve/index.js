@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, TouchableOpacity } from "react-native";
 import { DraxProvider, DraxView } from 'react-native-drax';
 import { connect } from 'react-redux';
+import PropTypes from "prop-types";
 
 import style from './style';
 import Theme from '../../themes';
@@ -221,6 +222,19 @@ const QuestionSolve = props => {
             </View>
         </DraxProvider>
     );
+}
+
+QuestionSolve.PropTypes = {
+    versusMode: PropTypes.bool,
+    isDragDrop: PropTypes.bool,
+    player: PropTypes.number,
+    onDraggedInput: PropTypes.func,
+    onDragAnswerFinish: PropTypes.func,
+}
+QuestionSolve.defaultProps = {
+    versusMode: false,
+    isDragDrop: false,
+    player: 0,
 }
 
 const mapStateToProps = (state) => {

@@ -71,6 +71,8 @@ export default {
     questionPlay_speed_desc: "Kendi hızınızı test edebilir & sonuçları görüntüleyebilirsiniz",
     questionPlay_versus_title: "Karşılıklı Matematik Yarışı",
     questionPlay_versus_desc: "Ekran ikiye bölünür ve arkadaşınızla karşılıklı matematik hızınızı yarıştırabilirsiniz",
+    questionPlay_drag_drop_title: "Sürükle&Bırak",
+    questionPlay_drag_drop_desc: "İşlemlere gelen doğru sayıları sürükleyin ve bırakın",
     childplay_title_adition: "Toplama İşlemleri",
     versus_ready_player_title: "OYUNCU",
     versus_ready: "HAZIR",

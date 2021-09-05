@@ -33,30 +33,30 @@ const Stack = createStackNavigator();
 
 const App = () => {
 
-  const _checkAppVersion = async () => {
+  const _checkAppVersion = () => {
     console.log("Checking app version...");
     if (store.getState().API.DATA.API_TOKEN) {
       // Theres a api token present
       const { buildNumber } = store.getState().mainReducer.deviceInfo;
       const { softUpdateVer, hardUpdateVer } = store.getState().API.APP;
       if (buildNumber < hardUpdateVer) {
-        await store.dispatch({ type: "SET_MODAL", payload: { hardUpdate: true } })
+        store.dispatch({ type: "SET_MODAL", payload: { hardUpdate: true } })
       } else if (buildNumber >= hardUpdateVer) {
         if (store.getState().API.DATA.banned) {
-          await store.dispatch({ type: "SET_MODAL", payload: { banned: true } });
+          store.dispatch({ type: "SET_MODAL", payload: { banned: true } });
         } else {
           if (store.getState().API.DATA.APP_MAINTENANCE) {
-            await store.dispatch({ type: "SET_MODAL", payload: { maintenance: true } });
+            store.dispatch({ type: "SET_MODAL", payload: { maintenance: true } });
           } else {
             SplashScreen.hide();
           }
-          await store.getState().API.DATA.hasPremium || store.dispatch({ type: 'LOAD_ADS' });
+          store.getState().API.DATA.hasPremium || store.dispatch({ type: 'LOAD_ADS' });
 
           if (buildNumber < softUpdateVer) {
-            await store.dispatch({ type: "SET_MODAL", payload: { softUpdate: true, initialize: false } })
+            store.dispatch({ type: "SET_MODAL", payload: { softUpdate: true, initialize: false } })
           } else {
             console.log("app is up to date!! got: ", buildNumber, " needSoft: ", softUpdateVer, " needHard: ", hardUpdateVer);
-            await store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
+            store.dispatch({ type: "SET_MODAL", payload: { initialize: false } })
           }
         }
       }
@@ -102,13 +102,13 @@ const App = () => {
 
   const _INITIALIZE = {
     connTimer: null,
-    init: async () => {
+    init: () => {
       console.log("API Dev Mode: ", Config.DEV_MODE);
       console.log("API URL: ", Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL);
       LogBox.ignoreAllLogs();
-      await _setDeviceInfo.set();
+      _setDeviceInfo.set();
 
-      await Api.registerDevice({
+      Api.registerDevice({
         uuid: store.getState().mainReducer.deviceInfo.uuid,
         bundleId: store.getState().mainReducer.deviceInfo.bundleId,
         model: store.getState().mainReducer.deviceInfo.model,
@@ -129,8 +129,8 @@ const App = () => {
           console.error(error);
         });
 
-      await _INITIALIZE.connection();
-      const appInstanceId = await analytics().getAppInstanceId();
+      _INITIALIZE.connection();
+      const appInstanceId = analytics().getAppInstanceId();
       console.log("APP_INSTANCE_ID: ", appInstanceId);
     },
     connection: async () => {
@@ -297,7 +297,7 @@ const App = () => {
                       .catch(error => {
                         console.error(error);
                       });
-                  }, 2000);
+                  }, 1500);
                 });
               });
             } else {

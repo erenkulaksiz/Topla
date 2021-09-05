@@ -3,6 +3,7 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faPause } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import style from './style';
 import Theme from '../../themes'
@@ -44,6 +45,15 @@ const Header = props => {
             </View>
         </View>
     );
+}
+
+Header.propTypes = {
+    backShown: PropTypes.bool,
+    pauseShown: PropTypes.bool,
+}
+Header.defaultProps = {
+    backShown: false,
+    pauseShown: false,
 }
 
 const mapStateToProps = (state) => {
