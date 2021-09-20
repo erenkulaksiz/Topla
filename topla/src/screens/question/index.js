@@ -31,7 +31,7 @@ const QuestionScreen = props => {
     const [thisPlayerQ2Time, setSplitPlayerQ2Time] = useState(0);
     const [timerStarted, setTimerStarted] = useState(false);
 
-    useEffect(async () => {
+    useEffect(() => {
         console.log("question params: ", props.route.params);
         page._loadQuestions();
         if (!props.route.params.question.isVersusMode) {
@@ -337,7 +337,7 @@ const QuestionScreen = props => {
                     question: props.currentQuestion.questions[props.currentQuestion.currentStep],
                     questionStep: props.currentQuestion.currentStep,
                     questionAnswerCorrect: userAnswer == trueAnswer,
-                    questionAnswer: props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer,
+                    questionAnswer: userAnswer,
                     questionSolveTime: timer,
                     questionTime: timer - thisQuestionTime,
                     questionGivenArguments: props.currentQuestion.dragDropInput,
@@ -690,6 +690,11 @@ const QuestionScreen = props => {
                         else element.questionOptions.push(option);
                     }
                 });
+                console.log("Options: ", questions[0].questionOptions);
+
+                questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5));
+                // Randomize questionOptions. #TODO Test!
+
                 // All options generated now give them index
                 questions.map((element) => {
                     const oldOptions = element.questionOptions;
@@ -699,10 +704,6 @@ const QuestionScreen = props => {
                     })
                     element.questionOptions = newOptions;
                 });
-                console.log("Options: ", questions[0].questionOptions);
-
-                questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5));
-                // Randomize questionOptions. #TODO Test!
 
                 props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
                 console.log("all questions: ", questions);

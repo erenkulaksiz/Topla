@@ -9,9 +9,17 @@ import Theme from "../../themes";
 const LearnScreen = props => {
     return (
         <View style={{ flex: 1 }}>
-            <View style={style.headerContainer}>
-                <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("home_learnTitle")}</Text>
-                <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
+            {
+                /*
+                    <View style={style.headerContainer}>
+                        <Text style={{ ...style.headerText, color: Theme(props.settings.darkMode).text }}>{I18n.t("home_learnTitle")}</Text>
+                        <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
+                    </View>
+                */
+            }
+
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <Text style={{ color: "black", fontWeight: "bold", fontSize: 24 }}>Coming soon...</Text>
             </View>
         </View>
     );

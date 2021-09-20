@@ -469,6 +469,7 @@ const QuestionSettings = props => {
                 </View>
             </ScrollView>
             {
+                /*
                 props.route.params.question.isDragDrop && <View style={{ flex: 1, padding: 16 }}>
                     <DropDownPicker
                         open={open}
@@ -480,6 +481,7 @@ const QuestionSettings = props => {
                         itemSeparator
                     />
                 </View>
+                */
             }
             <View style={style.bottomButtonWrapper}>
                 <TouchableOpacity style={style.bottomButton} activeOpacity={0.7} onPress={() => _navigateToQuestion(props.route.params.question)}>

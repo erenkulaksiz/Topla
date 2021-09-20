@@ -44,6 +44,7 @@ const QuestionSolve = props => {
                         let exist = false;
 
                         props.currentQuestion.dragDropInput.map((elex) => {
+                            console.log("elex: ", elex, " index: ", element[ind]);
                             if (elex.index == element[ind].index) {
                                 exist = true;
                             }
@@ -51,7 +52,7 @@ const QuestionSolve = props => {
 
                         if (!exist) {
                             return <DraxView
-                                key={ind}
+                                key={JSON.stringify(ele.opt) + ind}
                                 style={style.dragSenderBox}
                                 payload={ele}
                                 hoverDraggingStyle={{
@@ -224,7 +225,7 @@ const QuestionSolve = props => {
     );
 }
 
-QuestionSolve.PropTypes = {
+QuestionSolve.propTypes = {
     versusMode: PropTypes.bool,
     isDragDrop: PropTypes.bool,
     player: PropTypes.number,
