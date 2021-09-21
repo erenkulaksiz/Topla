@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 import style from './style';
 import Theme from '../../themes';
+import I18n from '../../utils/i18n.js';
 
 const QuestionSolve = props => {
 
@@ -44,7 +45,6 @@ const QuestionSolve = props => {
                         let exist = false;
 
                         props.currentQuestion.dragDropInput.map((elex) => {
-                            console.log("elex: ", elex, " index: ", element[ind]);
                             if (elex.index == element[ind].index) {
                                 exist = true;
                             }
@@ -53,7 +53,7 @@ const QuestionSolve = props => {
                         if (!exist) {
                             return <DraxView
                                 key={JSON.stringify(ele.opt) + ind}
-                                style={style.dragSenderBox}
+                                style={{ ...style.dragSenderBox, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}
                                 payload={ele}
                                 hoverDraggingStyle={{
                                     elevation: 24,
@@ -63,7 +63,7 @@ const QuestionSolve = props => {
                                     borderStyle: "dashed",
                                     transform: [{ rotate: '4deg' }],
                                 }}>
-                                <Text style={{ fontSize: 24 }}>{ele.opt}</Text>
+                                <Text style={{ fontSize: 24, color: Theme(props.settings.darkMode).textDefault }}>{ele.opt}</Text>
                             </DraxView>
                         } else {
                             return <View style={{ ...style.dragSenderBox, backgroundColor: "transparent", elevation: 0 }} key={ind}>
@@ -147,37 +147,37 @@ const QuestionSolve = props => {
                         transform: [{ rotate: '4deg' }],
                     }}>
                     <Text style={{ color: "#000", fontSize: 20 }}>{props.currentQuestion.dragDropInput.map((ele, ind) => {
-                        if (ele.draggedTo == index) return <Text>{ele.opt}</Text>
+                        if (ele.draggedTo == index) return <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{ele.opt}</Text>
                     })}</Text>
                 </DraxView>
             );
             if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[index]) {
                 if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[index] == "addition") {
-                    elements.push(<Text style={{ fontSize: 28, marginLeft: 12, marginRight: 12, }} key={index + JSON.stringify(element) + "add"}>+</Text>);
+                    elements.push(<Text style={{ fontSize: 28, marginLeft: 12, marginRight: 12, color: Theme(props.settings.darkMode).textDefault }} key={index + JSON.stringify(element) + "add"}>+</Text>);
                 } else if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[index] == "subtraction") {
-                    elements.push(<Text style={{ fontSize: 28, marginLeft: 12, marginRight: 12, }} key={index + JSON.stringify(element) + "sub"}>-</Text>);
+                    elements.push(<Text style={{ fontSize: 28, marginLeft: 12, marginRight: 12, color: Theme(props.settings.darkMode).textDefault }} key={index + JSON.stringify(element) + "sub"}>-</Text>);
                 } else if (props.currentQuestion.questions[props.currentQuestion.currentStep].questionOperation[index] == "multiplication") {
-                    elements.push(<Text style={{ fontSize: 28, marginLeft: 12, marginRight: 12, }} key={index + JSON.stringify(element) + "mult"}>x</Text>);
+                    elements.push(<Text style={{ fontSize: 28, marginLeft: 12, marginRight: 12, color: Theme(props.settings.darkMode).textDefault }} key={index + JSON.stringify(element) + "mult"}>x</Text>);
                 }
             }
         })
 
         return (<>
-            <View style={{ flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+            <View style={style.elements}>
                 {elements}
             </View>
-            <View style={{ width: "100%", marginTop: 24, marginLeft: 24, marginRight: 24, padding: 14, backgroundColor: "#eee", borderRadius: 12, flexDirection: "row" }}>
+            <View style={{ ...style.answerBoxes, backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}>
 
                 {
                     props.questionSettings.displayResultDragDrop && <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                        <Text>Şu anki Sonuç</Text>
+                        <Text>{I18n.t("dragdrop_currentResult")}</Text>
                         <Text style={{ fontSize: 24, marginLeft: 12 }}>={props.currentQuestion.dragDropCurrentResult}</Text>
                     </View>
                 }
 
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text>Cevap</Text>
-                    <Text style={{ fontSize: 24, marginLeft: 12 }}>={props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer}</Text>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: Theme(props.settings.darkMode).settingsButtonBackground }}>
+                    <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_answer")}</Text>
+                    <Text style={{ fontSize: 24, marginLeft: 12, color: Theme(props.settings.darkMode).textDefault }}>={props.currentQuestion.questions[props.currentQuestion.currentStep].questionAnswer}</Text>
                 </View>
             </View>
         </>)

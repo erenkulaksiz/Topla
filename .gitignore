@@ -62,3 +62,4 @@ buck-out/
 keys.js
 *.env
 */pc-api-6316387851500029020-650-5e56ea940a0a.json
+*.hprof

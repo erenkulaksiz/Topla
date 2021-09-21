@@ -259,7 +259,7 @@ const QuestionSettings = props => {
                                     size="small"
                                     onToggle={isOn => props.dispatch({ type: "SET_RESULT_DRAG_DROP", payload: isOn })}
                                     animationSpeed={100} />
-                                <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>Anlık Sonucu Göster</Text>
+                                <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_settings_liveAnswer")}</Text>
                             </TouchableOpacity>
                         </> : <>
                             <TouchableOpacity
@@ -451,7 +451,7 @@ const QuestionSettings = props => {
                             </View>
                         }
                         <View style={style.setting}>
-                            <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>Soru Süresi: </Text>
+                            <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_settings_questionTime")}: </Text>
                             <View style={style.settingWrapper}>
 
                                 {_render.incrementals({

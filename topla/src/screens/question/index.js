@@ -308,6 +308,12 @@ const QuestionScreen = props => {
 
                 if ((props.currentQuestion.currentStep + 1) < props.questionSettings.questionCount) {
                     page._nextQuestion();
+
+                    // For dragdrop mode
+                    props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: false });
+                    props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
+                    props.dispatch({ type: "SET_DRAG_DROP_CURRENT_RESULT", payload: 0 });
+
                     setTimerStarted(true);
                 } else {
                     page._finishQuestionSolving();
@@ -923,9 +929,9 @@ const QuestionScreen = props => {
                                 <Text style={style.pageTimeText}>{totalQuestions} {I18n.t("versus_question")} - {prettyMs(results.finalTime)}</Text>
                             </View>
                             <View style={style.pageWinnerCorrects}>
-                                <Text style={{ ...style.pageWinnerResultText, color: "#0FCB3B" }}>{results.totalCorrect} doğru</Text>
-                                <Text style={{ ...style.pageWinnerResultText, color: "#DC1818", marginLeft: 8, marginRight: 8 }}>{results.totalWrong} yanlış</Text>
-                                <Text style={{ ...style.pageWinnerResultText, color: "#4d4d4d" }}>{results.totalEmpty} boş</Text>
+                                <Text style={{ ...style.pageWinnerResultText, color: "#0FCB3B" }}>{results.totalCorrect} {I18n.t("question_answer_correct")}</Text>
+                                <Text style={{ ...style.pageWinnerResultText, color: "#DC1818", marginLeft: 8, marginRight: 8 }}>{results.totalWrong} {I18n.t("question_answer_wrong")}</Text>
+                                <Text style={{ ...style.pageWinnerResultText, color: "#4d4d4d" }}>{results.totalEmpty} {I18n.t("question_answer_empty")}</Text>
                             </View>
                             <View style={style.pageWinnerProgressWrapper}>
                                 <ProgressBar value={resultProgressCorrect} height={10} />
@@ -939,7 +945,7 @@ const QuestionScreen = props => {
                                         <View style={style.pageWinnerButtonIcon}>
                                             <FontAwesomeIcon icon={faHome} size={30} color={"#fff"} />
                                         </View>
-                                        <Text style={style.pageWinnerButtonText}>Ana Sayfa</Text>
+                                        <Text style={style.pageWinnerButtonText}>{I18n.t("dragdrop_results_home")}</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={style.buttonWrapper}>
@@ -947,7 +953,7 @@ const QuestionScreen = props => {
                                         <View style={{ ...style.pageWinnerButtonIcon, backgroundColor: "#fff", borderColor: "#0F7CBB", borderWidth: 2, }}>
                                             <FontAwesomeIcon icon={faUndoAlt} size={30} color={"#0F7CBB"} />
                                         </View>
-                                        <Text style={style.pageWinnerButtonText}>Tekrar Oyna</Text>
+                                        <Text style={style.pageWinnerButtonText}>{I18n.t("dragdrop_results_playAgain")}</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -1080,6 +1086,7 @@ const QuestionScreen = props => {
         props.dispatch({ type: "SET_PLAYER2_READY", payload: false });
         props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: false });
         props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
+        props.dispatch({ type: "SET_VERSUS_GAME_FINISHED", payload: false });
         props.dispatch({
             type: "SET_DRAG_DROP_CURRENT_RESULT",
             payload: 0
@@ -1101,7 +1108,7 @@ const QuestionScreen = props => {
                         style={style.bottomButton}
                         onPress={() => page._dragDropNextQuestion()}
                     >
-                        <Text style={{ color: "#fff", fontSize: 17 }}>Sonraki Soru</Text>
+                        <Text style={{ color: "#fff", fontSize: 17 }}>{I18n.t("dragdrop_nextquestion")}</Text>
                     </TouchableOpacity>
                 </View>
             }

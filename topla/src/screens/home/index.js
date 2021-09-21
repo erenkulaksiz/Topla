@@ -17,20 +17,20 @@ const HomeScreen = props => {
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'speedTest', title: I18n.t("home_games") },
-        { key: 'childPlay', title: I18n.t("home_childPlay") },
-        { key: 'learn', title: I18n.t("home_learn") },
+        //{ key: 'childPlay', title: I18n.t("home_childPlay") },
+        //{ key: 'learn', title: I18n.t("home_learn") },
     ]);
 
     const _render = {
         speedTest: () => <GamesScreen {...props} />,
-        childPlay: () => <ChildPlaySlotScreen />,
-        learn: () => <LearnScreen />
+        //childPlay: () => <ChildPlaySlotScreen />,
+        //learn: () => <LearnScreen />
     }
 
     const renderScene = SceneMap({
         speedTest: _render.speedTest,
-        childPlay: _render.childPlay,
-        learn: _render.learn,
+        //childPlay: _render.childPlay,
+        //learn: _render.learn,
     });
 
     return (

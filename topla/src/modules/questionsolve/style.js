@@ -34,7 +34,6 @@ export default StyleSheet.create({
     dragRecieverBox: {
         height: 64,
         width: 64,
-        backgroundColor: "white",
         borderWidth: 2,
         borderColor: "gray",
         padding: 12,
@@ -46,10 +45,25 @@ export default StyleSheet.create({
         flex: 1,
         padding: 24,
         margin: 8,
-        backgroundColor: "#fff",
         borderRadius: 12,
         justifyContent: "center",
         alignItems: "center",
         elevation: 4,
+    },
+    answerBoxes: {
+        width: "100%",
+        marginTop: 24,
+        marginLeft: 24,
+        marginRight: 24,
+        padding: 14,
+        backgroundColor: "#eee",
+        borderRadius: 12,
+        flexDirection: "row",
+    },
+    elements: {
+        flexDirection: "row",
+        alignItems: "center",
+        width: "100%",
+        justifyContent: "space-between"
     }
 });

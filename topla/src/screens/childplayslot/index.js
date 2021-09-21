@@ -74,7 +74,7 @@ const ChildPlaySlotScreen = props => {
             }
 
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ color: "black", fontWeight: "bold", fontSize: 24 }}>Coming soon...</Text>
+                <Text style={{ color: Theme(props.settings.darkMode).textDefault, fontWeight: "bold", fontSize: 24 }}>Coming soon...</Text>
             </View>
         </View>
     );

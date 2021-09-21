@@ -509,12 +509,13 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
     })
 
+    /*
     app.post('/npx', async (req, res) => {
         console.log("Request: ", req.body.data);
         res.status(200);
         return res.send(JSON.stringify({
             success: true,
         }));
-    })
+    })*/
 
 })
