@@ -800,7 +800,7 @@ const QuestionScreen = props => {
                                 </>
                             }
                         </View>
-                        <View style={{ height: "50%", backgroundColor: "#eee" }}>
+                        <View style={{ height: "50%" }}>
                             {
                                 props.currentQuestion.versusStats.p2.finished ? page._render.playerFinished() : <>
                                     <View style={{ ...style.headerContainer }}>
@@ -917,43 +917,47 @@ const QuestionScreen = props => {
 
                 const pageWinner = ({ results, isWinner, totalQuestions, onHomePage, onRetry }) => {
 
-                    const resultProgressCorrect = map(results.totalCorrect, 0, totalQuestions, 1, 100);
-                    const resultProgressWrong = map(results.totalWrong, 0, totalQuestions, 1, 100);
+                    //const resultProgressCorrect = map(results.totalCorrect, 0, totalQuestions, 1, 100);
+                    //const resultProgressWrong = map(results.totalWrong, 0, totalQuestions, 1, 100);
 
                     return (
-                        <View style={style.pageWinnerContainer}>
+                        <View style={{ ...style.pageWinnerContainer, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                             <View style={style.pageWinnerTextWrapper}>
                                 <Text style={{ ...style.pageWinnerTitle, color: isWinner ? "#0FCB3B" : "#DC1818" }}>{isWinner ? I18n.t("versus_winner") : I18n.t("versus_loser")}!</Text>
                             </View>
                             <View style={style.pageTimeTextWrapper}>
-                                <Text style={style.pageTimeText}>{totalQuestions} {I18n.t("versus_question")} - {prettyMs(results.finalTime)}</Text>
+                                <Text style={{ ...style.pageTimeText, color: Theme(props.settings.darkMode).textDefault }}>{totalQuestions} {I18n.t("versus_question")} - {prettyMs(results.finalTime)}</Text>
                             </View>
                             <View style={style.pageWinnerCorrects}>
                                 <Text style={{ ...style.pageWinnerResultText, color: "#0FCB3B" }}>{results.totalCorrect} {I18n.t("question_answer_correct")}</Text>
                                 <Text style={{ ...style.pageWinnerResultText, color: "#DC1818", marginLeft: 8, marginRight: 8 }}>{results.totalWrong} {I18n.t("question_answer_wrong")}</Text>
-                                <Text style={{ ...style.pageWinnerResultText, color: "#4d4d4d" }}>{results.totalEmpty} {I18n.t("question_answer_empty")}</Text>
+                                <Text style={{ ...style.pageWinnerResultText, color: Theme(props.settings.darkMode).textDefault }}>{results.totalEmpty} {I18n.t("question_answer_empty")}</Text>
                             </View>
-                            <View style={style.pageWinnerProgressWrapper}>
-                                <ProgressBar value={resultProgressCorrect} height={10} />
-                            </View>
-                            <View style={style.pageWinnerProgressWrapper}>
-                                <ProgressBar value={resultProgressWrong} height={10} barColor="#DC1818" />
-                            </View>
+                            {
+                                /*
+                                    <View style={style.pageWinnerProgressWrapper}>
+                                        <ProgressBar value={resultProgressCorrect} height={10} />
+                                    </View>
+                                    <View style={style.pageWinnerProgressWrapper}>
+                                        <ProgressBar value={resultProgressWrong} height={10} barColor="#DC1818" />
+                                    </View>
+                                */
+                            }
                             <View style={style.pageWinnerButtonsWrapper}>
                                 <View style={style.buttonWrapper}>
                                     <TouchableOpacity style={style.pageWinnerButton} onPress={() => onHomePage()}>
                                         <View style={style.pageWinnerButtonIcon}>
                                             <FontAwesomeIcon icon={faHome} size={30} color={"#fff"} />
                                         </View>
-                                        <Text style={style.pageWinnerButtonText}>{I18n.t("dragdrop_results_home")}</Text>
+                                        <Text style={{ ...style.pageWinnerButtonText, color: Theme(props.settings.darkMode).blue }}>{I18n.t("dragdrop_results_home")}</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={style.buttonWrapper}>
                                     <TouchableOpacity style={{ justifyContent: "center", alignItems: "center" }} onPress={() => onRetry()}>
-                                        <View style={{ ...style.pageWinnerButtonIcon, backgroundColor: "#fff", borderColor: "#0F7CBB", borderWidth: 2, }}>
-                                            <FontAwesomeIcon icon={faUndoAlt} size={30} color={"#0F7CBB"} />
+                                        <View style={{ ...style.pageWinnerButtonIcon, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground, borderColor: Theme(props.settings.darkMode).blue, borderWidth: 2, }}>
+                                            <FontAwesomeIcon icon={faUndoAlt} size={30} color={Theme(props.settings.darkMode).blue} />
                                         </View>
-                                        <Text style={style.pageWinnerButtonText}>{I18n.t("dragdrop_results_playAgain")}</Text>
+                                        <Text style={{ ...style.pageWinnerButtonText, color: Theme(props.settings.darkMode).blue }}>{I18n.t("dragdrop_results_playAgain")}</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -961,41 +965,39 @@ const QuestionScreen = props => {
                     )
                 }
 
-                return (<>
-                    <View style={style.versusContainer}>
-                        <View style={style.versusBox}>
-                            <View style={{ flex: 1, borderTopWidth: 2, borderTopColor: "#eee", transform: [{ rotate: '180deg' }] }}>
-                                {pageWinner({
-                                    results: props.currentQuestion.versusStats.p1,
-                                    isWinner: props.currentQuestion.versusStats.winner == 1,
-                                    totalQuestions: props.questionSettings.questionCount,
-                                    onHomePage: () => page._returnToHome(),
-                                    onRetry() {
-                                        page._returnToHome();
-                                        props.navigation.navigate('QuestionScreen', { question: props.route.params.question });
-                                    }
-                                })}
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                {pageWinner({
-                                    results: props.currentQuestion.versusStats.p2,
-                                    isWinner: props.currentQuestion.versusStats.winner == 2,
-                                    totalQuestions: props.questionSettings.questionCount,
-                                    onHomePage: () => page._returnToHome(),
-                                    onRetry() {
-                                        page._returnToHome();
-                                        props.navigation.navigate('QuestionScreen', { question: props.route.params.question });
-                                    }
-                                })}
-                            </View>
-
+                return (<View style={style.versusContainer}>
+                    <View style={style.versusBox}>
+                        <View style={{ flex: 1, borderTopWidth: 1, borderTopColor: Theme(props.settings.darkMode).blue, transform: [{ rotate: '180deg' }] }}>
+                            {pageWinner({
+                                results: props.currentQuestion.versusStats.p1,
+                                isWinner: (props.currentQuestion.versusStats.winner == 1),
+                                totalQuestions: props.questionSettings.questionCount,
+                                onHomePage: () => page._returnToHome(),
+                                onRetry() {
+                                    page._returnToHome();
+                                    props.navigation.navigate('QuestionScreen', { question: props.route.params.question });
+                                }
+                            })}
                         </View>
+                        <View style={{ flex: 1 }}>
+                            {pageWinner({
+                                results: props.currentQuestion.versusStats.p2,
+                                isWinner: (props.currentQuestion.versusStats.winner == 2),
+                                totalQuestions: props.questionSettings.questionCount,
+                                onHomePage: () => page._returnToHome(),
+                                onRetry() {
+                                    page._returnToHome();
+                                    props.navigation.navigate('QuestionScreen', { question: props.route.params.question });
+                                }
+                            })}
+                        </View>
+
                     </View>
-                </>)
+                </View>)
             },
             playerFinished() {
                 return (<View style={style.playerFinishedWrapper}>
-                    <Text style={{ fontSize: 18 }}>{(props.currentQuestion.versusStats.p1.finished && props.currentQuestion.versusStats.p2.finished) || I18n.t("versus_you_finished")}</Text>
+                    <Text style={{ fontSize: 18, color: Theme(props.settings.darkMode).textDefault }}>{(props.currentQuestion.versusStats.p1.finished && props.currentQuestion.versusStats.p2.finished) || I18n.t("versus_you_finished")}</Text>
                 </View>)
             },
             ready() {
@@ -1018,20 +1020,20 @@ const QuestionScreen = props => {
                                 <FontAwesomeIcon icon={ready ? faCheck : faTimes} size={88} color={ready ? "#0FCB3B" : "#DC1818"} />
                             </View>
                             <View style={style.playerReadyDesc}>
-                                <Text>{ready || I18n.t("versus_ready_desc")}</Text>
+                                <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{ready || I18n.t("versus_ready_desc")}</Text>
                             </View>
                             <View style={style.playerReadyButtonWrapper}>
                                 <TouchableOpacity style={style.bottomButton} activeOpacity={0.7} onPress={() => onPress()}>
-                                    <Text style={style.playerReadyButtonText}>{ready ? I18n.t("versus_not_ready") : I18n.t("versus_ready")}</Text>
+                                    <Text style={{ ...style.playerReadyButtonText, color: Theme(props.settings.darkMode).textInverse }}>{ready ? I18n.t("versus_not_ready") : I18n.t("versus_ready")}</Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
+                        </View >
                     )
                 }
 
                 return (<View style={style.overlayReadyWrapper}>
                     <View style={style.overlayReady}>
-                        <View style={{ flex: 1, backgroundColor: "#eee", transform: [{ rotate: '180deg' }], paddingBottom: 16 }}>
+                        <View style={{ flex: 1, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground, transform: [{ rotate: '180deg' }], paddingBottom: 16 }}>
                             {
                                 pageCheckReady({
                                     ready: props.currentQuestion.versusStats.p1.ready,
@@ -1047,7 +1049,7 @@ const QuestionScreen = props => {
                                 })
                             }
                         </View>
-                        <View style={{ flex: 1, paddingBottom: 16 }}>
+                        <View style={{ flex: 1, paddingBottom: 16, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                             {
                                 pageCheckReady({
                                     ready: props.currentQuestion.versusStats.p2.ready,
@@ -1103,11 +1105,10 @@ const QuestionScreen = props => {
             {props.route.params.question.isVersusMode ? (props.currentQuestion.isQuestionsLoaded && page._render.versus()) : (props.currentQuestion.isQuestionsLoaded && page._render.questions())}
             {page._render.modals()}
             {
-                props.currentQuestion.dragDropNextQuestion && <View style={{ position: "absolute", width: "100%", height: "100%", justifyContent: "flex-end", alignItems: "center" }}>
+                props.currentQuestion.dragDropNextQuestion && <View style={style.bottomButtonOverlay}>
                     <TouchableOpacity
                         style={style.bottomButton}
-                        onPress={() => page._dragDropNextQuestion()}
-                    >
+                        onPress={() => page._dragDropNextQuestion()}>
                         <Text style={{ color: "#fff", fontSize: 17 }}>{I18n.t("dragdrop_nextquestion")}</Text>
                     </TouchableOpacity>
                 </View>

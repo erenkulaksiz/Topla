@@ -36,17 +36,23 @@ const HomeScreen = props => {
     return (
         <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             <Header />
-            <TabView
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={{ width: layout.width }}
-                renderTabBar={tabProps => <TabBar {...tabProps}
-                    style={{ backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}
-                    indicatorStyle={{ backgroundColor: '#000' }}
-                    labelStyle={{ color: Theme(props.settings.darkMode).textDefault, fontWeight: "bold" }}
-                />}
-            />
+            <GamesScreen {...props} />
+            {
+                /*
+                    <TabView
+                        navigationState={{ index, routes }}
+                        renderScene={renderScene}
+                        onIndexChange={setIndex}
+                        initialLayout={{ width: layout.width }}
+                        renderTabBar={tabProps => <TabBar {...tabProps}
+                            style={{ backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}
+                            indicatorStyle={{ backgroundColor: '#000' }}
+                            labelStyle={{ color: Theme(props.settings.darkMode).textDefault, fontWeight: "bold" }}
+                        />}
+                    />
+                */
+            }
+
         </SafeAreaView>
     );
 }

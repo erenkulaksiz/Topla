@@ -56,9 +56,10 @@ const QuestionSolve = props => {
                                 style={{ ...style.dragSenderBox, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}
                                 payload={ele}
                                 hoverDraggingStyle={{
-                                    elevation: 24,
+                                    elevation: 0,
                                     zIndex: 64,
                                     borderWidth: 2,
+                                    backgroundColor: "transparent",
                                     borderColor: "#7a7a7a",
                                     borderStyle: "dashed",
                                     transform: [{ rotate: '4deg' }],

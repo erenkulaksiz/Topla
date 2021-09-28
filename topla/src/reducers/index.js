@@ -1,8 +1,6 @@
 //import { combineReducers } from 'redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistCombineReducers } from 'redux-persist';
-import { AdMobInterstitial } from 'react-native-admob'
-import Config from 'react-native-config';
 
 import API from './API';
 import questionSettings from './questionSettings';
@@ -19,9 +17,6 @@ const INITIAL_STATE = {
     deviceInfo: {},
     connection: {},
     pauseModalShown: false,
-    ads: {
-        ready: false,
-    },
     modals: {
         initialize: true,
         backQuestion: false,
@@ -67,27 +62,6 @@ const mainReducer = (state = INITIAL_STATE, action) => {
         case 'SET_PERF_QUESTION':
             console.log("NEW VALUE FOR PERF: ", action.payload);
             state.PERFORMANCE = { ...state.PERFORMANCE, ...action.payload };
-            return { ...state }
-
-        case 'SET_AD_READY':
-            state.ads.ready = action.payload;
-            console.log("ad ready: ", state.ads.ready);
-            return { ...state }
-
-        case 'LOAD_ADS':
-            console.log("!!! LOADING AD");
-            try {
-                AdMobInterstitial.setAdUnitID(Config.ADMOB_INTERSTITIAL);
-                AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-                AdMobInterstitial.requestAd().then(() => {
-                    state.ads.ready = true
-                    console.log("!!! AD LOADED")
-                    return { ...state }
-                });
-                return { ...state }
-            } catch (err) {
-                console.log("HATA!!! ", err);
-            }
             return { ...state }
 
         default:

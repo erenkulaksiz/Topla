@@ -1,10 +1,5 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.google.gms.google-services'
-
-// Apply the Performance Monitoring plugin
-apply plugin: 'com.google.firebase.firebase-perf'
-
-apply plugin: 'com.google.firebase.crashlytics'
+//apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
 
@@ -141,8 +136,8 @@ android {
         applicationId "com.erencode.topla"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 61
-        versionName "1.41"
+        versionCode 63
+        versionName "1.41.1"
         // react-native-iap: we only use the Google Play flavor
         missingDimensionStrategy 'store', 'play'
     }
@@ -207,16 +202,8 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     
-    implementation 'com.google.android.gms:play-services-ads:19.8.0'
-
-    // Firebase
-    implementation platform('com.google.firebase:firebase-bom:28.1.0')
-
-    implementation 'com.google.firebase:firebase-perf'
-    implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-analytics'
-    //
-
+    //implementation 'com.google.android.gms:play-services-ads:19.8.0'
+    
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

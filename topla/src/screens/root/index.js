@@ -153,11 +153,6 @@ const Home = props => {
                 progressColor={"#0f7cbb"}
                 progressSize={32}
                 title={I18n.t("modals_loading")}
-                customView={<>
-                    <Text>{Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL}</Text>
-                    <Text>{JSON.stringify(props.reducer.deviceInfo.uuid)}</Text>
-                    <Text>{JSON.stringify(props.reducer.deviceInfo.buildNumber)}</Text>
-                </>}
                 closeOnTouchOutside={false}
                 closeOnHardwareBackPress={false}
                 showCancelButton={false}

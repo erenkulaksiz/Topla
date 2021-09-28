@@ -40,7 +40,6 @@ const INITIAL_STATE = {
             questionCount: 10,
             optionCount: 4,
             questionTime: 8000,
-            requiresPremium: true,
         },
         {
             id: 4,

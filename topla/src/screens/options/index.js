@@ -187,7 +187,7 @@ const OptionsScreen = props => {
                     </TouchableOpacity>
                 </View>
                 <View style={style.altContent}>
-                    <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uuid); alert("UID Kopyalandı") }}>
+                    <TouchableOpacity style={style.altTextWrapper} onPress={() => { Clipboard.setString("" + props.reducer.deviceInfo.uuid); alert("UID has been copied to clipboard") }}>
                         <FontAwesomeIcon icon={faIdCard} size={16} style={{ marginRight: 6, }} color={Theme(props.settings.darkMode).textDefault} />
                         <Text style={{ ...style.altText, color: Theme(props.settings.darkMode).textDefault }}>UID: {props.reducer.deviceInfo.uuid}</Text>
                     </TouchableOpacity>

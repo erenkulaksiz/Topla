@@ -8,16 +8,6 @@ import { faPlay, faCrown } from '@fortawesome/free-solid-svg-icons'
 import prettyMs from 'pretty-ms';
 import DropDownPicker from 'react-native-dropdown-picker';
 //import Config from 'react-native-config';
-import {
-    AdMobInterstitial,
-} from 'react-native-admob'
-
-/*
-import {
-    AdMobBanner,
-    //AdMobInterstitial,
-} from 'react-native-admob'
-*/
 
 import I18n from "../../utils/i18n.js";
 import Header from "../../modules/header";
@@ -61,54 +51,6 @@ const QuestionSettings = props => {
         rangeIncremental: rangeIncremental,
     }
 
-    const _showAds = async (question) => {
-        console.log("show ads");
-
-        const _navToQuestion = () => {
-            /*
-            store.dispatch({
-                type: 'API_LOG',
-                payload: {
-                    uuid: props.reducer.deviceInfo.uuid,
-                    bundleId: props.reducer.deviceInfo.bundleId,
-                    ACTION: "questionsolve_start",
-                    API_TOKEN: props.API.DATA.API_TOKEN,
-                    ACTION_DESC: logSettings,
-                }
-            });
-            */
-
-            props.navigation.navigate('QuestionScreen', { question: question });
-
-            //store.dispatch({ type: 'SET_AD_READY', payload: false });
-            //store.dispatch({ type: 'LOAD_ADS' });
-        }
-
-        AdMobInterstitial.removeAllListeners();
-
-        if (props.reducer.ads.ready) {
-            AdMobInterstitial.showAd();
-            console.log("Ad is ready and showing ad");
-        } else {
-            console.log("Ad not ready, navigating to question");
-            _navToQuestion();
-            props.dispatch({ type: 'LOAD_ADS' });
-        }
-
-        AdMobInterstitial.addEventListener("adClosed", () => {
-            console.log("!!! Ad closed!!!");
-            _navToQuestion();
-            props.dispatch({ type: 'SET_AD_READY', payload: false });
-            props.dispatch({ type: 'LOAD_ADS' });
-        });
-
-        AdMobInterstitial.addEventListener("adFailedToLoad", () => {
-            console.log("Cannot load ads!")
-            props.dispatch({ type: 'SET_AD_READY', payload: false });
-            _navToQuestion();
-        });
-    }
-
     const _setQuestionParams = question => {
         // setMaxRange
         props.dispatch({ type: "SET_MAX_RANGE", payload: question.maxRange });
@@ -135,43 +77,7 @@ const QuestionSettings = props => {
         if (keys.length == 0) {
             props.dispatch({ type: "SET_MODAL", payload: { selectKeys: true } })
         } else {
-            if (props.API.DATA.API_TOKEN) {
-                if (props.API.DATA.hasPremium) {
-
-                    props.navigation.navigate('QuestionScreen', { question: question });
-
-                    /*
-
-                    props.dispatch({
-                        type: 'API_LOG',
-                        payload: {
-                            uuid: props.reducer.deviceInfo.uuid,
-                            bundleId: props.reducer.deviceInfo.bundleId,
-                            ACTION: "questionsolve_start",
-                            API_TOKEN: props.API.DATA.API_TOKEN,
-                            ACTION_DESC: logSettings,
-                        }
-                    });*/
-
-                    /* // NAVIGATE IF USER HAS PREMIUM
-                    
-                    props.dispatch({
-                        type: 'API_LOG',
-                        payload: {
-                            uuid: props.reducer.deviceInfo.uuid,
-                            bundleId: props.reducer.deviceInfo.bundleId,
-                            ACTION: "questionsolve_start",
-                            API_TOKEN: props.API.DATA.API_TOKEN,
-                            hasPremium: props.API.DATA.hasPremium,
-                            ACTION_DESC: question,
-                        }
-                    });*/
-                } else {
-                    _showAds(question);
-                }
-            } else {
-                _showAds(question); // If no api token, atleast try to load an ad
-            }
+            props.navigation.navigate('QuestionScreen', { question: question });
         }
     }
 

@@ -14,10 +14,6 @@ import Config from 'react-native-config';
 import * as RNIap from 'react-native-iap';
 import Api from './src/utils/classes/api.js';
 
-// Firebase
-//import crashlytics from "@react-native-firebase/crashlytics";
-import analytics from '@react-native-firebase/analytics';
-
 // Components 
 import Home from './src/screens/root';
 import QuestionSettings from './src/screens/questionsettings';
@@ -130,8 +126,6 @@ const App = () => {
         });
 
       _INITIALIZE.connection();
-      const appInstanceId = analytics().getAppInstanceId();
-      console.log("APP_INSTANCE_ID: ", appInstanceId);
     },
     connection: async () => {
       if (store.getState().API.DATA.API_TOKEN) {

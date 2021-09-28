@@ -3,13 +3,8 @@ package com.erencode.topla;
 import android.os.Bundle; // here
 import com.facebook.react.ReactActivity;
 import org.devio.rn.splashscreen.SplashScreen; // here
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import android.content.Intent; // <--- import
 import android.content.res.Configuration; // <--- import
-
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class MainActivity extends ReactActivity {
 
@@ -22,13 +17,10 @@ public class MainActivity extends ReactActivity {
     return "Topla";
   }
 
-  private FirebaseAnalytics mFirebaseAnalytics;
-
   @Override
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.show(this); 
         super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
    // copy these lines

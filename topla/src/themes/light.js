@@ -6,6 +6,7 @@ export default {
     borderAlt: "#bdbdbd",
     text: "#0F7CBB",
     textDefault: "#000",
+    textInverse: "#fff",
     bar: "#0F7CBB",
     tabBar: "#FFF",
     tabBarActiveTint: "#0F7CBB",
@@ -14,4 +15,5 @@ export default {
     headerButtonsBackground: "#EEEE",
     headerButtonsColor: "#000",
     questionSlotBackground: "#FFF",
+    blue: "#0F7CBB",
 }

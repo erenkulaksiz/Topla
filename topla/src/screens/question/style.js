@@ -172,7 +172,6 @@ export default StyleSheet.create({
     },
     playerReadyButtonText: {
         fontSize: 15,
-        color: "#fff",
         marginLeft: 8,
     },
     pageWinnerContainer: {
@@ -241,7 +240,6 @@ export default StyleSheet.create({
     },
     playerFinishedWrapper: {
         flex: 1,
-        backgroundColor: "#eee",
         justifyContent: "center",
         alignItems: "center",
     },
@@ -250,5 +248,12 @@ export default StyleSheet.create({
         height: "12%",
         justifyContent: "center",
         alignItems: "center",
+    },
+    bottomButtonOverlay: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "flex-end",
+        alignItems: "center"
     }
 });
