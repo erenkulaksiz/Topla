@@ -27,14 +27,7 @@ export default StyleSheet.create({
 
         marginBottom: 12,
 
-        // Shadow
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.4,
-        shadowRadius: 12,
-        elevation: 4,
+        elevation: 6,
     },
     play: {
         justifyContent: "center",
@@ -43,7 +36,7 @@ export default StyleSheet.create({
         height: 54,
         backgroundColor: "#0F7CBB",
         borderRadius: 64,
-        elevation: 5,
+        elevation: 12,
         position: "absolute",
         bottom: -8,
         right: 18,

@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import { LogBox, Platform, Text } from 'react-native';
 import { Provider } from 'react-redux';
@@ -46,7 +45,6 @@ const App = () => {
           } else {
             SplashScreen.hide();
           }
-          store.getState().API.DATA.hasPremium || store.dispatch({ type: 'LOAD_ADS' });
 
           if (buildNumber < softUpdateVer) {
             store.dispatch({ type: "SET_MODAL", payload: { softUpdate: true, initialize: false } })
@@ -61,122 +59,112 @@ const App = () => {
     }
   }
 
-  const _setDeviceInfo = {
-    deviceInfo() {
-      return {
-        uuid: getUniqueId(),
-        id: getDeviceId(),
-        buildNumber: getBuildNumber(),
-        model: getModel(),
-        bundleId: getBundleId(),
-        version: getVersion(),
-      }
-    },
-    set() {
-      getLastUpdateTime().then((lastUpdateTime) => {
-        const deviceInfo = { ..._setDeviceInfo.deviceInfo(), lastUpdated: lastUpdateTime };
-        store.dispatch({ type: 'SET_DEVICE_INFO', payload: deviceInfo });
-      });
-    },
-  }
+  const _setDeviceInfo = new Promise((resolve, reject) => {
+    const data = {
+      uuid: getUniqueId(),
+      id: getDeviceId(),
+      buildNumber: getBuildNumber(),
+      model: getModel(),
+      bundleId: getBundleId(),
+      version: getVersion(),
+    }
+    getLastUpdateTime().then((lastUpdateTime) => {
+      let deviceInfo = { ...data, lastUpdated: lastUpdateTime };
+      store.dispatch({ type: 'SET_DEVICE_INFO', payload: data });
+      resolve(deviceInfo);
+    });
+  })
 
   const _checkAnnouncements = () => {
     console.log("Checking announcements...");
-    setTimeout(() => {
-      if (store.getState().API.DATA.API_TOKEN) {
-        if (store.getState().API.DATA.APP_ANNOUNCEMENTS) {
-          if (store.getState().API.DATA.APP_ANNOUNCEMENTS.length > 0) {
-            store.dispatch({ type: "SET_MODAL", payload: { announcements: true } });
-            console.log("Theres announcements");
-          } else {
-            console.log("No announcements");
-          }
+    if (store.getState().API.DATA.API_TOKEN) {
+      if (store.getState().API.DATA.APP_ANNOUNCEMENTS) {
+        if (store.getState().API.DATA.APP_ANNOUNCEMENTS.length > 0) {
+          store.dispatch({ type: "SET_MODAL", payload: { announcements: true } });
+          console.log("Theres announcements");
+        } else {
+          console.log("No announcements");
         }
       }
-    }, 3000)
+    }
   }
 
   const _INITIALIZE = {
     connTimer: null,
-    init: () => {
+    init() {
       console.log("API Dev Mode: ", Config.DEV_MODE);
       console.log("API URL: ", Config.DEV_MODE == 'true' ? Config.API_DEV_URL : Config.API_URL);
       LogBox.ignoreAllLogs();
-      _setDeviceInfo.set();
-
-      Api.registerDevice({
-        uuid: store.getState().mainReducer.deviceInfo.uuid,
-        bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-        model: store.getState().mainReducer.deviceInfo.model,
-      })
-        .then(response => response.json())
-        .then(json => {
-          if (json.success) {
-            console.log("API HANDLER response -> ", json);
-            store.dispatch({
-              type: 'API_REGISTER',
-              payload: {
-                data: json
-              }
-            });
-          }
+      _setDeviceInfo.then((data) => {
+        Api.registerDevice({
+          uuid: data.uuid,
+          bundleId: data.bundleId,
+          model: data.model,
         })
-        .catch(error => {
-          console.error(error);
-        });
-
-      _INITIALIZE.connection();
-    },
-    connection: async () => {
-      if (store.getState().API.DATA.API_TOKEN) {
-        console.log("GOT API_TOKEN, NO RETRIES: ", store.getState().API.DATA.API_TOKEN);
-        await _checkAnnouncements();
-        setTimeout(() => _checkAppVersion(), 2000);
-        _IAP.init();
-      } else {
-        console.log("NO API TOKEN | API MAX RETRIES ENABLED: ", Config.API_MAX_RETRIES_ENABLED);
-        if (Config.API_REGISTER_RETRIES) {
-          store.dispatch({ type: "API_RESET_RETRIES" });
-          connTimer = setInterval(async () => {
-            if (store.getState().API.DATA.API_TOKEN) {
-              clearInterval(connTimer);
-              await _checkAnnouncements();
-              setTimeout(() => _checkAppVersion(), 2000);
+          .then(response => response.json())
+          .then(json => {
+            if (json.success) {
+              console.log("API HANDLER response INIT -> ", json);
+              store.dispatch({ type: 'API_REGISTER', payload: { data: json } });
+              _checkAnnouncements();
+              _checkAppVersion();
               _IAP.init();
-            } else {
-              await Api.registerDevice({
-                uuid: store.getState().mainReducer.deviceInfo.uuid,
-                bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                model: store.getState().mainReducer.deviceInfo.model,
-              })
-                .then(response => response.json())
-                .then(json => {
-                  if (json.success) {
-                    console.log("API HANDLER response -> ", json);
-                    store.dispatch({
-                      type: 'API_REGISTER',
-                      payload: { data: json }
-                    });
-                  }
-                })
-                .catch(error => {
-                  console.error(error);
-                });
-
-              console.log("API_STATE: ", store.getState().API);
             }
-            await store.dispatch({ type: "API_RETRY" });
-            if (Config.API_MAX_RETRIES_ENABLED == 'true') {
-              if (store.getState().API.retries >= Number(Config.API_MAX_RETRIES)) {
-                console.log(`API TIMEOUT AFTER ${Config.API_MAX_RETRIES} RETRIES`);
-                clearInterval(connTimer);
-              }
-            }
-          }, Number(Config.API_RETRY_INTERVAL))
-        } else {
-          console.log("config retries closed")
-        }
+          })
+          .catch(error => {
+            console.error(error);
+            console.log("ERROR api");
+            // Now, redirect to retry system
+            _INITIALIZE.connection();
+          });
+      });
+    },
+    connection() {
+      const launch = () => {
+        clearInterval(connTimer);
+        _checkAnnouncements();
+        _checkAppVersion();
+        _IAP.init();
       }
+      console.log("NO API TOKEN | API MAX RETRIES ENABLED: ", Config.API_MAX_RETRIES_ENABLED);
+      if (Config.API_REGISTER_RETRIES) {
+        store.dispatch({ type: "API_RESET_RETRIES" });
+        connTimer = setInterval(async () => {
+          if (store.getState().API.DATA.API_TOKEN) {
+            launch();
+          } else {
+            Api.registerDevice({
+              uuid: store.getState().mainReducer.deviceInfo.uuid,
+              bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+              model: store.getState().mainReducer.deviceInfo.model,
+            })
+              .then(response => response.json())
+              .then(json => {
+                if (json.success) {
+                  console.log("API HANDLER response -> ", json);
+                  store.dispatch({ type: 'API_REGISTER', payload: { data: json } });
+                  launch();
+                }
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          }
+          store.dispatch({ type: "API_RETRY" });
+          if (Config.API_MAX_RETRIES_ENABLED == 'true') {
+            if (store.getState().API.retries >= Number(Config.API_MAX_RETRIES)) {
+              console.log(`API TIMEOUT AFTER ${Config.API_MAX_RETRIES} RETRIES`);
+              await clearInterval(connTimer);
+            }
+          }
+          if (store.getState().API.retries == Number(Config.API_RETRY_WARNING_RETRIES)) {
+            alert("Make sure your internet is on, there might be issues with serverside. Please report this issue with toplaappp@gmail.com")
+          }
+        }, Number(Config.API_RETRY_INTERVAL))
+      } else {
+        console.log("config retries closed")
+      }
+
     }
   }
 
@@ -188,112 +176,90 @@ const App = () => {
       RNIap.initConnection()
         .catch(() => {
           console.log("store error on IAP");
-
           alert("Couldn't connect to RNIAP");
-
           RNIap.endConnection();
         })
         .then(async () => {
-
-          //alert("Connected to RNIAP");
-
-          const availablePurchases = await RNIap.getAvailablePurchases();
-          console.log("Available Purchases: ", availablePurchases);
-          await store.dispatch({
-            type: 'API_IAP_INIT',
-            payload: {
-              data: availablePurchases,
-              platform: Platform.OS,
-              uuid: store.getState().mainReducer.deviceInfo.uuid,
-              API_TOKEN: store.getState().API.DATA.API_TOKEN,
-            }
+          RNIap.getAvailablePurchases().then(availablePurchases => {
+            console.log("Available Purchases: ", availablePurchases);
+            Api.IAPinit({ data: availablePurchases, platform: Platform.OS, uuid: store.getState().mainReducer.deviceInfo.uuid, API_TOKEN: store.getState().API.DATA.API_TOKEN })
+              .then(response => { return response.json() })
+              .then(data => {
+                store.dispatch({ type: 'API_IAP_INIT', payload: { data: data } });
+                if (data.success) {
+                  console.log("User has subscription, API_IAP_INIT");
+                } else if (data.success == false) {
+                  console.log("Error with subscription, reason: ", data.reason);
+                }
+                if (!(data.hasPremium == store.getState().API.DATA.hasPremium)) {
+                  console.log("Api state and database doesn't match, refreshing register");
+                  Api.registerDevice({
+                    uuid: store.getState().mainReducer.deviceInfo.uuid,
+                    bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                    model: store.getState().mainReducer.deviceInfo.model,
+                  })
+                    .then(response => response.json())
+                    .then(json => {
+                      if (json.success) {
+                        console.log("API HANDLER response -> ", json);
+                        store.dispatch({ type: 'API_REGISTER', payload: { data: json } });
+                      }
+                    })
+                    .catch(error => {
+                      console.error(error);
+                    });
+                } else {
+                  console.log("API and iapInit hasPremium matches");
+                }
+              })
           });
 
           RNIap.getSubscriptions(store.getState().API.DATA.APP_PRODUCTS).then((products) => {
-            store.dispatch({
-              type: 'API_SET_PRODUCTS',
-              payload: products
-            });
+            store.dispatch({ type: 'API_SET_PRODUCTS', payload: products });
           }).catch((error) => {
             console.log("error IAP: ", error.message);
           })
-
-          setTimeout(async () => {
-            console.log("iapInitData.hasPremium: ", store.getState().API.iapInitData.hasPremium, " data.hasPremium: ", store.getState().API.DATA.hasPremium)
-
-            if (!(store.getState().API.iapInitData.hasPremium == store.getState().API.DATA.hasPremium)) {
-              console.log("Api state and database doesn't match, refreshing register");
-              await Api.registerDevice({
-                uuid: store.getState().mainReducer.deviceInfo.uuid,
-                bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                model: store.getState().mainReducer.deviceInfo.model,
-              })
-                .then(response => response.json())
-                .then(json => {
-                  if (json.success) {
-                    console.log("API HANDLER response -> ", json);
-                    store.dispatch({
-                      type: 'API_REGISTER',
-                      payload: {
-                        data: json
-                      }
-                    });
-                  }
-                })
-                .catch(error => {
-                  console.error(error);
-                });
-            } else {
-              console.log("API and iapInit hasPremium matches");
-            }
-          }, 4000)
 
           purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(async (purchase) => {
             console.log('purchaseUpdatedListener', purchase);
             const receipt = purchase.transactionReceipt;
             if (receipt) {
-              await store.dispatch({
-                type: 'API_CHECK_RECEIPT',
-                payload: {
-                  data: purchase,
-                  platform: Platform.OS,
-                  uuid: store.getState().mainReducer.deviceInfo.uuid,
-                  API_TOKEN: store.getState().API.DATA.API_TOKEN,
-                }
-              });
-              RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
-                console.log("finishing transaction")
-                RNIap.finishTransaction(purchase, false).catch(err => {
-                  console.log(err.code, err.message);
-                }).then(async () => {
-                  console.log("finished transaction");
-                  alert("You have been subscribed successfully!");
+              Api.checkReceipt({ data: purchase, platform: Platform.OS, uuid: store.getState().mainReducer.deviceInfo.uuid, API_TOKEN: store.getState().API.DATA.API_TOKEN })
+                .then(response => { return response.json() })
+                .then(data => {
+                  console.log("@api check receipt response: ", data);
 
-                  setTimeout(async () => {
-                    // Reload
-                    await Api.registerDevice({
-                      uuid: store.getState().mainReducer.deviceInfo.uuid,
-                      bundleId: store.getState().mainReducer.deviceInfo.bundleId,
-                      model: store.getState().mainReducer.deviceInfo.model,
-                    })
-                      .then(response => response.json())
-                      .then(json => {
-                        if (json.success) {
-                          console.log("API HANDLER response -> ", json);
-                          store.dispatch({
-                            type: 'API_REGISTER',
-                            payload: {
-                              data: json
+                  if (data.purchaseStatus == "success" && data.success == true) {
+                    console.log(data.reason);
+
+                    RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken).then(() => {
+                      console.log("finishing transaction")
+                      RNIap.finishTransaction(purchase, false).catch(err => {
+                        console.log(err.code, err.message);
+                      }).then(() => {
+                        console.log("finished transaction");
+                        alert("You have been subscribed successfully!");
+
+                        Api.registerDevice({
+                          uuid: store.getState().mainReducer.deviceInfo.uuid,
+                          bundleId: store.getState().mainReducer.deviceInfo.bundleId,
+                          model: store.getState().mainReducer.deviceInfo.model,
+                        })
+                          .then(response => response.json())
+                          .then(json => {
+                            if (json.success) {
+                              console.log("API HANDLER response -> ", json);
+                              store.dispatch({ type: 'API_REGISTER', payload: { data: json } });
                             }
+                          })
+                          .catch(error => {
+                            console.error(error);
                           });
-                        }
-                      })
-                      .catch(error => {
-                        console.error(error);
                       });
-                  }, 1500);
-                });
-              });
+                    });
+                  }
+                })
+
             } else {
               // Retry 
             }
@@ -313,25 +279,23 @@ const App = () => {
   useEffect(async () => {
     _INITIALIZE.init();
 
-    setTimeout(() => {
-      console.log("Checking SUB refreshes, Remaining: ", store.getState().settings.cooldown.refreshStatus);
-      console.log("Sub refresh time: ", (Date.now() - store.getState().settings.cooldown.lastRefreshed));
-      if (store.getState().settings.cooldown.refreshStatus < 1) {
-        if ((Date.now() - store.getState().settings.cooldown.lastRefreshed) >= 86400000) {
-          store.dispatch({ type: "RESET_REFRESH_STATUS" });
-        } else {
-          console.log("Cannot reset SUB refresh, remaining millis: ", (86400000 - (Date.now() - store.getState().settings.cooldown.lastRefreshed)));
-        }
+    console.log("Checking SUB refreshes, Remaining: ", store.getState().settings.cooldown.refreshStatus);
+    console.log("Sub refresh time: ", (Date.now() - store.getState().settings.cooldown.lastRefreshed));
+    if (store.getState().settings.cooldown.refreshStatus < 1) {
+      if ((Date.now() - store.getState().settings.cooldown.lastRefreshed) >= 86400000) {
+        store.dispatch({ type: "RESET_REFRESH_STATUS" });
       } else {
-        if (store.getState().settings.cooldown.refreshStatus < 5) {
-          if ((Date.now() - store.getState().settings.cooldown.lastRefreshed) >= 86400000) {
-            console.log("Had ", store.getState().settings.cooldown.refreshStatus, " subs and resetted it");
-            store.dispatch({ type: "RESET_REFRESH_STATUS" });
-          }
-        }
-        console.log("Remaining SUB refreshes: ", store.getState().settings.cooldown.refreshStatus, " Last used: ", store.getState().settings.cooldown.lastRefreshed)
+        console.log("Cannot reset SUB refresh, remaining millis: ", (86400000 - (Date.now() - store.getState().settings.cooldown.lastRefreshed)));
       }
-    }, 3000);
+    } else {
+      if (store.getState().settings.cooldown.refreshStatus < 5) {
+        if ((Date.now() - store.getState().settings.cooldown.lastRefreshed) >= 86400000) {
+          console.log("Had ", store.getState().settings.cooldown.refreshStatus, " subs and resetted it");
+          store.dispatch({ type: "RESET_REFRESH_STATUS" });
+        }
+      }
+      console.log("Remaining SUB refreshes: ", store.getState().settings.cooldown.refreshStatus, " Last used: ", store.getState().settings.cooldown.lastRefreshed)
+    }
 
     if (!store.getState().settings.lastSelectedByHand) {
       store.dispatch({ type: 'DARK_MODE', payload: Appearance.getColorScheme() });

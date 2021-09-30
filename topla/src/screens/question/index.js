@@ -85,8 +85,8 @@ const QuestionScreen = props => {
                     }
                 }
 
-                setTimer(timer + 100);
-            }, 100);
+                setTimer(timer + 30);
+            }, 30);
         }
         return () => {
             if (!timerStarted) {
@@ -188,12 +188,6 @@ const QuestionScreen = props => {
                             results: results,
                         }
                     });
-                    /*
-                    props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
-                    props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
-                    props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
-                    //props.dispatch({ type: "RESET_VERSUS_STATS" });
-                    props.dispatch({ type: "RESET_QUESTION_RESULTS" });*/
 
                     props.dispatch({ type: "SET_VERSUS_GAME_FINISHED", payload: true });
                     props.dispatch({ type: "SET_PLAYER1_READY", payload: false });
@@ -967,7 +961,7 @@ const QuestionScreen = props => {
 
                 return (<View style={style.versusContainer}>
                     <View style={style.versusBox}>
-                        <View style={{ flex: 1, borderTopWidth: 1, borderTopColor: Theme(props.settings.darkMode).blue, transform: [{ rotate: '180deg' }] }}>
+                        <View style={{ flex: 1, transform: [{ rotate: '180deg' }] }}>
                             {pageWinner({
                                 results: props.currentQuestion.versusStats.p1,
                                 isWinner: (props.currentQuestion.versusStats.winner == 1),
@@ -978,6 +972,9 @@ const QuestionScreen = props => {
                                     props.navigation.navigate('QuestionScreen', { question: props.route.params.question });
                                 }
                             })}
+                        </View>
+                        <View style={{ height: 2, paddingLeft: 24, paddingRight: 24, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <View style={{ height: 2, width: "100%", backgroundColor: "#000", opacity: 0.1, }} />
                         </View>
                         <View style={{ flex: 1 }}>
                             {pageWinner({
@@ -1048,6 +1045,9 @@ const QuestionScreen = props => {
                                     }
                                 })
                             }
+                        </View>
+                        <View style={{ height: 2, paddingLeft: 24, paddingRight: 24, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+                            <View style={{ height: 2, width: "100%", backgroundColor: "#000", opacity: 0.1, }} />
                         </View>
                         <View style={{ flex: 1, paddingBottom: 16, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
                             {

@@ -29,8 +29,8 @@ const OptionsScreen = props => {
         },
         contact: () => {
             const mail = {
-                subject: `Topla Support`,
-                body: `[${props.reducer.deviceInfo.uuid},${props.reducer.deviceInfo.buildNumber}] ${I18n.t("contact_message")} `,
+                subject: `Topla Contact [${props.reducer.deviceInfo.uuid},${props.reducer.deviceInfo.buildNumber}]`,
+                body: ``, // ${I18n.t("contact_message")}
             };
             Linking.openURL(`mailto:${Config.DEVELOPER_CONTACT_MAIL}?subject=${mail.subject}&body=${mail.body}`);
         },

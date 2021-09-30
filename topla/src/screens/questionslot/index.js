@@ -36,7 +36,7 @@ const QuestionSlotScreen = props => {
             >
                 {props.questionSettings.questionInitials.map((question, index) => {
                     return question.isVersusMode || question.isChildPlay || question.isDragDrop ? null : <QuestionSlot
-                        key={index}
+                        key={question.nameId}
                         onPlay={() => _questionPlay(question)}
                         question={question}
                     />

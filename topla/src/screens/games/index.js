@@ -19,35 +19,7 @@ const GamesScreen = props => {
     }
 
     const _navigateToDragDrop = () => {
-
         props.navigation.navigate('QuestionSettings', { question: props.questionSettings.questionInitials[7] });
-
-        /*
-
-        const _setQuestionParams = question => {
-            // setMaxRange
-            props.dispatch({ type: "SET_MAX_RANGE", payload: question.maxRange });
-            // setOperations
-            props.dispatch({
-                type: "SET_QUESTION_SETTINGS_OPERATIONS",
-                payload: {
-                    addition: (question.operations.includes("addition")),
-                    subtraction: (question.operations.includes("subtraction")),
-                    multiplication: (question.operations.includes("multiplication")),
-                    division: (question.operations.includes("division")),
-                }
-            });
-            // setQuestionCount
-            props.dispatch({ type: "SET_QUESTION_COUNT", payload: question.questionCount });
-            props.dispatch({ type: "SET_OPTION_COUNT", payload: question.optionCount });
-            // setQuestionTime
-            props.dispatch({ type: "SET_QUESTION_TIME", payload: question.questionTime });
-        }
-        _setQuestionParams(props.questionSettings.questionInitials[7]);
-        // First, change settings
-        props.navigation.navigate('QuestionScreen', { question: props.questionSettings.questionInitials[7] });
-
-        */
     }
 
     return (
@@ -60,7 +32,7 @@ const GamesScreen = props => {
             <TouchableOpacity
                 style={{ paddingLeft: 16, paddingRight: 16, marginBottom: 16, marginTop: 16, shadowColor: props.settings.darkMode ? "#FFF" : "#919191" }}
                 onPress={() => _navigateToVersus()}
-                activeOpacity={0.7} >
+                activeOpacity={0.85} >
                 <View style={{
                     ...style.element,
                     backgroundColor: Theme(props.settings.darkMode).questionSlotBackground
@@ -80,9 +52,7 @@ const GamesScreen = props => {
                         {I18n.t("questionPlay_versus_desc")}
                     </Text>
                 </View>
-                <View
-                    style={style.play}
-                    activeOpacity={0.7}>
+                <View style={style.play}>
                     <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />
                 </View>
             </TouchableOpacity>
@@ -90,7 +60,7 @@ const GamesScreen = props => {
             <TouchableOpacity
                 style={{ paddingLeft: 16, paddingRight: 16, shadowColor: props.settings.darkMode ? "#FFF" : "#919191" }}
                 onPress={() => _navigateToSpeedTest()}
-                activeOpacity={0.7} >
+                activeOpacity={0.85} >
                 <View style={{
                     ...style.element,
                     backgroundColor: Theme(props.settings.darkMode).questionSlotBackground,
@@ -109,9 +79,7 @@ const GamesScreen = props => {
                         {I18n.t("questionPlay_speed_desc")}
                     </Text>
                 </View>
-                <View
-                    style={style.play}
-                    activeOpacity={0.7}>
+                <View style={style.play}>
                     <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />
                 </View>
             </TouchableOpacity>
@@ -119,7 +87,7 @@ const GamesScreen = props => {
             <TouchableOpacity
                 style={{ paddingLeft: 16, paddingRight: 16, marginTop: 16, marginBottom: 24, shadowColor: props.settings.darkMode ? "#FFF" : "#919191" }}
                 onPress={() => _navigateToDragDrop()}
-                activeOpacity={0.7} >
+                activeOpacity={0.85} >
                 <View style={{
                     ...style.element,
                     backgroundColor: Theme(props.settings.darkMode).questionSlotBackground,
@@ -138,9 +106,7 @@ const GamesScreen = props => {
                         {I18n.t("questionPlay_drag_drop_desc")}
                     </Text>
                 </View>
-                <View
-                    style={style.play}
-                    activeOpacity={0.7}>
+                <View style={style.play}>
                     <FontAwesomeIcon icon={faPlay} size={18} color={'white'} />
                 </View>
             </TouchableOpacity>

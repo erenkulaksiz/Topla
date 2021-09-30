@@ -12,7 +12,7 @@ import Theme from '../../themes'
 const QuestionSlot = props => {
     return (
         <TouchableOpacity style={{ ...style.container, shadowColor: props.settings.darkMode ? "#FFF" : "#919191" }}
-            activeOpacity={0.7}
+            activeOpacity={0.85}
             onPress={() => props.onPlay()}>
             <View style={{
                 ...style.element,

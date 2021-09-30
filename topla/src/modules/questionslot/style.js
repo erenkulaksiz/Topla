@@ -1,9 +1,11 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
     container: {
+        marginLeft: 10,
+        marginRight: 10,
         padding: 4,
-        marginBottom: 16,
+        marginBottom: 10,
         alignItems: "flex-start",
     },
     element: {
@@ -20,7 +22,7 @@ export default StyleSheet.create({
         },
         shadowOpacity: 0.4,
         shadowRadius: 12,
-        elevation: 4,
+        elevation: 12,
     },
     play: {
         justifyContent: "center",
@@ -29,7 +31,7 @@ export default StyleSheet.create({
         height: 54,
         backgroundColor: "#0F7CBB",
         borderRadius: 64,
-        elevation: 5,
+        elevation: 24,
         position: "absolute",
         bottom: -8,
         right: 18,

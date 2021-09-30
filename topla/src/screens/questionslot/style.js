@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
     container: {
@@ -23,7 +23,5 @@ export default StyleSheet.create({
     questionsScroll: {
         flex: 1,
         paddingTop: 6,
-        paddingLeft: 8,
-        paddingRight: 8,
     },
 });

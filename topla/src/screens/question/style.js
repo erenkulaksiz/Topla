@@ -129,8 +129,8 @@ export default StyleSheet.create({
         alignItems: "center",
     },
     overlayReady: {
-        width: "90%",
-        height: "90%",
+        width: "92%",
+        height: "95%",
         elevation: 16,
         backgroundColor: "#fff",
         borderRadius: 24,

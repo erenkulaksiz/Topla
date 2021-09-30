@@ -94,86 +94,10 @@ export default (state = INITIAL_STATE, action) => {
 
             return state
 
-        case 'API_CHECK_RECEIPT':
-            console.log("@API_CHECK_RECEIPT");
-
-            console.log("Sending: ", action.payload.data);
-
-            const receipt = async () => {
-                const response = await fetch(API_URL + '/receipt', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        data: action.payload.data,
-                        platform: action.payload.platform,
-                        uuid: action.payload.uuid,
-                        API_TOKEN: action.payload.API_TOKEN,
-                    }),
-                }).then(response => {
-                    console.log("response status ", response.status);
-                    response.json().then(data => {
-                        console.log("@api check receipt response: ", data);
-
-                        if (data.purchaseStatus == "success" && data.success == true) {
-                            console.log(data.reason);
-
-                        }
-
-                    })
-                }).catch(function (error) {
-                    throw error;
-                });
-                return response
-            }
-
-            receipt().catch(err => {
-                console.log("[ERROR]: ", err);
-            });
-
-            return state
-
         case 'API_IAP_INIT':
-            console.log("@API_IAP_INIT");
+            console.log("@API_IAP_INIT, data: ", action.payload);
 
-            const init = async () => {
-                const response = await fetch(API_URL + '/iapinit', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        data: action.payload.data,
-                        platform: action.payload.platform,
-                        uuid: action.payload.uuid,
-                        API_TOKEN: action.payload.API_TOKEN,
-                    }),
-                }).then(response => {
-                    console.log("response status ", response.status);
-                    response.json().then(data => {
-                        console.log("@api iap init response: ", data);
-
-                        state.iapInitData = data;
-
-                        if (data.success) {
-                            console.log("User has subscription, API_IAP_INIT");
-                        } else if (data.success == false) {
-                            console.log("Error with subscription, reason: ", data.reason);
-                        }
-
-                    })
-                }).catch(function (error) {
-                    throw error;
-                });
-                return response
-            }
-
-            init().catch(err => {
-                console.log("[ERROR]: ", err);
-            });
+            state.iapInitData = action.payload;
 
             return state
 

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { NativeModules, Platform } from 'react-native';
 import Config from 'react-native-config';
 import * as RNLocalize from 'react-native-localize';
@@ -19,7 +19,6 @@ class Api extends React.Component {
 
     registerDevice = async ({ uuid, bundleId, model }) => {
         console.log("API_HANDLER, REGISTER w/ URL: ", API_URL);
-
         return await fetch(API_URL + '/device', {
             method: 'POST',
             headers: {
@@ -38,6 +37,39 @@ class Api extends React.Component {
             }),
         });
     }
+
+    checkReceipt = async ({ data, platform, uuid, API_TOKEN }) => {
+        return await fetch(API_URL + '/receipt', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: data,
+                platform: platform,
+                uuid: uuid,
+                API_TOKEN: API_TOKEN,
+            }),
+        })
+    }
+
+    IAPinit = async ({ data, platform, uuid, API_TOKEN }) => {
+        return await fetch(API_URL + '/iapinit', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: data,
+                platform: platform,
+                uuid: uuid,
+                API_TOKEN: API_TOKEN,
+            }),
+        })
+    }
+
 }
 const api = new Api();
 
