@@ -27,6 +27,7 @@ const QuestionScreen = props => {
 
     const [timer, setTimer] = useState(0);
     const [thisQuestionTime, setQTime] = useState(0);
+    const [questionStartTime, setQuestionStartTime] = useState(0);
     const [thisPlayerQ1Time, setSplitPlayerQ1Time] = useState(0);
     const [thisPlayerQ2Time, setSplitPlayerQ2Time] = useState(0);
     const [timerStarted, setTimerStarted] = useState(false);
@@ -40,6 +41,8 @@ const QuestionScreen = props => {
             } else {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
                 _timer.startTimer();
+                setQTime(Date.now());
+                setQuestionStartTime(Date.now());
             }
         }
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e));
@@ -54,11 +57,11 @@ const QuestionScreen = props => {
         pause: () => setTimerStarted(false),
         resume: () => setTimerStarted(true),
         _render({ player = 0 } = {}) {
-            if (player == 1) return (<Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisPlayerQ1Time, { colonNotation: true })}</Text>)
-            else if (player == 2) return (<Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisPlayerQ2Time, { colonNotation: true })}</Text>)
+            if (player == 1) return (<Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisPlayerQ1Time)}</Text>)
+            else if (player == 2) return (<Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisPlayerQ2Time)}</Text>)
 
             return (
-                <Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisQuestionTime, { colonNotation: true })}</Text>
+                <Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisQuestionTime)}</Text>
             )
         }
     }
@@ -80,13 +83,13 @@ const QuestionScreen = props => {
                     }
                 } else {
                     if ((timer - thisQuestionTime) >= props.questionSettings.perQuestionTime) {
-                        _timer.pause(); // -> Soru süresi aşılırsa
+                        //_timer.pause(); // -> Soru süresi aşılırsa
                         page._questionEmpty({ currentStep: props.currentQuestion.currentStep });
                     }
                 }
 
-                setTimer(timer + 30);
-            }, 30);
+                setTimer(Date.now());
+            }, 60);
         }
         return () => {
             if (!timerStarted) {
@@ -211,12 +214,13 @@ const QuestionScreen = props => {
                 props.dispatch({
                     type: "SET_STATS",
                     payload: {
-                        finalTime: timer,
+                        finalTime: timer - questionStartTime,
                         totalCorrect: results.correct,
                         totalWrong: results.wrong,
                         totalEmpty: results.empty,
                     }
                 });
+                console.log("Finaltime: ", timer - questionStartTime);
                 props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } })
                 props.navigation.removeListener('beforeRemove')
                 _timer.pause();
@@ -253,7 +257,7 @@ const QuestionScreen = props => {
                             questionStep: currentStep,
                             questionAnswerCorrect: false,
                             questionAnswer: 0,
-                            questionSolveTime: timer,
+                            questionSolveTime: timer - questionStartTime,
                             questionTime: timer - thisPlayerQ1Time,
                             questionEmpty: true,
                         }
@@ -273,7 +277,7 @@ const QuestionScreen = props => {
                             questionStep: currentStep,
                             questionAnswerCorrect: false,
                             questionAnswer: 0,
-                            questionSolveTime: timer,
+                            questionSolveTime: timer - questionStartTime,
                             questionTime: timer - thisPlayerQ2Time,
                             questionEmpty: true,
                         }
@@ -294,7 +298,7 @@ const QuestionScreen = props => {
                         questionStep: currentStep,
                         questionAnswerCorrect: false,
                         questionAnswer: 0,
-                        questionSolveTime: timer,
+                        questionSolveTime: timer - questionStartTime,
                         questionTime: timer - thisQuestionTime,
                         questionEmpty: true,
                     }
@@ -307,6 +311,8 @@ const QuestionScreen = props => {
                     props.dispatch({ type: "SET_DRAG_DROP_NEXT_BUTTON", payload: false });
                     props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
                     props.dispatch({ type: "SET_DRAG_DROP_CURRENT_RESULT", payload: 0 });
+
+                    setQTime(Date.now());
 
                     setTimerStarted(true);
                 } else {
@@ -338,7 +344,7 @@ const QuestionScreen = props => {
                     questionStep: props.currentQuestion.currentStep,
                     questionAnswerCorrect: userAnswer == trueAnswer,
                     questionAnswer: userAnswer,
-                    questionSolveTime: timer,
+                    questionSolveTime: timer - questionStartTime,
                     questionTime: timer - thisQuestionTime,
                     questionGivenArguments: props.currentQuestion.dragDropInput,
                 }
@@ -457,7 +463,7 @@ const QuestionScreen = props => {
                         questionStep: props.currentQuestion.currentStep,
                         questionAnswerCorrect: questionAnswerCorrect,
                         questionAnswer: element,
-                        questionSolveTime: timer,
+                        questionSolveTime: timer - questionStartTime,
                         questionTime: timer - thisQuestionTime
                     }
                 });
@@ -477,7 +483,7 @@ const QuestionScreen = props => {
                         questionStep: props.currentQuestion.versusStats.p1.currentStep,
                         questionAnswerCorrect: questionAnswerCorrect,
                         questionAnswer: element,
-                        questionSolveTime: timer,
+                        questionSolveTime: timer - questionStartTime,
                         questionTime: timer - thisPlayerQ1Time,
                     }
                 });
@@ -500,7 +506,7 @@ const QuestionScreen = props => {
                         questionStep: props.currentQuestion.versusStats.p2.currentStep,
                         questionAnswerCorrect: questionAnswerCorrect,
                         questionAnswer: element,
-                        questionSolveTime: timer,
+                        questionSolveTime: timer - questionStartTime,
                         questionTime: timer - thisPlayerQ2Time,
                     }
                 });
@@ -1004,6 +1010,9 @@ const QuestionScreen = props => {
                         props.dispatch({ type: "SET_GAME_STARTED", payload: true });
                         props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
                         _timer.startTimer();
+                        setSplitPlayerQ1Time(Date.now());
+                        setSplitPlayerQ2Time(Date.now());
+                        setQuestionStartTime(Date.now());
                     }
                 }
 

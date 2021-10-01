@@ -80,7 +80,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction"],
             questionCount: 7,
             optionCount: 3,
-            questionTime: 2000,
+            questionTime: 4000,
             isVersusMode: true,
         },
         {
@@ -108,7 +108,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction", "multiplication"],
             questionCount: 7,
             optionCount: 4,
-            questionTime: 10000,
+            questionTime: 12000,
             isDragDrop: true,
         },
     ],

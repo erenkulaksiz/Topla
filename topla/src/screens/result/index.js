@@ -42,7 +42,7 @@ const ResultScreen = props => {
                 <Text style={{ ...style.infoTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_summary")}</Text>
                 <View style={{ ...style.infoBar, backgroundColor: Theme(props.settings.darkMode).textDefault }}></View>
                 <View style={style.infoContent}>
-                    <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_totalquestions")}: {prettyMs(props.currentQuestion.stats.finalTime, { colonNotation: true })}</Text>
+                    <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_totaltime")}: {prettyMs(props.currentQuestion.stats.finalTime)}</Text>
                     {props.currentQuestion.stats.totalCorrect == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_truecount")}: {props.currentQuestion.stats.totalCorrect}</Text>}
                     {props.currentQuestion.stats.totalWrong == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_wrongcount")}: {props.currentQuestion.stats.totalWrong}</Text>}
                     {props.currentQuestion.stats.totalEmpty == 0 || <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_emptycount")}: {props.currentQuestion.stats.totalEmpty}</Text>}
@@ -75,7 +75,7 @@ const ResultScreen = props => {
                                 element.questionEmpty || (element.questionAnswerCorrect || <Text style={{ color: "green" }}>{I18n.t("question_answer")}: {props.currentQuestion.questions[element.questionStep].questionAnswer}</Text>)
                             }
 
-                            <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_time")}: {prettyMs(element.questionTime, { colonNotation: true })}</Text>
+                            <Text style={{ color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionresults_time")}: {prettyMs(element.questionTime)}</Text>
                         </View>
                     )
                 })}

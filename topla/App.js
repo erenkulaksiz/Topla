@@ -12,6 +12,7 @@ import { persistStore } from 'redux-persist';
 import Config from 'react-native-config';
 import * as RNIap from 'react-native-iap';
 import Api from './src/utils/classes/api.js';
+import I18n from './src/utils/i18n';
 
 // Components 
 import Home from './src/screens/root';
@@ -158,7 +159,7 @@ const App = () => {
             }
           }
           if (store.getState().API.retries == Number(Config.API_RETRY_WARNING_RETRIES)) {
-            alert("Make sure your internet is on, there might be issues with serverside. Please report this issue with toplaappp@gmail.com")
+            alert(I18n.t("API_connection_retry"));
           }
         }, Number(Config.API_RETRY_INTERVAL))
       } else {

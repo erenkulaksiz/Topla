@@ -97,4 +97,5 @@ export default {
     dragdrop_results_playAgain: "Play Again",
     dragdrop_currentResult: "Current Result",
     dragdrop_nextquestion: "Next Question",
+    API_connection_retry: `Make sure your internet is on, there might be issues with serverside. Please report this issue with ${Config.DEVELOPER_CONTACT_MAIL}`,
 };

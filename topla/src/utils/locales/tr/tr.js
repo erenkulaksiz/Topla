@@ -96,4 +96,5 @@ export default {
     dragdrop_results_playAgain: "Tekrar Oyna",
     dragdrop_currentResult: "Şu anki Sonuç",
     dragdrop_nextquestion: "Sonraki Soru",
+    API_connection_retry: `Internete bağlı olduğunuzdan emin olun, eğer eminseniz sunucu kısmında sorunlar olabilir. Bu sorunu ${Config.DEVELOPER_CONTACT_MAIL} adresine mail atarak bize iletebilirsiniz.`,
 };
