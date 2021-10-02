@@ -40,9 +40,9 @@ const QuestionScreen = props => {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
             } else {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
-                _timer.startTimer();
                 setQTime(Date.now());
                 setQuestionStartTime(Date.now());
+                _timer.startTimer();
             }
         }
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e));
@@ -775,7 +775,7 @@ const QuestionScreen = props => {
                                 props.currentQuestion.versusStats.p1.finished ? page._render.playerFinished() : <><View style={{ ...style.headerContainer }}>
                                     <View style={style.headerLeft}>
                                         <FontAwesomeIcon icon={faClock} size={16} color={Theme(props.settings.darkMode).textDefault} />
-                                        {_timer._render({ player: 1 })}
+                                        {props.currentQuestion.isStarted && _timer._render({ player: 1 })}
                                         <Text style={{ ...style.timerFinishText, color: Theme(props.settings.darkMode).textDefault }}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
                                     </View>
                                     <View style={style.headerRight}>
@@ -806,7 +806,7 @@ const QuestionScreen = props => {
                                     <View style={{ ...style.headerContainer }}>
                                         <View style={style.headerLeft}>
                                             <FontAwesomeIcon icon={faClock} size={16} color={Theme(props.settings.darkMode).textDefault} />
-                                            {_timer._render({ player: 2 })}
+                                            {props.currentQuestion.isStarted && _timer._render({ player: 2 })}
                                             <Text style={{ ...style.timerFinishText, color: Theme(props.settings.darkMode).textDefault }}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
                                         </View>
                                         <View style={style.headerRight}>
@@ -842,7 +842,7 @@ const QuestionScreen = props => {
                         {
                             props.route.params.question.isChildPlay || <View style={style.headerLeft}>
                                 <FontAwesomeIcon icon={faClock} size={16} color={Theme(props.settings.darkMode).textDefault} />
-                                {_timer._render()}
+                                {props.currentQuestion.isStarted && _timer._render()}
                                 <Text style={{ ...style.timerFinishText, color: Theme(props.settings.darkMode).textDefault }}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
                             </View>
                         }
