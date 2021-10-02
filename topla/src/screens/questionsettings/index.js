@@ -151,6 +151,20 @@ const QuestionSettings = props => {
         toggles: () => {
             return (
                 <View>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_TIMER_ENABLED", payload: !props.questionSettings.timerEnabled })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.timerEnabled}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_TIMER_ENABLED", payload: isOn })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionSettings_timerEnabled")}</Text>
+                    </TouchableOpacity>
                     {
                         props.route.params.question.isDragDrop ? <>
                             <TouchableOpacity

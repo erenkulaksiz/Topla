@@ -26,7 +26,7 @@ const INITIAL_STATE = {
             operations: ["addition", "subtraction"],
             questionCount: 7,
             optionCount: 3,
-            questionTime: 3000,
+            questionTime: 4000,
         },
         {
             id: 3,
@@ -118,6 +118,7 @@ const INITIAL_STATE = {
     displayResultDragDrop: false, // For Drag&Drop Gamemode
     selectedDragDropMode: "dragdrop", // For Drag&Drop Gamemode
     perQuestionTime: 5000,
+    timerEnabled: true,
     operations: {
         addition: true,
         subtraction: true,
@@ -257,6 +258,11 @@ export default (state = INITIAL_STATE, action) => {
         case 'SET_DRAG_DROP_MODE':
             console.log("NEW VALUE FOR selectedDragDropMode: ", action.payload);
             state.selectedDragDropMode = action.payload;
+            return { ...state }
+
+        case 'SET_TIMER_ENABLED':
+            console.log("NEW VALUE FOR timerEnabled: ", action.payload);
+            state.timerEnabled = action.payload;
             return { ...state }
 
         default:

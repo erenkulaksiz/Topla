@@ -7,7 +7,7 @@ export default StyleSheet.create({
     },
     headerContainer: {
         width: "100%",
-        marginTop: 24,
+        marginTop: 6,
         paddingLeft: 16,
         paddingRight: 16,
         flexDirection: "row",

@@ -17,6 +17,7 @@ import Header from "../../modules/header";
 import QuestionSolve from "../../modules/questionsolve";
 import ProgressBar from "../../modules/progressbar";
 import { map } from "../../utils";
+import { t } from 'i18n-js';
 
 const sounds = {
     correct: require('../../sounds/correct_2.mp3'),
@@ -35,14 +36,25 @@ const QuestionScreen = props => {
     useEffect(() => {
         console.log("question params: ", props.route.params);
         page._loadQuestions();
+        const now = Date.now();
         if (!props.route.params.question.isVersusMode) {
             if (props.route.params.question.isChildPlay) {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
             } else {
                 props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
-                setQTime(Date.now());
-                setQuestionStartTime(Date.now());
-                _timer.startTimer();
+                if (props.questionSettings.timerEnabled) {
+                    setTimer(now);
+                    setQTime(now);
+                    setQuestionStartTime(now);
+                    _timer.startTimer();
+                }
+
+            }
+        } else {
+            if (props.questionSettings.timerEnabled) {
+                setTimer(now);
+                setSplitPlayerQ1Time(now);
+                setSplitPlayerQ2Time(now);
             }
         }
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e));
@@ -57,12 +69,12 @@ const QuestionScreen = props => {
         pause: () => setTimerStarted(false),
         resume: () => setTimerStarted(true),
         _render({ player = 0 } = {}) {
-            if (player == 1) return (<Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisPlayerQ1Time)}</Text>)
-            else if (player == 2) return (<Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisPlayerQ2Time)}</Text>)
-
-            return (
-                <Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(timer - thisQuestionTime)}</Text>
-            )
+            const time = (player != 0 ? (player == 1 ? timer - thisPlayerQ1Time : timer - thisPlayerQ2Time) : timer - thisQuestionTime);
+            if (time > 0) {
+                return (
+                    <Text style={{ marginLeft: 8, color: Theme(props.settings.darkMode).textDefault }}>{prettyMs(time)}</Text>
+                )
+            }
         }
     }
 
@@ -104,11 +116,15 @@ const QuestionScreen = props => {
         },
         _pause() {
             page._modal(true);
-            _timer.pause();
+            if (props.questionSettings.timerEnabled) {
+                _timer.pause();
+            }
         },
         _continue() {
             page._modal(false);
-            _timer.resume();
+            if (props.questionSettings.timerEnabled) {
+                _timer.resume();
+            }
         },
         _goBack() {
             page._modal(false);
@@ -134,10 +150,12 @@ const QuestionScreen = props => {
                 console.log("P1 FINISHED: ", props.currentQuestion.versusStats.p1.finished, " P2 FINISHED: ", props.currentQuestion.versusStats.p2.finished)
 
                 if ((props.currentQuestion.versusStats.p1.questionResults.length == props.questionSettings.questionCount) && (props.currentQuestion.versusStats.p2.questionResults.length == props.questionSettings.questionCount)) {
-                    _timer.pause();
-                    _timer.clear();
-                    setSplitPlayerQ1Time(0);
-                    setSplitPlayerQ2Time(0);
+                    if (props.questionSettings.timerEnabled) {
+                        _timer.pause();
+                        _timer.clear();
+                        setSplitPlayerQ1Time(0);
+                        setSplitPlayerQ2Time(0);
+                    }
                     props.navigation.removeListener('beforeRemove'); // Remove listener
                     props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
                     let results = {
@@ -221,11 +239,13 @@ const QuestionScreen = props => {
                     }
                 });
                 console.log("Finaltime: ", timer - questionStartTime);
-                props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } })
-                props.navigation.removeListener('beforeRemove')
-                _timer.pause();
-                _timer.clear();
-                setQTime(0);
+                props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } });
+                props.navigation.removeListener('beforeRemove');
+                if (props.questionSettings.timerEnabled) {
+                    _timer.pause();
+                    _timer.clear();
+                    setQTime(0);
+                }
                 props.navigation.navigate('ResultScreen');
             }
         },
@@ -234,16 +254,16 @@ const QuestionScreen = props => {
             if (player != 0) {
                 if (player == 1) {
                     props.dispatch({ type: "GOTO_NEXT_QUESTION_PLAYER1" });
-                    setSplitPlayerQ1Time(timer);
+                    props.questionSettings.timerEnabled && setSplitPlayerQ1Time(timer);
                     console.log("qTime PLAYER1: ", timer);
                 } else if (player == 2) {
                     props.dispatch({ type: "GOTO_NEXT_QUESTION_PLAYER2" });
-                    setSplitPlayerQ2Time(timer);
+                    props.questionSettings.timerEnabled && setSplitPlayerQ2Time(timer);
                     console.log("qTime PLAYER2: ", timer);
                 }
             } else if (player == 0) {
                 props.dispatch({ type: "GOTO_NEXT_QUESTION" });
-                setQTime(timer);
+                props.questionSettings.timerEnabled && setQTime(timer);
                 console.log("qTime ", timer);
             }
         },
@@ -265,7 +285,7 @@ const QuestionScreen = props => {
 
                     if ((props.currentQuestion.versusStats.p1.currentStep + 1) < props.questionSettings.questionCount) {
                         page._nextQuestion({ player: player });
-                        setTimerStarted(true);
+                        props.questionSettings.timerEnabled && setTimerStarted(true);
                     } else {
                         page._finishQuestionSolving({ player: player });
                     }
@@ -285,7 +305,7 @@ const QuestionScreen = props => {
 
                     if ((props.currentQuestion.versusStats.p2.currentStep + 1) < props.questionSettings.questionCount) {
                         page._nextQuestion({ player: player });
-                        setTimerStarted(true);
+                        props.questionSettings.timerEnabled && setTimerStarted(true);
                     } else {
                         page._finishQuestionSolving({ player: player });
                     }
@@ -312,9 +332,11 @@ const QuestionScreen = props => {
                     props.dispatch({ type: "RESET_DRAG_DROP_INPUT" });
                     props.dispatch({ type: "SET_DRAG_DROP_CURRENT_RESULT", payload: 0 });
 
-                    setQTime(Date.now());
+                    if (props.questionSettings.timerEnabled) {
+                        setQTime(Date.now());
+                        setTimerStarted(true);
+                    }
 
-                    setTimerStarted(true);
                 } else {
                     page._finishQuestionSolving();
                 }
@@ -773,11 +795,11 @@ const QuestionScreen = props => {
                         <View style={{ height: "50%", transform: [{ rotate: '180deg' }] }}>
                             {
                                 props.currentQuestion.versusStats.p1.finished ? page._render.playerFinished() : <><View style={{ ...style.headerContainer }}>
-                                    <View style={style.headerLeft}>
+                                    {props.questionSettings.timerEnabled && <View style={style.headerLeft}>
                                         <FontAwesomeIcon icon={faClock} size={16} color={Theme(props.settings.darkMode).textDefault} />
                                         {props.currentQuestion.isStarted && _timer._render({ player: 1 })}
                                         <Text style={{ ...style.timerFinishText, color: Theme(props.settings.darkMode).textDefault }}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
-                                    </View>
+                                    </View>}
                                     <View style={style.headerRight}>
                                         <Text style={{ ...style.questionCountTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question")}:</Text>
                                         <Text style={{ ...style.questionCount, color: Theme(props.settings.darkMode).textDefault }}>{(props.currentQuestion.versusStats.p1.currentStep + 1)}</Text>
@@ -804,11 +826,11 @@ const QuestionScreen = props => {
                             {
                                 props.currentQuestion.versusStats.p2.finished ? page._render.playerFinished() : <>
                                     <View style={{ ...style.headerContainer }}>
-                                        <View style={style.headerLeft}>
+                                        {props.questionSettings.timerEnabled && <View style={style.headerLeft}>
                                             <FontAwesomeIcon icon={faClock} size={16} color={Theme(props.settings.darkMode).textDefault} />
                                             {props.currentQuestion.isStarted && _timer._render({ player: 2 })}
                                             <Text style={{ ...style.timerFinishText, color: Theme(props.settings.darkMode).textDefault }}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
-                                        </View>
+                                        </View>}
                                         <View style={style.headerRight}>
                                             <Text style={{ ...style.questionCountTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question")}:</Text>
                                             <Text style={{ ...style.questionCount, color: Theme(props.settings.darkMode).textDefault }}>{(props.currentQuestion.versusStats.p2.currentStep + 1)}</Text>
@@ -836,15 +858,15 @@ const QuestionScreen = props => {
                     </>
                 )
             },
-            questions() {
+            questions() { // props.questionSettings.timerEnabled
                 return (<>
                     <View style={style.headerContainer}>
                         {
-                            props.route.params.question.isChildPlay || <View style={style.headerLeft}>
+                            props.route.params.question.isChildPlay || (props.questionSettings.timerEnabled && <View style={style.headerLeft}>
                                 <FontAwesomeIcon icon={faClock} size={16} color={Theme(props.settings.darkMode).textDefault} />
                                 {props.currentQuestion.isStarted && _timer._render()}
                                 <Text style={{ ...style.timerFinishText, color: Theme(props.settings.darkMode).textDefault }}>/ {prettyMs(props.questionSettings.perQuestionTime)}</Text>
-                            </View>
+                            </View>)
                         }
                         <View style={style.headerRight}>
                             <Text style={{ ...style.questionCountTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question")}:</Text>
@@ -926,7 +948,7 @@ const QuestionScreen = props => {
                                 <Text style={{ ...style.pageWinnerTitle, color: isWinner ? "#0FCB3B" : "#DC1818" }}>{isWinner ? I18n.t("versus_winner") : I18n.t("versus_loser")}!</Text>
                             </View>
                             <View style={style.pageTimeTextWrapper}>
-                                <Text style={{ ...style.pageTimeText, color: Theme(props.settings.darkMode).textDefault }}>{totalQuestions} {I18n.t("versus_question")} - {prettyMs(results.finalTime)}</Text>
+                                <Text style={{ ...style.pageTimeText, color: Theme(props.settings.darkMode).textDefault }}>{totalQuestions} {I18n.t("versus_question")} {props.questionSettings.timerEnabled && ("-" + prettyMs(results.finalTime))}</Text>
                             </View>
                             <View style={style.pageWinnerCorrects}>
                                 <Text style={{ ...style.pageWinnerResultText, color: "#0FCB3B" }}>{results.totalCorrect} {I18n.t("question_answer_correct")}</Text>
@@ -1009,10 +1031,12 @@ const QuestionScreen = props => {
                     if (props.currentQuestion.versusStats.p1.ready && props.currentQuestion.versusStats.p2.ready) {
                         props.dispatch({ type: "SET_GAME_STARTED", payload: true });
                         props.dispatch({ type: "SET_QUESTION_SOLVING", payload: true });
-                        _timer.startTimer();
-                        setSplitPlayerQ1Time(Date.now());
-                        setSplitPlayerQ2Time(Date.now());
-                        setQuestionStartTime(Date.now());
+                        if (props.questionSettings.timerEnabled) {
+                            setSplitPlayerQ1Time(Date.now());
+                            setSplitPlayerQ2Time(Date.now());
+                            setQuestionStartTime(Date.now());
+                            _timer.startTimer();
+                        }
                     }
                 }
 
@@ -1081,12 +1105,12 @@ const QuestionScreen = props => {
     }
 
     const onBackCancel = () => {
-        props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } })
-        _timer.resume();
+        props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } });
+        props.questionSettings.timerEnabled && _timer.resume();
     }
 
     const onBackSubmit = () => {
-        props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } })
+        props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } });
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
         props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
         props.dispatch({ type: "SET_ACTIVE_QUESTION_SOLVING", payload: 0 });
@@ -1102,8 +1126,10 @@ const QuestionScreen = props => {
             type: "SET_DRAG_DROP_CURRENT_RESULT",
             payload: 0
         });
-        _timer.pause();
-        _timer.clear();
+        if (props.questionSettings.timerEnabled) {
+            _timer.pause();
+            _timer.clear();
+        }
         props.navigation.removeListener('beforeRemove');
         props.navigation.popToTop();
     }

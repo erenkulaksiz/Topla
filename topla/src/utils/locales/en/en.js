@@ -98,4 +98,5 @@ export default {
     dragdrop_currentResult: "Current Result",
     dragdrop_nextquestion: "Next Question",
     API_connection_retry: `Make sure your internet is on, there might be issues with serverside. Please report this issue with ${Config.DEVELOPER_CONTACT_MAIL}`,
+    questionSettings_timerEnabled: "Timer",
 };
