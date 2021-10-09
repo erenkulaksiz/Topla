@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import prettyMs from 'pretty-ms';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faUndo } from '@fortawesome/free-solid-svg-icons';
 
 import I18n from "../../utils/i18n.js";
 import style from "./style";
@@ -14,7 +14,6 @@ const ResultScreen = props => {
 
     const _preventGoingBack = e => {
         e.preventDefault();
-
     };
 
     useEffect(() => {
@@ -29,6 +28,14 @@ const ResultScreen = props => {
         props.navigation.navigate('Home');
         console.log("@results back to home");
         props.dispatch({ type: "RESET_QUESTION_RESULTS" });
+    }
+
+    const _navigateRetry = async () => {
+        await props.navigation.removeListener('beforeRemove');
+        console.log("Retry params: ", props.route.params.question);
+        console.log("@results reset");
+        props.dispatch({ type: "RESET_QUESTION_RESULTS" });
+        props.navigation.navigate('QuestionScreen', { question: props.route.params.question, reload: true });
     }
 
     return (
@@ -77,9 +84,13 @@ const ResultScreen = props => {
                 <View style={{ marginBottom: 16 }}></View>
             </ScrollView>
             <View style={style.bottomButtonWrapper}>
-                <TouchableOpacity style={style.bottomButton} activeOpacity={0.7} onPress={() => _navigateToHome()}>
+                <TouchableOpacity style={{ ...style.bottomButton, marginLeft: 8, marginRight: 2 }} activeOpacity={0.7} onPress={() => _navigateToHome()}>
                     <FontAwesomeIcon icon={faArrowLeft} size={12} color={"#fff"} />
                     <Text style={{ fontSize: 15, color: "#fff", marginLeft: 8 }}>{I18n.t("question_results_back")}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ ...style.bottomButton, marginLeft: 2, marginRight: 8 }} activeOpacity={0.7} onPress={() => _navigateRetry()}>
+                    <FontAwesomeIcon icon={faUndo} size={12} color={"#fff"} />
+                    <Text style={{ fontSize: 15, color: "#fff", marginLeft: 8 }}>Tekrar Oyna</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

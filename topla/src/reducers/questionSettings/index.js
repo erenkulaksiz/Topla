@@ -9,6 +9,7 @@ const INITIAL_STATE = {
             content: `+ ${I18n.t("question_add")}`,
             titleColor: "#6ccf11",
             digit: 1,
+            questionDigitLength: 2, // x+y
             maxRange: 10,
             operations: ["addition"],
             questionCount: 5,
@@ -22,7 +23,8 @@ const INITIAL_STATE = {
             content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")}`,
             titleColor: "#6ccf11",
             digit: 1,
-            maxRange: 50,
+            questionDigitLength: 3, // x+y
+            maxRange: 20,
             operations: ["addition", "subtraction"],
             questionCount: 7,
             optionCount: 3,
@@ -35,7 +37,8 @@ const INITIAL_STATE = {
             content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")} x ${I18n.t("question_mul")}`,
             titleColor: "#dfe310",
             digit: 2,
-            maxRange: 100,
+            questionDigitLength: 3, // x+y z
+            maxRange: 50,
             operations: ["addition", "subtraction", "multiplication"],
             questionCount: 10,
             optionCount: 4,
@@ -48,7 +51,8 @@ const INITIAL_STATE = {
             content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")} x ${I18n.t("question_mul")} / ${I18n.t("question_div")}`,
             titleColor: "#E21717",
             digit: 3,
-            maxRange: 500,
+            questionDigitLength: 3, // x+y z
+            maxRange: 200,
             operations: ["addition", "subtraction", "multiplication", "division"],
             questionCount: 12,
             optionCount: 5,
@@ -62,7 +66,8 @@ const INITIAL_STATE = {
             content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")} x ${I18n.t("question_mul")} / ${I18n.t("question_div")}`,
             titleColor: "#E21717",
             digit: 4,
-            maxRange: 1000,
+            questionDigitLength: 3, // x+y
+            maxRange: 500,
             operations: ["addition", "subtraction", "multiplication", "division"],
             questionCount: 15,
             optionCount: 6,
@@ -76,6 +81,7 @@ const INITIAL_STATE = {
             content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")}`,
             titleColor: "#6ccf11",
             digit: 2,
+            questionDigitLength: 2, // x+y
             maxRange: 20,
             operations: ["addition", "subtraction"],
             questionCount: 7,
@@ -104,6 +110,7 @@ const INITIAL_STATE = {
             content: `+ ${I18n.t("question_add")} - ${I18n.t("question_sub")} x ${I18n.t("question_mul")}`,
             titleColor: "#6ccf11",
             digit: 1,
+            questionDigitLength: 3, // x+y
             maxRange: 8,
             operations: ["addition", "subtraction", "multiplication"],
             questionCount: 7,
@@ -114,7 +121,9 @@ const INITIAL_STATE = {
     ],
     questionCount: 5,
     optionCount: 4,
-    digitLength: 3, // For Drag&Drop Gamemode
+    digitLength: 2,
+    allowNegative: false,
+    allowFloat: false,
     displayResultDragDrop: false, // For Drag&Drop Gamemode
     selectedDragDropMode: "dragdrop", // For Drag&Drop Gamemode
     perQuestionTime: 5000,
@@ -263,6 +272,24 @@ export default (state = INITIAL_STATE, action) => {
         case 'SET_TIMER_ENABLED':
             console.log("NEW VALUE FOR timerEnabled: ", action.payload);
             state.timerEnabled = action.payload;
+            return { ...state }
+
+        case 'SET_FLOAT':
+            console.log("NEW VALUE FOR allowFloat: ", action.payload);
+            state.allowFloat = action.payload;
+            return { ...state }
+
+        case 'SET_NEGATIVE':
+            console.log("NEW VALUE FOR allowNegative: ", action.payload);
+            state.allowNegative = action.payload;
+            return { ...state }
+
+        case 'SET_DIGIT_LENGTH':
+            console.log("NEW VALUE FOR digitLength: ", action.payload);
+            if (state.digitLength + action.payload >= 2 && state.digitLength + action.payload <= 4) {
+                state.digitLength += action.payload;
+            }
+
             return { ...state }
 
         default:

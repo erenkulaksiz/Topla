@@ -55,9 +55,9 @@ export default StyleSheet.create({
         flexDirection: "row"
     },
     questionSettingsWrapper: {
-        padding: 24,
         borderRadius: 8,
         backgroundColor: "white",
+        marginBottom: 80,
     },
     elementLogoWrapper: {
         height: 13,
@@ -144,6 +144,7 @@ export default StyleSheet.create({
         borderRadius: 8,
         zIndex: 2,
         opacity: 0.37,
+        borderRadius: 8,
     },
     premiumTextWrapper: {
         position: "absolute",

@@ -22,6 +22,7 @@ export default StyleSheet.create({
     },
     content: {
         padding: 16,
+        paddingTop: 4,
     },
     infoBox: {
         padding: 12,
@@ -47,6 +48,7 @@ export default StyleSheet.create({
     },
     bottomButtonWrapper: {
         position: "absolute",
+        flexDirection: "row",
         width: "100%",
         height: 50,
         alignItems: "center",
@@ -54,13 +56,13 @@ export default StyleSheet.create({
         bottom: 16,
     },
     bottomButton: {
-        position: "absolute",
         width: "90%",
         height: 46,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#0F7CBB",
         borderRadius: 32,
-        flexDirection: "row"
+        flexDirection: "row",
+        flex: 1,
     },
 });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import { Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faClock, faTimes, faCheck, faHome, faUndoAlt } from '@fortawesome/free-solid-svg-icons'
@@ -9,6 +9,7 @@ import prettyMs from 'pretty-ms';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Sound from 'react-native-sound';
 import { Parser } from 'expr-eval';
+import { useIsFocused } from "@react-navigation/native";
 
 import Theme from "../../themes";
 import I18n from "../../utils/i18n.js";
@@ -16,7 +17,7 @@ import style from "./style";
 import Header from "../../modules/header";
 import QuestionSolve from "../../modules/questionsolve";
 import ProgressBar from "../../modules/progressbar";
-import { map } from "../../utils";
+import { question, map } from "../../utils";
 import { t } from 'i18n-js';
 
 const sounds = {
@@ -32,8 +33,10 @@ const QuestionScreen = props => {
     const [thisPlayerQ1Time, setSplitPlayerQ1Time] = useState(0);
     const [thisPlayerQ2Time, setSplitPlayerQ2Time] = useState(0);
     const [timerStarted, setTimerStarted] = useState(false);
+    const isFocused = useIsFocused();
 
-    useEffect(() => {
+    const _init = () => {
+        console.log("QUESTIONSCREEN STARTED ________");
         console.log("question params: ", props.route.params);
         page._loadQuestions();
         const now = Date.now();
@@ -48,7 +51,6 @@ const QuestionScreen = props => {
                     setQuestionStartTime(now);
                     _timer.startTimer();
                 }
-
             }
         } else {
             if (props.questionSettings.timerEnabled) {
@@ -58,6 +60,21 @@ const QuestionScreen = props => {
             }
         }
         props.navigation.addListener('beforeRemove', (e) => page._preventGoingBack(e));
+    }
+
+    useEffect(() => {
+        console.log("FOCUSED_________________ reload: ", props.route.params.reload);
+        if (props.route.params.reload) {
+            _init();
+            props.navigation.setParams({ reload: false });
+        }
+    }, [isFocused]);
+
+    useEffect(() => {
+        _init();
+        return () => {
+            StatusBar.setHidden(false);
+        }
     }, []);
 
     const _timer = { // 5 saat
@@ -156,6 +173,7 @@ const QuestionScreen = props => {
                         setSplitPlayerQ1Time(0);
                         setSplitPlayerQ2Time(0);
                     }
+                    StatusBar.setHidden(false);
                     props.navigation.removeListener('beforeRemove'); // Remove listener
                     props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
                     let results = {
@@ -240,13 +258,14 @@ const QuestionScreen = props => {
                 });
                 console.log("Finaltime: ", timer - questionStartTime);
                 props.dispatch({ type: "SET_PERF_QUESTION", payload: { questionEnd_StartPerf: performance.now() } });
+
                 props.navigation.removeListener('beforeRemove');
                 if (props.questionSettings.timerEnabled) {
                     _timer.pause();
                     _timer.clear();
                     setQTime(0);
                 }
-                props.navigation.navigate('ResultScreen');
+                props.navigation.navigate('ResultScreen', { question: props.route.params.question });
             }
         },
         _nextQuestion: ({ player = 0 } = {}) => {
@@ -560,183 +579,22 @@ const QuestionScreen = props => {
             console.log("@LOADING QUESTIONS");
             props.route.params.question.isDragDrop && console.log("@QUESTION LOAD TYPE IS DRAG DROP");
             props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
-            const performance_begin = performance.now();
-            const questions = [];
 
-            const values = [
-                "addition",
-                "subtraction",
-                "multiplication",
-                "division"
-            ];
-
-            const operation = value => {
-                if (value == values[0]) return "+"
-                if (value == values[1]) return "-"
-                if (value == values[2]) return "x"
-                if (value == values[3]) return "/"
-            }
-
-            if (!props.route.params.question.isDragDrop) {
-                for (let a = 1; a <= props.questionSettings.questionCount; a++) {
-                    let n = { // Numbers
-                        st: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
-                        nd: page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange),
-                        temp: 0,
-                    }
-                    const keys = Object.keys(props.questionSettings.operations).filter(k => props.questionSettings.operations[k] === true);
-                    const questionOperationRandom = keys[_.sample(Object.keys(keys))]
-                    if (questionOperationRandom == values[0]) {
-                        n.temp = n.st + n.nd;
-                    } else if (questionOperationRandom == values[1]) {
-                        n.temp = n.st - n.nd;
-                        if (n.temp < 0) {
-                            n.st = n.st ^ n.nd
-                            n.nd = n.st ^ n.nd
-                            n.st = n.st ^ n.nd
-                            n.temp = n.st - n.nd;
-                        }
-                    } else if (questionOperationRandom == values[2]) {
-                        n.temp = n.st * n.nd;
-                    } else if (questionOperationRandom == values[3]) {
-                        const isInt = value => {
-                            return (parseFloat(value) == parseInt(value)) && !isNaN(value);
-                        }
-                        const isPrime = value => {
-                            let result = 0;
-                            for (let i = 1; i < value; i++) { if (value % i == 0) result++; }
-                            if (result > 1) return false
-                            return true
-                        }
-                        n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange);
-                        const divider = [];
-                        while (isPrime(n.st)) { n.st = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
-                        while (!isInt(n.st / n.nd)) { n.nd = page._generateRandomInt((props.questionSettings.minRange), props.questionSettings.maxRange); }
-                        for (let i = 1; i < n.st; i++) {
-                            let result = n.st / i;
-                            if (isInt(result)) {
-                                divider.push(result);
-                            }
-                        }
-                        let randomKey = _.sample(divider);
-                        while (randomKey == n.st) { randomKey = _.sample(divider) }
-                        n.nd = randomKey;
-                        n.temp = n.st / n.nd;
-                    }
-
-                    questions.push({
-                        question: `${n.st} ${operation(questionOperationRandom)} ${n.nd}`,
-                        questionArguments: [n.st, n.nd],
-                        questionAnswer: n.temp,
-                        questionOptions: [],
-                        questionOperation: questionOperationRandom,
-                    });
-                }
-
-                questions.map(question => {
-                    for (let a = 1; a <= props.questionSettings.optionCount; a++) {
-                        if (a == 1) {
-                            question.questionOptions.push(question.questionAnswer);
-                        } else {
-                            const digits = Math.max(Math.floor(Math.log10(Math.abs(question.questionAnswer))), 1);
-                            const range = Math.pow(10, digits);
-
-                            let randomNumber = Math.abs(page._generateRandomInt(question.questionAnswer - range, question.questionAnswer + range));
-                            if (question.questionOptions.indexOf(randomNumber) < 0) {
-                                question.questionOptions.push(randomNumber);
-                            } else {
-                                a--;
-                            }
-                        }
-                    }
-                });
-
-                questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5));
-
-                props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
-                props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
-                const performance_after = performance.now();
-                console.log("set all questions: ", questions);
-                console.log("generation performance: " + (performance_after - performance_begin) + "ms");
-            } else {
-                let questions = [];
-                props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
-                for (let a = 1; a <= props.questionSettings.questionCount; a++) {
-                    let pickedNumbers = [];
-                    let allowedOperations = [
-                        "addition",
-                        "subtraction",
-                        "multiplication",
-                    ];
-                    allowedOperations.sort(() => Math.random() - 0.5);
-                    let answerCorrect = 0;
-                    let pickedOperations = [];
-                    for (let i = 0; i < props.questionSettings.digitLength; i++) {
-                        pickedNumbers.push(page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange));
-                    }
-                    for (let i = 0; i < props.questionSettings.digitLength - 1; i++) {
-                        pickedOperations.push(allowedOperations[Math.floor(Math.random() * allowedOperations.length)])
-                    }
-                    let expBuilder = [];
-                    pickedNumbers.map((element, index) => {
-                        expBuilder.push(element);
-                        if (pickedOperations[index]) {
-                            if (pickedOperations[index] == "addition") {
-                                expBuilder.push("+");
-                            } else if (pickedOperations[index] == "subtraction") {
-                                expBuilder.push("-");
-                            } else if (pickedOperations[index] == "multiplication") {
-                                expBuilder.push("*");
-                            }
-                        }
-                    })
-                    answerCorrect = Parser.evaluate(expBuilder.join(""));
-                    if (answerCorrect < 0) {
-                        a--;
-                    } else {
-                        console.log("Exp builder: " + expBuilder.join("") + " = ", answerCorrect);
-                        console.log("Picked operations: " + pickedOperations + " Picked numbers: " + pickedNumbers);
-                        questions.push({
-                            question: `${expBuilder.join("")}`,
-                            questionArguments: [...pickedNumbers],
-                            questionAnswer: answerCorrect,
-                            questionOptions: [],
-                            questionOperation: [...pickedOperations],
-                        })
-                    }
-                }
-
-                questions.map((element) => {
-                    element.questionArguments.map((el) => {
-                        element.questionOptions.push(el);
-                    });
-
-                    for (let i = 0; i < props.questionSettings.digitLength; i++) {
-                        const option = page._generateRandomInt(props.questionSettings.minRange, props.questionSettings.maxRange);
-
-                        if (option == element.questionOptions) a--;
-                        else element.questionOptions.push(option);
-                    }
-                });
-                console.log("Options: ", questions[0].questionOptions);
-
-                questions.map(question => question.questionOptions.sort(() => Math.random() - 0.5));
-                // Randomize questionOptions. #TODO Test!
-
-                // All options generated now give them index
-                questions.map((element) => {
-                    const oldOptions = element.questionOptions;
-                    const newOptions = [];
-                    oldOptions.map((el, index) => {
-                        newOptions.push({ opt: el, index: index });
-                    })
-                    element.questionOptions = newOptions;
-                });
-
+            question.generate({
+                questionCount: props.questionSettings.questionCount,
+                allowedOperations: props.questionSettings.operations,
+                minRange: props.questionSettings.minRange,
+                maxRange: props.questionSettings.maxRange,
+                optionCount: props.questionSettings.optionCount,
+                allowNegative: props.questionSettings.allowNegative,
+                allowFloat: props.questionSettings.allowFloat,
+                digitLength: props.questionSettings.digitLength,
+            }).then((questions) => {
                 props.dispatch({ type: "SET_ALL_QUESTIONS", payload: questions });
                 console.log("all questions: ", questions);
                 props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: true });
-            }
+            });
+
         },
         _render: {
             bars({ player = 0 } = {}) {
@@ -782,6 +640,16 @@ const QuestionScreen = props => {
                 }
 
                 return bars
+            },
+            loading() {
+                return (
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                        <View style={{ flexDirection: "column" }}>
+                            <ActivityIndicator size="large" color="#0F7CBB" />
+                            <Text>Loading</Text>
+                        </View>
+                    </View>
+                )
             },
             versus() {
                 return (
@@ -948,7 +816,7 @@ const QuestionScreen = props => {
                                 <Text style={{ ...style.pageWinnerTitle, color: isWinner ? "#0FCB3B" : "#DC1818" }}>{isWinner ? I18n.t("versus_winner") : I18n.t("versus_loser")}!</Text>
                             </View>
                             <View style={style.pageTimeTextWrapper}>
-                                <Text style={{ ...style.pageTimeText, color: Theme(props.settings.darkMode).textDefault }}>{totalQuestions} {I18n.t("versus_question")} {props.questionSettings.timerEnabled && ("-" + prettyMs(results.finalTime))}</Text>
+                                <Text style={{ ...style.pageTimeText, color: Theme(props.settings.darkMode).textDefault }}>{totalQuestions} {I18n.t("versus_question")} {props.questionSettings.timerEnabled && ("- " + prettyMs(results.finalTime))}</Text>
                             </View>
                             <View style={style.pageWinnerCorrects}>
                                 <Text style={{ ...style.pageWinnerResultText, color: "#0FCB3B" }}>{results.totalCorrect} {I18n.t("question_answer_correct")}</Text>
@@ -1036,6 +904,7 @@ const QuestionScreen = props => {
                             setSplitPlayerQ2Time(Date.now());
                             setQuestionStartTime(Date.now());
                             _timer.startTimer();
+                            StatusBar.setHidden(true, 'slide');
                         }
                     }
                 }
@@ -1110,6 +979,7 @@ const QuestionScreen = props => {
     }
 
     const onBackSubmit = () => {
+        StatusBar.setHidden(false);
         props.dispatch({ type: "SET_MODAL", payload: { backQuestion: false } });
         props.dispatch({ type: "SET_QUESTIONS_LOADED", payload: false });
         props.dispatch({ type: "SET_QUESTION_SOLVING", payload: false });
@@ -1137,7 +1007,7 @@ const QuestionScreen = props => {
     return (
         <SafeAreaView style={{ ...style.container, backgroundColor: Theme(props.settings.darkMode).container }}>
             {props.route.params.question.isVersusMode || <Header pauseShown onPause={() => page._pause()} />}
-            {props.route.params.question.isVersusMode ? (props.currentQuestion.isQuestionsLoaded && page._render.versus()) : (props.currentQuestion.isQuestionsLoaded && page._render.questions())}
+            {props.route.params.question.isVersusMode ? (props.currentQuestion.isQuestionsLoaded && page._render.versus()) : (props.currentQuestion.isQuestionsLoaded ? page._render.questions() : page._render.loading())}
             {page._render.modals()}
             {
                 props.currentQuestion.dragDropNextQuestion && <View style={style.bottomButtonOverlay}>

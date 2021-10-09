@@ -147,24 +147,14 @@ const QuestionSettings = props => {
         props.dispatch({ type: "DECREMENT_QUESTION_TIME" });
     }
 
+    const _setDigitLength = (val) => {
+        props.dispatch({ type: "SET_DIGIT_LENGTH", payload: val });
+    }
+
     const _render = {
         toggles: () => {
             return (
-                <View>
-                    <TouchableOpacity
-                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
-                        onPress={() => props.dispatch({ type: "SET_TIMER_ENABLED", payload: !props.questionSettings.timerEnabled })}
-                        activeOpacity={0.7}>
-                        <ToggleSwitch
-                            isOn={props.questionSettings.timerEnabled}
-                            style={{ marginLeft: 12, marginRight: 12 }}
-                            onColor="green"
-                            offColor="red"
-                            size="small"
-                            onToggle={isOn => props.dispatch({ type: "SET_TIMER_ENABLED", payload: isOn })}
-                            animationSpeed={100} />
-                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionSettings_timerEnabled")}</Text>
-                    </TouchableOpacity>
+                <View style={{ marginBottom: 48 }}>
                     {
                         props.route.params.question.isDragDrop ? <>
                             <TouchableOpacity
@@ -182,6 +172,9 @@ const QuestionSettings = props => {
                                 <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_settings_liveAnswer")}</Text>
                             </TouchableOpacity>
                         </> : <>
+                            <View style={{ marginTop: 12, marginBottom: 6, borderBottomColor: Theme(props.settings.darkMode).textDefault, borderBottomWidth: 1, paddingBottom: 10 }}>
+                                <Text style={{ fontSize: 24, color: Theme(props.settings.darkMode).textDefault }}>İşlemler</Text>
+                            </View>
                             <TouchableOpacity
                                 style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
                                 onPress={() => props.dispatch({ type: "SET_QUESTION_SETTINGS_OPERATIONS", payload: { ...props.questionSettings.operations, addition: !props.questionSettings.operations.addition } })}
@@ -240,6 +233,51 @@ const QuestionSettings = props => {
                             </TouchableOpacity>
                         </>
                     }
+                    <View style={{ marginTop: 12, marginBottom: 6, borderBottomColor: Theme(props.settings.darkMode).textDefault, borderBottomWidth: 1, paddingBottom: 10 }}>
+                        <Text style={{ fontSize: 24, color: Theme(props.settings.darkMode).textDefault }}>Diğer Ayarlar</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_TIMER_ENABLED", payload: !props.questionSettings.timerEnabled })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.timerEnabled}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_TIMER_ENABLED", payload: isOn })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("questionSettings_timerEnabled")}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_FLOAT", payload: !props.questionSettings.allowFloat })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.allowFloat}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_FLOAT", payload: isOn })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>Virgüllü sayılar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ ...style.setting, backgroundColor: Theme(props.settings.darkMode).container, borderRadius: 4 }}
+                        onPress={() => props.dispatch({ type: "SET_NEGATIVE", payload: !props.questionSettings.allowNegative })}
+                        activeOpacity={0.7}>
+                        <ToggleSwitch
+                            isOn={props.questionSettings.allowNegative}
+                            style={{ marginLeft: 12, marginRight: 12 }}
+                            onColor="green"
+                            offColor="red"
+                            size="small"
+                            onToggle={isOn => props.dispatch({ type: "SET_NEGATIVE", payload: isOn })}
+                            animationSpeed={100} />
+                        <Text style={{ ...style.label, color: Theme(props.settings.darkMode).textDefault }}>Negatif sayılar</Text>
+                    </TouchableOpacity>
                 </View>
             )
         },
@@ -299,95 +337,114 @@ const QuestionSettings = props => {
                 }
             </View>
             <View style={{ ...style.headerBar, backgroundColor: Theme(props.settings.darkMode).bar }}></View>
-            <ScrollView style={style.content}>
-                {
-                    props.API.DATA.hasPremium || <>
-                        <TouchableOpacity style={style.premiumWrapper} onPress={() => _navigateToPremium()} activeOpacity={0.36} />
-                        <TouchableOpacity style={style.premiumTextWrapper} activeOpacity={0.7} onPress={() => _navigateToPremium()}>
-                            <View style={style.premiumSegmentLeft}>
-                                <View style={style.premiumSegmentIconWrapper}>
-                                    <FontAwesomeIcon icon={faCrown} size={14} color={"#000"} />
+            <View style={style.content}>
+                <ScrollView style={{ ...style.questionSettingsWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
+
+                    {
+                        props.API.DATA.hasPremium || <>
+                            <TouchableOpacity style={style.premiumWrapper} onPress={() => _navigateToPremium()} activeOpacity={0.36} />
+                            <TouchableOpacity style={style.premiumTextWrapper} activeOpacity={0.7} onPress={() => _navigateToPremium()}>
+                                <View style={style.premiumSegmentLeft}>
+                                    <View style={style.premiumSegmentIconWrapper}>
+                                        <FontAwesomeIcon icon={faCrown} size={14} color={"#000"} />
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={style.premiumSegmentMid}>
-                                <Text style={{ fontSize: 10, fontWeight: "bold" }}>{I18n.t("buy_premium_title_qsettings")}</Text>
-                                <Text style={{ fontSize: 12 }}>{I18n.t("buy_premium_desc_qsettings")}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </>
-                }
-                <View style={{ ...style.questionSettingsWrapper, backgroundColor: Theme(props.settings.darkMode).questionSlotBackground }}>
-                    <View style={style.elementLogoWrapper}>
-                        <Image
-                            style={style.elementLogo}
-                            source={require('../../tc.png')}
-                            resizeMode={'contain'}
-                        />
-                    </View>
-                    <View style={style.settingsWrapper}>
-                        <View style={style.setting}>
-                            <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_numberRange")}: </Text>
-                            <View style={style.settingWrapper}>
-
-                                {_render.incrementals({
-                                    onDecrementPress: () => _decrementMaxRange(),
-                                    onIncrementPress: () => _incrementMaxRange(),
-                                    isEditable: true,
-                                    onInputChange: (text) => _setMaxRange(text),
-                                    inputValue: props.questionSettings.maxRange.toString(),
-                                    decrementalValue: props.questionSettings.rangeDecremental,
-                                    incrementalValue: props.questionSettings.rangeIncremental,
-                                    darkMode: props.settings.darkMode,
-                                })}
-
-                            </View>
+                                <View style={style.premiumSegmentMid}>
+                                    <Text style={{ fontSize: 10, fontWeight: "bold" }}>{I18n.t("buy_premium_title_qsettings")}</Text>
+                                    <Text style={{ fontSize: 12 }}>{I18n.t("buy_premium_desc_qsettings")}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </>
+                    }
+                    <View style={{ padding: 24 }}>
+                        <View style={style.elementLogoWrapper}>
+                            <Image
+                                style={style.elementLogo}
+                                source={require('../../tc.png')}
+                                resizeMode={'contain'}
+                            />
                         </View>
-                        <View style={style.setting}>
-                            <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_count")}: </Text>
-                            <View style={style.settingWrapper}>
-
-                                {_render.incrementals({
-                                    onDecrementPress: () => _decrementQuestionCount(),
-                                    onIncrementPress: () => _incrementQuestionCount(),
-                                    value: props.questionSettings.questionCount,
-                                    darkMode: props.settings.darkMode,
-                                })}
-
-                            </View>
-                        </View>
-                        {
-                            props.route.params.question.isVersusMode || props.route.params.question.isDragDrop || <View style={style.setting}>
-                                <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_optionCount")}: </Text>
+                        <View style={style.settingsWrapper}>
+                            <View style={style.setting}>
+                                <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>Sayı uzunluğu: </Text>
                                 <View style={style.settingWrapper}>
 
                                     {_render.incrementals({
-                                        onDecrementPress: () => _decrementOptions(),
-                                        onIncrementPress: () => _incrementOptions(),
-                                        value: props.questionSettings.optionCount,
+                                        onDecrementPress: () => { _setDigitLength(-1) },
+                                        onIncrementPress: () => { _setDigitLength(1) },
+                                        value: props.questionSettings.digitLength,
                                         darkMode: props.settings.darkMode,
                                     })}
 
                                 </View>
                             </View>
-                        }
-                        <View style={style.setting}>
-                            <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_settings_questionTime")}: </Text>
-                            <View style={style.settingWrapper}>
-
-                                {_render.incrementals({
-                                    onDecrementPress: () => _decrementQuestionTime(),
-                                    onIncrementPress: () => _incrementQuestionTime(),
-                                    value: props.questionSettings.perQuestionTime,
-                                    isSeconds: true,
-                                    darkMode: props.settings.darkMode,
-                                })}
-
-                            </View>
                         </View>
-                        {_render.toggles()}
+                        <View style={style.settingsWrapper}>
+                            <View style={style.setting}>
+                                <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_numberRange")}: </Text>
+                                <View style={style.settingWrapper}>
+
+                                    {_render.incrementals({
+                                        onDecrementPress: () => _decrementMaxRange(),
+                                        onIncrementPress: () => _incrementMaxRange(),
+                                        isEditable: true,
+                                        onInputChange: (text) => _setMaxRange(text),
+                                        inputValue: props.questionSettings.maxRange.toString(),
+                                        decrementalValue: props.questionSettings.rangeDecremental,
+                                        incrementalValue: props.questionSettings.rangeIncremental,
+                                        darkMode: props.settings.darkMode,
+                                    })}
+
+                                </View>
+                            </View>
+                            <View style={style.setting}>
+                                <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_count")}: </Text>
+                                <View style={style.settingWrapper}>
+
+                                    {_render.incrementals({
+                                        onDecrementPress: () => _decrementQuestionCount(),
+                                        onIncrementPress: () => _incrementQuestionCount(),
+                                        value: props.questionSettings.questionCount,
+                                        darkMode: props.settings.darkMode,
+                                    })}
+
+                                </View>
+                            </View>
+                            {
+                                props.route.params.question.isVersusMode || props.route.params.question.isDragDrop || <View style={style.setting}>
+                                    <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_optionCount")}: </Text>
+                                    <View style={style.settingWrapper}>
+
+                                        {_render.incrementals({
+                                            onDecrementPress: () => _decrementOptions(),
+                                            onIncrementPress: () => _incrementOptions(),
+                                            value: props.questionSettings.optionCount,
+                                            darkMode: props.settings.darkMode,
+                                        })}
+
+                                    </View>
+                                </View>
+                            }
+                            <View style={style.setting}>
+                                <Text style={{ ...style.settingTitle, color: Theme(props.settings.darkMode).textDefault }}>{I18n.t("question_settings_questionTime")}: </Text>
+                                <View style={style.settingWrapper}>
+
+                                    {_render.incrementals({
+                                        onDecrementPress: () => _decrementQuestionTime(),
+                                        onIncrementPress: () => _incrementQuestionTime(),
+                                        value: props.questionSettings.perQuestionTime,
+                                        isSeconds: true,
+                                        darkMode: props.settings.darkMode,
+                                    })}
+
+                                </View>
+                            </View>
+                            {_render.toggles()}
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
+
+                </ScrollView>
+            </View>
             {
                 /*
                 props.route.params.question.isDragDrop && <View style={{ flex: 1, padding: 16 }}>

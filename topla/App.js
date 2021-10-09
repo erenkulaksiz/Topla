@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { LogBox, Platform, Text } from 'react-native';
+import { LogBox, Platform, Text, StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { Appearance, AppearanceProvider } from 'react-native-appearance';
@@ -279,6 +279,9 @@ const App = () => {
 
   useEffect(async () => {
     _INITIALIZE.init();
+
+    StatusBar.setBarStyle('light-content', true)
+    StatusBar.setBackgroundColor("#454545");
 
     console.log("Checking SUB refreshes, Remaining: ", store.getState().settings.cooldown.refreshStatus);
     console.log("Sub refresh time: ", (Date.now() - store.getState().settings.cooldown.lastRefreshed));
