@@ -38,7 +38,6 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
 !debug.keystore
 
 # fastlane
@@ -61,5 +60,5 @@ buck-out/
 # Custom
 keys.js
 *.env
-*/pc-api-6316387851500029020-650-5e56ea940a0a.json
+*/pc-api-6316387851500029020-650-2f99a1620174.json
 *.hprof

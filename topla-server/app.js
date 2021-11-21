@@ -41,7 +41,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
     const purchasesCollection = db.collection('purchases');
 
     const auth = new google.auth.GoogleAuth({
-        keyFile: "pc-api-6316387851500029020-650-5e56ea940a0a.json",
+        keyFile: "pc-api-6316387851500029020-650-2f99a1620174.json", // replace with your own key
         scopes: ["https://www.googleapis.com/auth/androidpublisher"]
     }) // Cache auth
 
